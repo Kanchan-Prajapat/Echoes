@@ -6,21 +6,21 @@ const memories = [
     year: "2026",
     title: "WeForShe Hackathon",
     description: "The beginning of Echoes.",
-    image: "/demo1.jpg",
+    media: "/demo1.jpg",
   },
   {
     id: 2,
     year: "2026",
     title: "Moonlight Night",
     description: "One peaceful evening under the full moon.",
-    image: "/demo2.jpg",
+    media: "/demo2.jpg",
   },
   {
     id: 3,
     year: "2025",
     title: "RHCSA Journey",
     description: "Completed my Linux certification.",
-    image: "/demo3.jpg",
+    media: "/demo3.jpg",
   },
 ];
 
@@ -36,9 +36,9 @@ export default function TimelineView() {
       </p>
 
       <div className="relative border-l-2 border-violet-200 pl-8">
-        {memories.map((memory, index) => (
+        {memories.map((echo, index) => (
           <motion.div
-            key={memory.id}
+            key={echo.id}
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{
@@ -50,23 +50,23 @@ export default function TimelineView() {
             <div className="absolute -left-[42px] top-3 h-5 w-5 rounded-full border-4 border-white bg-violet-600 shadow-lg" />
 
             <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-violet-600">
-              {memory.year}
+              {echo.year}
             </p>
 
             <div className="overflow-hidden rounded-3xl bg-white shadow-lg">
               <img
-                src={memory.image}
-                alt={memory.title}
+                src={echo.media}
+                alt={echo.title}
                 className="h-52 w-full object-cover"
               />
 
               <div className="p-5">
                 <h2 className="text-2xl font-bold">
-                  {memory.title}
+                  {echo.title}
                 </h2>
 
                 <p className="mt-2 text-gray-500">
-                  {memory.description}
+                  {echo.description}
                 </p>
               </div>
             </div>

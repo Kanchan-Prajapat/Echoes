@@ -7,24 +7,25 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-import { Memory } from "@/types/memory";
-import { useMemoryStore } from "@/store/memoryStore";
+import { Echo } from "@/types/echo";
+import { useEchoStore } from "@/store/echoStore";
+import MediaCarousel from "./MediaCarousel";
 
 interface Props {
-  memory: Memory;
+  echo: Echo;
   onBack: () => void;
 }
 
-export default function MemoryDetailView({
-  memory,
+export default function EchoDetailView({
+  echo,
   onBack,
 }: Props) {
-  const toggleFavorite = useMemoryStore(
+  const toggleFavorite = useEchoStore(
     (state) => state.toggleFavorite
   );
 
-  const deleteMemory = useMemoryStore(
-    (state) => state.deleteMemory
+  const deleteEcho = useEchoStore(
+    (state) => state.deleteEcho
   );
 
   return (
@@ -34,11 +35,11 @@ export default function MemoryDetailView({
 
       <div className="relative h-[45vh] w-full">
 
-        <img
-          src={memory.images[0]}
-          alt={memory.title}
-          className="h-full w-full object-cover"
-        />
+ <MediaCarousel
+    media={echo.media}
+    height="h-[45vh]"
+/>
+
 
         <button
           onClick={onBack}
@@ -48,14 +49,14 @@ export default function MemoryDetailView({
         </button>
 
         <button
-          onClick={() => toggleFavorite(memory.id)}
+          onClick={() => toggleFavorite(echo.id)}
           className="absolute right-5 top-5 rounded-full bg-white/90 p-3 backdrop-blur"
         >
           <Heart
             size={20}
-            fill={memory.favorite ? "#ef4444" : "none"}
+            fill={echo.favorite ? "#ef4444" : "none"}
             className={
-              memory.favorite
+              echo.favorite
                 ? "text-red-500"
                 : "text-gray-700"
             }
@@ -79,7 +80,7 @@ export default function MemoryDetailView({
       >
 
         <h1 className="mt-8 text-4xl font-bold">
-          {memory.title}
+          {echo.title}
         </h1>
 
         <div className="mt-6 flex flex-wrap gap-4 text-gray-500">
@@ -88,7 +89,7 @@ export default function MemoryDetailView({
 
             <CalendarDays size={18} />
 
-            {memory.date}
+            {echo.date}
 
           </div>
 
@@ -96,7 +97,7 @@ export default function MemoryDetailView({
 
             <MapPin size={18} />
 
-            {memory.location || "Unknown"}
+            {echo.location || "Unknown"}
 
           </div>
 
@@ -106,7 +107,7 @@ export default function MemoryDetailView({
 
           <span className="rounded-full bg-violet-100 px-4 py-2 text-lg">
 
-            {memory.mood}
+            {echo.mood}
 
           </span>
 
@@ -120,7 +121,7 @@ export default function MemoryDetailView({
 
           <p className="leading-8 text-gray-600">
 
-            {memory.description || "No journal written."}
+            {echo.description || "No journal written."}
 
           </p>
 
@@ -128,7 +129,7 @@ export default function MemoryDetailView({
 
         <button
           onClick={() => {
-            deleteMemory(memory.id);
+            deleteEcho(echo.id);
             onBack();
           }}
           className="mt-12 flex w-full items-center justify-center gap-3 rounded-2xl bg-red-500 py-4 font-semibold text-white"

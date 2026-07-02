@@ -5,7 +5,7 @@ const week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
-const memoryDays = [2, 5, 8, 12, 18, 22, 27];
+const echoDays = [2, 5, 8, 12, 18, 22, 27];
 
 export default function CalendarView() {
   return (
@@ -56,7 +56,7 @@ export default function CalendarView() {
 
         {days.map(day => {
 
-          const active = memoryDays.includes(day);
+          const active = echoDays.includes(day);
 
           return (
             <motion.button

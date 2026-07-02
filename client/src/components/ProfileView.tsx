@@ -68,7 +68,7 @@ export default function ProfileView() {
         </h1>
 
         <p className="mt-2 text-gray-500">
-          Memory Keeper ✨
+          Echo Keeper ✨
         </p>
 
       </div>

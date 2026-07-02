@@ -1,17 +1,18 @@
 import { Search, Bell, Plus } from "lucide-react";
 import { motion } from "framer-motion";
-import { Memory } from "@/types/types";
-import { useMemoryStore } from "@/store/memoryStore";
+import { Echo } from "@/types/types";
+import { useEchoStore } from "@/store/echoStore";
+import MediaCarousel from "@/components/MediaCarousel";
 
 interface HomeViewProps {
-    onOpenMemory: (memory: Memory) => void;
-    onCreateMemory: () => void;
+    onOpenEcho: (echo: Echo) => void;
+    onCreateEcho: () => void;
 }
 
-export default function HomeView({ onOpenMemory, onCreateMemory }: HomeViewProps) {
-    const memories =
-        useMemoryStore(
-            (state) => state.memories
+export default function HomeView({ onOpenEcho, onCreateEcho }: HomeViewProps) {
+    const echoes =
+        useEchoStore(
+            (state) => state.echoes
         );
 
 
@@ -50,16 +51,16 @@ export default function HomeView({ onOpenMemory, onCreateMemory }: HomeViewProps
                     </p>
 
                     <h2 className="mt-3 text-2xl font-semibold leading-9">
-                        Every memory has a story waiting to be remembered.
+                        Every echo has a story waiting to be remembered.
                     </h2>
                 </div>
             </div>
 
-            {/* Memories */}
+            {/* Echoes */}
             <div className="mt-10 px-6">
                 <div className="mb-5 flex items-center justify-between">
                     <h2 className="text-2xl font-bold">
-                        Recent Memories
+                        Recent Echoes
                     </h2>
 
                     <button className="text-violet-600 font-medium">
@@ -68,10 +69,10 @@ export default function HomeView({ onOpenMemory, onCreateMemory }: HomeViewProps
                 </div>
 
                 <div className="space-y-6">
-                    {memories.length === 0 ? (
+                    {echoes.length === 0 ? (
                         <div className="mt-20 text-center text-gray-500">
                             <h2 className="text-2xl font-semibold">
-                                No Memories Yet 🌙
+                                No Echoes Yet 🌙
                             </h2>
 
                             <p className="mt-3">
@@ -79,43 +80,41 @@ export default function HomeView({ onOpenMemory, onCreateMemory }: HomeViewProps
                             </p>
                         </div>
                     ) : (
-                        memories.map((memory) => (
+                        echoes.map((echo) => (
                             <motion.div
-                                key={memory.id}
+                                key={echo.id}
                                 whileHover={{ y: -5 }}
                                 whileTap={{ scale: 0.98 }}
-                                onClick={() => onOpenMemory(memory)}
+                                onClick={() => onOpenEcho(echo)}
                                 className="cursor-pointer rounded-3xl bg-white shadow-lg"
                             >
-                                <img
-                                    src={memory.images[0]}
-                                    alt={memory.title}
-                                    className="h-60 w-full object-cover"
-                                />
-
+                            <MediaCarousel
+    media={echo.media}
+    height="h-60"
+/>
                                 <div className="p-5">
 
                                     <div className="flex items-center justify-between">
 
                                         <h3 className="text-xl font-bold">
-                                            {memory.title}
+                                            {echo.title}
                                         </h3>
 
                                         <span className="text-2xl">
-                                            {memory.mood}
+                                            {echo.mood}
                                         </span>
 
                                     </div>
 
                                     <p className="mt-3 text-gray-500">
 
-                                        {memory.location || "Unknown Location"}
+                                        {echo.location || "Unknown Location"}
 
                                     </p>
 
                                     <p className="mt-2 text-sm text-gray-400">
 
-                                        {memory.date}
+                                        {echo.date}
 
                                     </p>
 
@@ -128,7 +127,7 @@ export default function HomeView({ onOpenMemory, onCreateMemory }: HomeViewProps
 
             {/* Floating Add Button */}
             <button
-                onClick={onCreateMemory}
+                onClick={onCreateEcho}
                 className="fixed bottom-28 right-6 flex h-16 w-16 items-center justify-center rounded-full bg-violet-600 text-white shadow-2xl transition hover:scale-110"
             >
                 <Plus size={30} />

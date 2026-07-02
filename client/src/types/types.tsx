@@ -1,4 +1,4 @@
-export interface Memory {
+export interface Echo {
   id: string;
   title: string;
   journal: string;

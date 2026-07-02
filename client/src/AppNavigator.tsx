@@ -2,34 +2,35 @@ import HomeView from "./components/HomeView";
 import TimelineView from "./components/TimelineView";
 import CalendarView from "./components/CalendarView";
 import ProfileView from "./components/ProfileView";
-import MemoryDetailView from "./components/MemoryDetailView";
-import NewMemoryView from "./components/NewMemoryView";
+import EchoDetailView from "./components/EchoDetailView";
+import NewEchoView from "./components/NewEchoView";
 
-import { Memory } from "./types/memory";
+import { Echo } from "./types/echo";
 import { Tab } from "./App";
+
 
 interface Props {
   tab: Tab;
-  selectedMemory: Memory | null;
+  selectedEcho: Echo | null;
 
   setTab: (tab: Tab) => void;
 
-  setSelectedMemory: (
-    memory: Memory | null
+  setSelectedEcho: (
+    echo: Echo | null
   ) => void;
 }
 
 export default function AppNavigator({
   tab,
-  selectedMemory,
+  selectedEcho,
   setTab,
-  setSelectedMemory,
+  setSelectedEcho,
 }: Props) {
-  if (selectedMemory) {
+  if (selectedEcho) {
     return (
-      <MemoryDetailView
-        memory={selectedMemory}
-        onBack={() => setSelectedMemory(null)}
+      <EchoDetailView
+        echo={selectedEcho}
+        onBack={() => setSelectedEcho(null)}
       />
     );
   }
@@ -38,11 +39,11 @@ export default function AppNavigator({
     case "home":
       return (
         <HomeView
-          onOpenMemory={(memory) =>
-            setSelectedMemory(memory)
+          onOpenEcho={(echo) =>
+            setSelectedEcho(echo)
           }
-          onCreateMemory={() =>
-            setTab("new-memory")
+          onCreateEcho={() =>
+            setTab("new-echo")
           }
         />
       );
@@ -56,11 +57,11 @@ export default function AppNavigator({
     case "profile":
       return <ProfileView />;
 
-    case "new-memory":
+    case "new-echo":
 
 return (
 
-    <NewMemoryView
+    <NewEchoView
 
         onSaved={() => {
 
@@ -74,11 +75,11 @@ return (
 
     default:
       return <HomeView
-        onOpenMemory={(memory) =>
-          setSelectedMemory(memory)
+        onOpenEcho={(echo) =>
+          setSelectedEcho(echo)
         }
-        onCreateMemory={() =>
-          setTab("new-memory")
+        onCreateEcho={() =>
+          setTab("new-echo")
         }
       />;
   }

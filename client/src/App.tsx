@@ -6,14 +6,14 @@ import BottomNav from "./components/BottomNav";
 
 import AppNavigator from "./AppNavigator";
 
-import { Memory } from "./types/memory";
+import { Echo } from "./types/echo";
 
 export type Tab =
   | "home"
   | "timeline"
   | "calendar"
   | "profile"
-  | "new-memory";
+  | "new-echo";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -22,8 +22,8 @@ export default function App() {
   const [tab, setTab] =
     useState<Tab>("home");
 
-  const [selectedMemory, setSelectedMemory] =
-    useState<Memory | null>(null);
+  const [selectedEcho, setSelectedEcho] =
+    useState<Echo | null>(null);
 
   if (loading) {
     return (
@@ -50,11 +50,11 @@ export default function App() {
       <AppNavigator
         tab={tab}
         setTab={setTab}
-        selectedMemory={selectedMemory}
-        setSelectedMemory={setSelectedMemory}
+        selectedEcho={selectedEcho}
+        setSelectedEcho={setSelectedEcho}
       />
 
-      {!selectedMemory && (
+      {!selectedEcho && (
         <BottomNav
           active={tab}
           onChange={setTab}

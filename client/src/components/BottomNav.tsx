@@ -29,7 +29,7 @@ const items: {
     label: "Timeline",
   },
   {
-    id: "new-memory",
+    id: "new-echo",
     icon: Plus,
     label: "New",
   },

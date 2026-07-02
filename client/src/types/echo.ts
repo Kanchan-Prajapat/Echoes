@@ -1,10 +1,16 @@
-export interface Memory {
+import { Media } from "./media";
+
+export interface Echo {
   id: string;
+
   title: string;
+
   description: string;
-  images: string[];
+
+  media: Media[];
 
   date: string;
+
   location: string;
 
   mood: string;
