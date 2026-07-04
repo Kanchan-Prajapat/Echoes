@@ -1,18 +1,29 @@
-import { Echo } from "./echo";
-
 export type Screen =
   | "home"
-  | "new-echo"
   | "timeline"
   | "calendar"
   | "search"
-  | "profile";
-
+  | "profile"
+  | "new-echo";
 
 export interface NavigationState {
+  /**
+   * Current visible screen
+   */
   screen: Screen;
 
+  /**
+   * Used when closing Detail/Search/New Echo
+   */
+  previousScreen?: Screen;
+
+  /**
+   * Opened Echo
+   */
   selectedEchoId?: string;
 
+  /**
+   * Editing Echo
+   */
   editingEchoId?: string;
 }

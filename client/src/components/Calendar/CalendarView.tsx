@@ -5,6 +5,7 @@ import Calendar from "./Calendar";
 
 import { Echo } from "@/types/echo";
 import { useEchoStore } from "@/store/echoStore";
+import CalendarBottomSheet from "./CalendarBottomSheet";
 
 interface Props {
   onOpenEcho: (echo: Echo) => void;
@@ -20,6 +21,9 @@ export default function CalendarView({
 
   const [selectedDate, setSelectedDate] =
     useState(new Date());
+
+    const [sheetOpen, setSheetOpen] =
+  useState(false);
 
   const todaysEchoes = useMemo(() => {
 
@@ -58,10 +62,13 @@ export default function CalendarView({
 
       <div className="mt-8 px-5">
 
-        <Calendar
-          value={selectedDate}
-          onChange={setSelectedDate}
-        />
+     <Calendar
+    value={selectedDate}
+    onChange={(date) => {
+        setSelectedDate(date);
+        setSheetOpen(true);
+    }}
+/>
 
       </div>
 
@@ -175,6 +182,14 @@ export default function CalendarView({
         )}
 
       </div>
+
+      <CalendarBottomSheet
+    open={sheetOpen}
+    date={selectedDate}
+    echoes={todaysEchoes}
+    onClose={() => setSheetOpen(false)}
+    onOpenEcho={onOpenEcho}
+/>
 
     </main>
 

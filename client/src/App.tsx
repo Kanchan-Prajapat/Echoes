@@ -20,9 +20,9 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [started, setStarted] = useState(false);
 
-    const [navigation, setNavigation] = useState<NavigationState>({
-  screen: "home",
-});
+  const [navigation, setNavigation] = useState<NavigationState>({
+    screen: "home",
+  });
 
   if (loading) {
     return (
@@ -46,20 +46,21 @@ export default function App() {
 
   return (
     <>
-   <AppNavigator
-    navigation={navigation}
-    setNavigation={setNavigation}
-/>
+      <AppNavigator
+        navigation={navigation}
+        setNavigation={setNavigation}
+      />
 
       {!navigation.selectedEcho && (
-       <BottomNav
-    active={navigation.screen}
-    onChange={(screen) =>
-        setNavigation({
-            screen,
-        })
-    }
-/>
+        <BottomNav
+          active={navigation.screen}
+         onChange={(screen) =>
+    setNavigation({
+        screen,
+        previousScreen: screen,
+    })
+}
+        />
       )}
     </>
   );

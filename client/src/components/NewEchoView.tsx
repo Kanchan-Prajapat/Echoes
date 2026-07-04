@@ -6,6 +6,8 @@ import { useRef } from "react";
 import { Media } from "@/types/media";
 import MediaCarousel from "./MediaCarousel";
 import { Echo } from "@/types/echo";
+import { format } from "date-fns";
+import CalendarModal from "@/components/Calendar/CalendarModal";
 
 const moods = [
     "😊",
@@ -27,8 +29,8 @@ export default function NewEchoView({
 }: Props) {
 
     const editingEcho = useEchoStore((state) =>
-    state.echoes.find((e) => e.id === editingEchoId)
-);
+        state.echoes.find((e) => e.id === editingEchoId)
+    );
     const addEcho =
         useEchoStore(
             (state) => state.addEcho
@@ -47,6 +49,9 @@ export default function NewEchoView({
         editingEcho?.media ?? []
     );
 
+    const [showCalendar, setShowCalendar] =
+        useState(false);
+
     const [description, setDescription] = useState(
         editingEcho?.description ?? ""
     );
@@ -64,16 +69,16 @@ export default function NewEchoView({
             (state) => state.updateEcho
         );
 
-        useEffect(() => {
-  if (!editingEcho) return;
+    useEffect(() => {
+        if (!editingEcho) return;
 
-  setTitle(editingEcho.title);
-  setDescription(editingEcho.description);
-  setMedia(editingEcho.media);
-  setDate(editingEcho.date);
-  setLocation(editingEcho.location);
-  setSelectedMood(editingEcho.mood);
-}, [editingEcho]);
+        setTitle(editingEcho.title);
+        setDescription(editingEcho.description);
+        setMedia(editingEcho.media);
+        setDate(editingEcho.date);
+        setLocation(editingEcho.location);
+        setSelectedMood(editingEcho.mood);
+    }, [editingEcho]);
 
 
     return (
@@ -97,11 +102,11 @@ export default function NewEchoView({
 
             <div className="mt-8 px-6">
 
-               <motion.div
-    whileTap={{ scale: 0.98 }}
-    onClick={() => fileInputRef.current?.click()}
-    className="cursor-pointer ..."
->
+                <motion.div
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="cursor-pointer ..."
+                >
 
                     {media.length === 0 ? (
                         <>
@@ -163,17 +168,27 @@ export default function NewEchoView({
 
                 <div className="flex items-center rounded-2xl bg-white px-4 shadow">
 
-                    <CalendarDays
-                        className="text-violet-600"
-                        size={20}
-                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowCalendar(true)}
+                        className="flex h-14 w-full items-center justify-between rounded-2xl border border-gray-200 bg-white px-4 shadow-sm"
+                    >
+                        <div className="flex items-center gap-3">
 
-                    <input
-                        type="date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        className="w-full p-4 outline-none"
-                    />
+                            <CalendarDays
+                                size={20}
+                                className="text-violet-600"
+                            />
+
+                            <span>
+                                {date
+                                    ? format(new Date(date), "dd MMMM yyyy")
+                                    : "Select date"}
+                            </span>
+
+                        </div>
+
+                    </button>
 
                 </div>
 
@@ -276,33 +291,21 @@ export default function NewEchoView({
 
                         } else {
 
-                           addEcho({
+                            addEcho({
 
-id: crypto.randomUUID(),
-
-title,
-
-description,
-
-media,
-
-date,
-
-location,
-
-mood: selectedMood,
-
-favorite: false,
-
-createdAt: new Date().toISOString(),
-
-updatedAt: new Date().toISOString(),
-
-lastViewedIndex: 0,
-
-viewed: false,
-
-});
+                                id: crypto.randomUUID(),
+                                title,
+                                description,
+                                media,
+                                date,
+                                location,
+                                mood: selectedMood,
+                                favorite: false,
+                                createdAt: new Date().toISOString(),
+                                updatedAt: new Date().toISOString(),
+                                lastViewedIndex: 0,
+                                viewed: false,
+                            });
                         }
 
                         onSaved();
@@ -316,7 +319,17 @@ viewed: false,
                 </motion.button>
 
             </div>
+            <CalendarModal
+                open={showCalendar}
+                value={date ? new Date(date) : new Date()}
+                onClose={() => setShowCalendar(false)}
+                onSelect={(date) => {
+                    setDate(format(date, "yyyy-MM-dd"));
+                }}
+            />
+
 
         </main>
+
     );
 }

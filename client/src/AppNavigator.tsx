@@ -1,144 +1,152 @@
 import HomeView from "./components/Home/HomeView";
 import TimelineView from "./components/Timeline/TimelineView";
 import CalendarView from "./components/Calendar/CalendarView";
-import ProfileView from "./components/ProfileView";
+import ProfileView from "./components/Profile/ProfileView";
 import EchoDetailView from "./components/EchoDetailView";
 import NewEchoView from "./components/NewEchoView";
 import SearchView from "./components/Search/SearchView";
 
+import {openScreen, openEcho, editEcho, } from "@/navigation/navigation";
 import { NavigationState } from "@/types/navigation";
 
 interface Props {
-
   navigation: NavigationState;
 
   setNavigation: React.Dispatch<
     React.SetStateAction<NavigationState>
   >;
-
 }
+
+
 
 export default function AppNavigator({
   navigation,
   setNavigation,
 }: Props) {
+
+  /* ---------- Echo Detail ---------- */
+
   if (navigation.selectedEchoId) {
     return (
-    <EchoDetailView
-    echoId={navigation.selectedEchoId!}
-
+      <EchoDetailView
+        echoId={navigation.selectedEchoId}
         onBack={() =>
           setNavigation({
-            screen: "home",
+            screen:
+              navigation.previousScreen ??
+              "home",
           })
         }
-
-        onEdit={(echoId) =>
-
-          setNavigation({
-
-            screen: "new-echo",
-
-            editingEchoId: echoId,
-
-          })
-
-        }
-
+       onEdit={(echoId) =>
+  setNavigation(
+    editEcho(
+      navigation.previousScreen ??
+        "home",
+      echoId
+    )
+  )
+}
       />
     );
   }
 
-  const renderHome = () => (
-   <HomeView
-      onOpenEcho={(echo) =>
-        setNavigation({
-          screen: "home",
-          selectedEchoId: echo.id,
-        })
-      }
-      onCreateEcho={() =>
-        setNavigation({
-          screen: "new-echo",
-        })
-      }
-      onSearch={() =>
-        setNavigation({
-          screen: "search",
-        })
-      }
-    />
-);
+  /* ---------- Home ---------- */
 
-  switch (navigation.screen) {
-    
-    case "home":
-      return (
-        renderHome()
-      );
+  if (navigation.screen === "home") {
+    return (
+     <HomeView
+  onOpenEcho={(echo) =>
+    setNavigation(
+      openEcho("home", echo.id)
+    )
+  }
 
-    case "timeline":
+  onCreateEcho={() =>
+    setNavigation({
+      screen: "new-echo",
+      previousScreen: "home",
+    })
+  }
+
+  onSearch={() =>
+    setNavigation(
+      openScreen("search")
+    )
+  }
+/>
+    );
+  }
+
+  /* ---------- Timeline ---------- */
+
+  if (navigation.screen === "timeline") {
+    return (
+      <TimelineView
+        onOpenEcho={(echo) =>
+          setNavigation(
+            openEcho("timeline", echo.id)
+          )
+        }
+      />
+    );
+  }
+
+  /* ---------- Calendar ---------- */
+
+  if (navigation.screen === "calendar") {
+    return (
+         <CalendarView
+  onOpenEcho={(echo) =>
+    setNavigation(
+      openEcho("calendar", echo.id)
+    )
+  }
+/>
+    );
+  }
+
+
+/* ---------- New Echo ---------- */
+
+if (navigation.screen === "new-echo") {
   return (
-    <TimelineView
-      onOpenEcho={(echo) =>
-        setNavigation({
-          screen: "home",
-          selectedEchoId: echo.id,
-        })
+    <NewEchoView
+      editingEchoId={navigation.editingEchoId}
+      onSaved={() =>
+        setNavigation(
+          openScreen(
+            navigation.previousScreen ?? "home"
+          )
+        )
       }
     />
   );
-
-    case "calendar":
-      return <CalendarView />;
-
-    case "profile":
-      return <ProfileView />;
-
-    case "search":
-
-return (
-
-<SearchView
-
-    onClose={()=>
-
-        setNavigation({
-
-            screen:"home",
-
-        })
-
-    }
-
-   onOpenEcho={(echo) =>
-    setNavigation({
-        screen: "home",
-        selectedEchoId: echo.id,
-    })
 }
 
-/>
+  /* ---------- Search ---------- */
 
-);
-
-    case "new-echo":
-
-      return (
-
-       <NewEchoView
-    editingEchoId={navigation.editingEchoId}
-    onSaved={() =>
-        setNavigation({
-            screen: "home",
-        })
-    }
-/>
-
-      );
-
-    default:
-      return renderHome();
-
+  if (navigation.screen === "search") {
+    return (
+   <SearchView
+  onClose={() =>
+    setNavigation(
+      openScreen(
+        navigation.previousScreen ??
+          "home"
+      )
+    )
   }
+
+  onOpenEcho={(echo) =>
+    setNavigation(
+      openEcho("search", echo.id)
+    )
+  }
+/>
+    );
+  }
+
+  /* ---------- Profile ---------- */
+
+  return <ProfileView />;
 }
