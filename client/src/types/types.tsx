@@ -18,6 +18,7 @@ export interface Echo {
   song?: string;
   reflection?: string;
   createdAt: string;
+  lastViewedIndex?:number;
 }
 
 export type TabType = "home" | "timeline" | "add" | "calendar" | "profile";

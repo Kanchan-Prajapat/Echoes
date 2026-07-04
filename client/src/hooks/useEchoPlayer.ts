@@ -1,0 +1,221 @@
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
+import { Media } from "@/types/media";
+
+const IMAGE_DURATION = 4000;
+
+export default function useEchoPlayer(
+  media: Media[],
+  initialIndex: number,
+  onClose: () => void
+){
+const [safeIndex, setSafeIndex] = useState(initialIndex);
+
+  const [paused, setPaused] = useState(false);
+
+  const [muted, setMuted] = useState(false);
+
+  const [controlsVisible, setControlsVisible] = useState(true);
+
+  const [videoProgress, setVideoProgress] = useState(0);
+
+  const imageTimer = useRef<number>();
+
+  const controlsTimer = useRef<number>();
+
+  const currentMedia = useMemo(
+    () => media[safeIndex],
+    [media, safeIndex]
+  );
+
+  const isLastMedia =
+safeIndex === media.length - 1;
+
+  /* ---------------- NEXT ---------------- */
+
+  const next = useCallback(() => {
+   if (safeIndex === media.length - 1) {
+
+  setVideoProgress(100);
+
+  setTimeout(() => {
+
+    onClose();
+
+  }, 250);
+
+  return;
+
+}
+
+    setSafeIndex((i) => i + 1);
+
+    setVideoProgress(0);
+
+  }, [safeIndex, media.length, onClose]);
+
+  /* ---------------- PREVIOUS ---------------- */
+
+  const previous = useCallback(() => {
+
+    if (safeIndex === 0) return;
+
+    setSafeIndex((i) => i - 1);
+
+    setVideoProgress(0);
+
+  }, [safeIndex]);
+
+  useEffect(() => {
+  setSafeIndex(initialIndex);
+}, [initialIndex]);
+
+  /* ---------------- IMAGE TIMER ---------------- */
+
+  useEffect(() => {
+
+    window.clearTimeout(imageTimer.current);
+
+    if (!currentMedia) return;
+
+    if (paused) return;
+
+    if (currentMedia.type !== "image") return;
+
+    imageTimer.current = window.setTimeout(() => {
+
+      next();
+
+    }, IMAGE_DURATION);
+
+    return () => {
+
+      window.clearTimeout(imageTimer.current);
+
+    };
+
+  }, [currentMedia, paused, next]);
+
+  /* ---------------- CONTROLS ---------------- */
+
+  useEffect(() => {
+
+    window.clearTimeout(controlsTimer.current);
+
+    if (paused) {
+
+      setControlsVisible(true);
+
+      return;
+
+    }
+
+    setControlsVisible(true);
+
+    controlsTimer.current = window.setTimeout(() => {
+
+      setControlsVisible(false);
+
+    }, 2500);
+
+    return () => {
+
+      window.clearTimeout(controlsTimer.current);
+
+    };
+
+  }, [paused, safeIndex]);
+
+  /* ---------------- PRELOAD NEXT IMAGE ---------------- */
+
+ useEffect(() => {
+
+  const preload = media.slice(
+    safeIndex + 1,
+    safeIndex + 3
+  );
+
+  preload.forEach((item) => {
+
+    if (item.type === "image") {
+
+      const img = new Image();
+
+      img.src = item.url;
+
+    } else {
+
+      const video = document.createElement("video");
+
+      video.preload = "metadata";
+
+      video.src = item.url;
+
+    }
+
+  });
+
+}, [safeIndex, media]);
+
+  /* ---------------- ACTIONS ---------------- */
+
+  const pause = () => setPaused(true);
+
+  const resume = () => setPaused(false);
+
+  const togglePause = () => setPaused((p) => !p);
+
+  const toggleMute = () => setMuted((m) => !m);
+
+  const showControls = () => {
+
+    setControlsVisible(true);
+
+    window.clearTimeout(controlsTimer.current);
+
+    controlsTimer.current = window.setTimeout(() => {
+
+      setControlsVisible(false);
+
+    }, 2500);
+
+  };
+
+ return {
+    currentIndex: safeIndex,
+
+    currentMedia,
+
+    paused,
+
+    muted,
+
+    controlsVisible,
+
+    videoProgress,
+
+    setVideoProgress,
+
+    next,
+
+    previous,
+
+    pause,
+
+    resume,
+
+    togglePause,
+
+    toggleMute,
+
+    showControls,
+
+    isLastMedia,
+};
+}

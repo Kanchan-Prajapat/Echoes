@@ -18,4 +18,11 @@ export interface Echo {
   favorite: boolean;
 
   createdAt: string;
+
+    updatedAt: string;
+
+  lastViewedIndex: number;
+
+  viewed: boolean;
+  coverMediaId?: string;
 }

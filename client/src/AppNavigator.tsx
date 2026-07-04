@@ -1,55 +1,93 @@
-import HomeView from "./components/HomeView";
-import TimelineView from "./components/TimelineView";
-import CalendarView from "./components/CalendarView";
+import HomeView from "./components/Home/HomeView";
+import TimelineView from "./components/Timeline/TimelineView";
+import CalendarView from "./components/Calendar/CalendarView";
 import ProfileView from "./components/ProfileView";
 import EchoDetailView from "./components/EchoDetailView";
 import NewEchoView from "./components/NewEchoView";
+import SearchView from "./components/Search/SearchView";
 
-import { Echo } from "./types/echo";
-import { Tab } from "./App";
-
+import { NavigationState } from "@/types/navigation";
 
 interface Props {
-  tab: Tab;
-  selectedEcho: Echo | null;
 
-  setTab: (tab: Tab) => void;
+  navigation: NavigationState;
 
-  setSelectedEcho: (
-    echo: Echo | null
-  ) => void;
+  setNavigation: React.Dispatch<
+    React.SetStateAction<NavigationState>
+  >;
+
 }
 
 export default function AppNavigator({
-  tab,
-  selectedEcho,
-  setTab,
-  setSelectedEcho,
+  navigation,
+  setNavigation,
 }: Props) {
-  if (selectedEcho) {
+  if (navigation.selectedEchoId) {
     return (
-      <EchoDetailView
-        echo={selectedEcho}
-        onBack={() => setSelectedEcho(null)}
+    <EchoDetailView
+    echoId={navigation.selectedEchoId!}
+
+        onBack={() =>
+          setNavigation({
+            screen: "home",
+          })
+        }
+
+        onEdit={(echoId) =>
+
+          setNavigation({
+
+            screen: "new-echo",
+
+            editingEchoId: echoId,
+
+          })
+
+        }
+
       />
     );
   }
 
-  switch (tab) {
+  const renderHome = () => (
+   <HomeView
+      onOpenEcho={(echo) =>
+        setNavigation({
+          screen: "home",
+          selectedEchoId: echo.id,
+        })
+      }
+      onCreateEcho={() =>
+        setNavigation({
+          screen: "new-echo",
+        })
+      }
+      onSearch={() =>
+        setNavigation({
+          screen: "search",
+        })
+      }
+    />
+);
+
+  switch (navigation.screen) {
+    
     case "home":
       return (
-        <HomeView
-          onOpenEcho={(echo) =>
-            setSelectedEcho(echo)
-          }
-          onCreateEcho={() =>
-            setTab("new-echo")
-          }
-        />
+        renderHome()
       );
 
     case "timeline":
-      return <TimelineView />;
+  return (
+    <TimelineView
+      onOpenEcho={(echo) =>
+        setNavigation({
+          screen: "home",
+          selectedEchoId: echo.id,
+        })
+      }
+    />
+  );
 
     case "calendar":
       return <CalendarView />;
@@ -57,30 +95,50 @@ export default function AppNavigator({
     case "profile":
       return <ProfileView />;
 
-    case "new-echo":
+    case "search":
 
 return (
 
-    <NewEchoView
+<SearchView
 
-        onSaved={() => {
+    onClose={()=>
 
-            setTab("home");
+        setNavigation({
 
-        }}
+            screen:"home",
 
-    />
+        })
+
+    }
+
+   onOpenEcho={(echo) =>
+    setNavigation({
+        screen: "home",
+        selectedEchoId: echo.id,
+    })
+}
+
+/>
 
 );
 
+    case "new-echo":
+
+      return (
+
+       <NewEchoView
+    editingEchoId={navigation.editingEchoId}
+    onSaved={() =>
+        setNavigation({
+            screen: "home",
+        })
+    }
+/>
+
+      );
+
     default:
-      return <HomeView
-        onOpenEcho={(echo) =>
-          setSelectedEcho(echo)
-        }
-        onCreateEcho={() =>
-          setTab("new-echo")
-        }
-      />;
+      return renderHome();
+
   }
 }

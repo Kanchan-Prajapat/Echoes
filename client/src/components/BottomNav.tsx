@@ -60,11 +60,13 @@ export default function BottomNav({
           <button
             key={item.id}
             onClick={() => onChange(item.id)}
-            className={`flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 ${
-              isActive
-                ? "bg-violet-600 text-white scale-110"
-                : "text-gray-500 hover:bg-gray-100"
-            }`}
+           className={`flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 ${
+  item.id === "new-echo"
+    ? "bg-violet-600 text-white scale-110 shadow-lg"
+    : isActive
+    ? "bg-violet-400 text-white scale-110"
+    : "text-gray-500 hover:bg-gray-100"
+}`}
           >
             <Icon size={22} />
           </button>

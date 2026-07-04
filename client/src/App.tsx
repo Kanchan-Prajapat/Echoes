@@ -7,6 +7,7 @@ import BottomNav from "./components/BottomNav";
 import AppNavigator from "./AppNavigator";
 
 import { Echo } from "./types/echo";
+import { NavigationState } from "./types/navigation";
 
 export type Tab =
   | "home"
@@ -19,11 +20,9 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [started, setStarted] = useState(false);
 
-  const [tab, setTab] =
-    useState<Tab>("home");
-
-  const [selectedEcho, setSelectedEcho] =
-    useState<Echo | null>(null);
+    const [navigation, setNavigation] = useState<NavigationState>({
+  screen: "home",
+});
 
   if (loading) {
     return (
@@ -47,18 +46,20 @@ export default function App() {
 
   return (
     <>
-      <AppNavigator
-        tab={tab}
-        setTab={setTab}
-        selectedEcho={selectedEcho}
-        setSelectedEcho={setSelectedEcho}
-      />
+   <AppNavigator
+    navigation={navigation}
+    setNavigation={setNavigation}
+/>
 
-      {!selectedEcho && (
-        <BottomNav
-          active={tab}
-          onChange={setTab}
-        />
+      {!navigation.selectedEcho && (
+       <BottomNav
+    active={navigation.screen}
+    onChange={(screen) =>
+        setNavigation({
+            screen,
+        })
+    }
+/>
       )}
     </>
   );

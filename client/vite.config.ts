@@ -4,6 +4,9 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 
 export default defineConfig({
+  server: {
+    allowedHosts: ['strength-botanist-cricket.ngrok-free.dev']
+  },
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

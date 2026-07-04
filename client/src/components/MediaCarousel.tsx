@@ -1,19 +1,31 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Play,
+} from "lucide-react";
 
 import { Media } from "@/types/media";
 
 interface Props {
   media: Media[];
   height?: string;
+
+  currentIndex?: number;
+  onChange?: (index: number) => void;
+
+  onOpenPlayer?: () => void;
 }
 
 export default function MediaCarousel({
   media,
   height = "h-72",
+  currentIndex,
+  onChange,
+  onOpenPlayer,
 }: Props) {
-  const [current, setCurrent] = useState(0);
+
 
   if (media.length === 0) {
     return (
@@ -24,18 +36,66 @@ export default function MediaCarousel({
       </div>
     );
   }
+  const [internalIndex, setInternalIndex] = useState(0);
 
-  const item = media[current];
+  const activeIndex =
+    currentIndex ?? internalIndex;
 
-  const previous = () =>
-    setCurrent((prev) =>
-      prev === 0 ? media.length - 1 : prev - 1
+  const safeIndex = Math.min(
+    Math.max(activeIndex, 0),
+    media.length - 1);
+
+  console.log("media:", media);
+  console.log("currentIndex:", currentIndex);
+  console.log("safeIndex:", safeIndex);
+  console.log("media length:", media.length);
+
+
+  const item = media[safeIndex];
+
+  if (!item) {
+    return (
+      <div
+        className={`${height} flex items-center justify-center bg-gray-100`}
+      >
+        Invalid Media
+      </div>
     );
+  }
 
-  const next = () =>
-    setCurrent((prev) =>
-      prev === media.length - 1 ? 0 : prev + 1
-    );
+  
+const previous = () => {
+  const newIndex =
+    safeIndex === 0
+      ? media.length - 1
+      : safeIndex - 1;
+
+  if (onChange) {
+    onChange(newIndex);
+  } else {
+    setInternalIndex(newIndex);
+  }
+};
+
+const next = () => {
+  const newIndex =
+    safeIndex === media.length - 1
+      ? 0
+      : safeIndex + 1;
+
+  if (onChange) {
+    onChange(newIndex);
+  } else {
+    setInternalIndex(newIndex);
+  }
+};
+
+  console.log({
+    media,
+    currentIndex,
+    safeIndex,
+    item,
+  });
 
   return (
     <div className={`relative w-full overflow-hidden ${height}`}>
@@ -46,15 +106,18 @@ export default function MediaCarousel({
           key={item.id}
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -30 }}
-          transition={{ duration: .25 }}
+          transition={{ duration: .15 }}
           className="h-full w-full"
         >
+
+
 
           {item.type === "image" ? (
 
             <img
               src={item.url}
+              onClick={onOpenPlayer}
+
               className="h-full w-full object-cover"
               alt=""
             />
@@ -65,6 +128,7 @@ export default function MediaCarousel({
 
               <video
                 src={item.url}
+                onClick={onOpenPlayer}
                 controls
                 className="h-full w-full object-cover"
               />
@@ -84,15 +148,22 @@ export default function MediaCarousel({
       {media.length > 1 && (
         <>
           <button
-            onClick={previous}
-            className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 backdrop-blur"
+            onClick={(e) => {
+              e.stopPropagation();
+              previous();
+
+            }}
+            className="absolute left-3 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/80 p-2 backdrop-blur"
           >
             <ChevronLeft size={18} />
           </button>
 
           <button
-            onClick={next}
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 backdrop-blur"
+            onClick={(e) => {
+              e.stopPropagation();
+              next();
+            }}
+            className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/80 p-2 backdrop-blur"
           >
             <ChevronRight size={18} />
           </button>
@@ -101,11 +172,10 @@ export default function MediaCarousel({
             {media.map((_, index) => (
               <div
                 key={index}
-                className={`h-2 rounded-full transition-all ${
-                  current === index
-                    ? "w-6 bg-white"
-                    : "w-2 bg-white/50"
-                }`}
+                className={`h-2 rounded-full transition-all ${safeIndex === index
+                  ? "w-6 bg-white"
+                  : "w-2 bg-white/50"
+                  }`}
               />
             ))}
           </div>

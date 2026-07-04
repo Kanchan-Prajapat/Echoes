@@ -1,25 +1,33 @@
-import {
-  ArrowLeft,
-  Heart,
-  MapPin,
-  CalendarDays,
-  Trash2,
-} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
+import {
+  ArrowLeft, Heart, CalendarDays, MapPin, Pencil, Trash2, ImagePlus, Play, Images, Video, Star, Trash,
+} from "lucide-react";
+
 import { Echo } from "@/types/echo";
+import { Media } from "@/types/media";
+
 import { useEchoStore } from "@/store/echoStore";
+
 import MediaCarousel from "./MediaCarousel";
+import EchoPlayer from "./EchoPlayer/EchoPlayer";
+import AddMediaModal from "./AddMediaModal";
 
 interface Props {
-  echo: Echo;
+  echoId: string;
   onBack: () => void;
+  onEdit: (echoId: string) => void;
 }
 
 export default function EchoDetailView({
-  echo,
+  echoId,
   onBack,
+  onEdit,
 }: Props) {
+
+  /* ---------------- Store ---------------- */
+
   const toggleFavorite = useEchoStore(
     (state) => state.toggleFavorite
   );
@@ -28,29 +36,128 @@ export default function EchoDetailView({
     (state) => state.deleteEcho
   );
 
+  const addMediaToEcho = useEchoStore(
+    (state) => state.addMediaToEcho
+  );
+
+  const echo = useEchoStore((state) =>
+    state.echoes.find((e) => e.id === echoId)
+  );
+
+  if (!echo) {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      Echo not found.
+    </div>
+  );
+}
+
+  const deleteMediaFromEcho =
+    useEchoStore(
+      (state) => state.deleteMediaFromEcho
+    );
+
+  const setCoverMedia =
+    useEchoStore(
+      (state) => state.setCoverMedia
+    );
+
+  /* ---------------- State ---------------- */
+
+  const [showPlayer, setShowPlayer] =
+    useState(false);
+
+
+  const [showAddMedia, setShowAddMedia] =
+    useState(false);
+
+  const [selectedMediaIndex, setSelectedMediaIndex] =
+    useState(0);
+
+ useEffect(() => {
+  console.log("Selected:", selectedMediaIndex);
+}, [selectedMediaIndex]);
+
+
+  /* ---------------- Derived Data ---------------- */
+
+  const imageCount = useMemo(
+    () =>
+      echo.media.filter(
+        (m) => m.type === "image"
+      ).length,
+    [echo.media]
+  );
+
+  const videoCount = useMemo(
+    () =>
+      echo.media.filter(
+        (m) => m.type === "video"
+      ).length,
+    [echo.media]
+  );
+
+
+
+
+  const coverMedia: Media =
+    echo.media.find(
+      (m) => m.id === echo.coverMediaId
+    ) ?? echo.media[0];
+
+  /* ---------------- Player ---------------- */
+
+  if (showPlayer) {
+    return (
+      <EchoPlayer
+        echo={echo}
+      initialIndex={selectedMediaIndex}
+        onClose={() =>
+          setShowPlayer(false)
+        }
+      />
+    );
+  }
   return (
     <main className="min-h-screen bg-[#F8F9FD] pb-10">
 
-      {/* Hero Image */}
+      {/* Hero */}
 
-      <div className="relative h-[45vh] w-full">
+      <section className="relative">
 
- <MediaCarousel
-    media={echo.media}
-    height="h-[45vh]"
+       
+    <MediaCarousel
+  media={echo.media}
+  height="h-[38vh]"
+  currentIndex={selectedMediaIndex}
+  onChange={setSelectedMediaIndex}
+  onOpenPlayer={() => setShowPlayer(true)}
 />
+        
 
+        {/* Gradient */}
 
-        <button
+        <div className="absolute inset-x-0 bottom-0 h-38 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+        {/* Back */}
+
+        <motion.button
+          whileTap={{ scale: 0.9 }}
           onClick={onBack}
           className="absolute left-5 top-5 rounded-full bg-white/90 p-3 backdrop-blur"
         >
           <ArrowLeft size={20} />
-        </button>
+        </motion.button>
 
-        <button
+        {/* Favorite */}
+
+        <motion.button
+          whileTap={{
+            scale: 1.2,
+            rotate: -15,
+          }}
           onClick={() => toggleFavorite(echo.id)}
-          className="absolute right-5 top-5 rounded-full bg-white/90 p-3 backdrop-blur"
+          className="absolute right-5 top-5 rounded-full bg-white/70 backdrop-blur-xl border border-white/20 text-white p-3 backdrop-blur"
         >
           <Heart
             size={20}
@@ -61,13 +168,35 @@ export default function EchoDetailView({
                 : "text-gray-700"
             }
           />
-        </button>
+        </motion.button>
 
-      </div>
+        {/* Counters */}
 
-      {/* Content */}
+        <div className="absolute bottom-5 left-5 flex gap-3">
 
-      <motion.div
+          <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-white backdrop-blur-xl">
+
+            <Images size={16} />
+
+            {imageCount}
+
+          </div>
+
+          <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-white backdrop-blur-xl">
+
+            <Video size={16} />
+
+            {videoCount}
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* Floating Info Card */}
+
+      <motion.section
         initial={{
           opacity: 0,
           y: 30,
@@ -76,20 +205,29 @@ export default function EchoDetailView({
           opacity: 1,
           y: 0,
         }}
-        className="px-6"
+        transition={{
+          duration: 0.4,
+        }}
+        className="-mt-2 relative z-20 mx-5 rounded-3xl bg-white p-6 shadow-[0_20px_60px_rgba(0,0,0,0.12)]"
       >
 
-        <h1 className="mt-8 text-4xl font-bold">
+        {/* Title */}
+
+        <h1 className="text-4xl font-bold text-gray-900">
+
           {echo.title}
+
         </h1>
 
-        <div className="mt-6 flex flex-wrap gap-4 text-gray-500">
+        {/* Date & Location */}
+
+        <div className="mt-6 flex flex-wrap gap-5 text-gray-500">
 
           <div className="flex items-center gap-2">
 
             <CalendarDays size={18} />
 
-            {echo.date}
+            <span>{echo.date}</span>
 
           </div>
 
@@ -97,15 +235,21 @@ export default function EchoDetailView({
 
             <MapPin size={18} />
 
-            {echo.location || "Unknown"}
+            <span>
+
+              {echo.location || "Unknown"}
+
+            </span>
 
           </div>
 
         </div>
 
+        {/* Mood */}
+
         <div className="mt-6">
 
-          <span className="rounded-full bg-violet-100 px-4 py-2 text-lg">
+          <span className="rounded-full bg-violet-100 px-5 py-2 text-base font-medium text-violet-700">
 
             {echo.mood}
 
@@ -113,33 +257,249 @@ export default function EchoDetailView({
 
         </div>
 
+        {/* ---------- MEDIA ---------- */}
+
         <div className="mt-10">
 
-          <h2 className="mb-4 text-2xl font-semibold">
-            Journal
-          </h2>
+          <div className="mb-5 flex items-center justify-between">
 
-          <p className="leading-8 text-gray-600">
+            <h2 className="text-2xl font-bold">
 
-            {echo.description || "No journal written."}
+              Media
 
-          </p>
+            </h2>
+
+            <button
+              onClick={() => {
+
+               setShowPlayer(true);
+                
+
+              }}
+              className="flex items-center gap-2 rounded-full bg-violet-100 px-4 py-2 text-violet-700 font-medium"            >
+
+              <Play
+                size={16}
+                fill="currentColor"
+              />
+
+              View Story
+
+            </button>
+
+          </div>
+
+          {/* Gallery */}
+
+          <div className="grid grid-cols-3 gap-3">
+
+            {echo.media.map((item, index) => (
+
+              <motion.div
+                key={item.id}
+                className="relative aspect-square overflow-hidden rounded-2xl"
+              >
+
+                <motion.div
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: .95 }}
+
+                  onClick={() => {
+
+                    setSelectedMediaIndex(index);
+
+
+                    setShowPlayer(true);
+
+                  }}
+
+                  className="h-full cursor-pointer"
+                >
+
+                  {item.type === "image" ? (
+
+                    <img
+                      src={item.url}
+                      className="h-full w-full object-cover"
+                    />
+
+                  ) : (
+
+                    <video
+                      src={item.url}
+                      muted
+                      className="h-full w-full object-cover"
+                    />
+
+                  )}
+
+                </motion.div>
+
+                {/* Delete */}
+
+                <button
+                
+                  onClick={(e) => {
+
+                    e.stopPropagation();
+
+                    if (confirm("Delete this media?")) {
+
+                      deleteMediaFromEcho(
+                        echo.id,
+                        item.id
+                      );
+
+                    }
+
+                  }}
+                  className="absolute right-2 top-2 z-30 rounded-full bg-red-500 p-1 text-white"
+                >
+                  <Trash2 size={14} />
+                </button>
+
+                {/* Cover */}
+
+                {echo.coverMediaId !== item.id && (
+
+                  <button
+                    onClick={(e) => {
+
+                      e.stopPropagation();
+
+                      setCoverMedia(
+                        echo.id,
+                        item.id
+                      );
+
+                    }}
+                    className="absolute bottom-2 right-2 z-30 rounded-full bg-white/80 p-1 backdrop-blur"
+                  >
+                    <Star size={14} />
+                  </button>
+
+                )}
+
+                {echo.coverMediaId === item.id && (
+
+                  <div className="absolute bottom-2 right-2 rounded-full bg-yellow-400 p-1">
+
+                    <Star
+                      size={14}
+                      fill="white"
+                    />
+
+                  </div>
+
+                )}
+
+              </motion.div>
+
+            ))}
+
+          </div>
 
         </div>
 
-        <button
-          onClick={() => {
-            deleteEcho(echo.id);
-            onBack();
-          }}
-          className="mt-12 flex w-full items-center justify-center gap-3 rounded-2xl bg-red-500 py-4 font-semibold text-white"
-        >
-          <Trash2 size={20} />
+        {/* ---------------- Journal ---------------- */}
 
-          Delete Memory
-        </button>
+        <div className="mt-10">
 
-      </motion.div>
+          <h2 className="mb-4 text-2xl font-bold">
+            Journal
+          </h2>
+
+          <div className="rounded-3xl bg-white leading-8 p-6 shadow-md ring-1 ring-gray-100">
+
+            <p className="whitespace-pre-wrap leading-8 text-gray-600">
+
+              {echo.description || "No journal written yet."}
+
+            </p>
+
+          </div>
+
+        </div>
+
+        {/* Divider */}
+
+        <div className="my-10 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+
+        {/* ---------------- Actions ---------------- */}
+
+        <div className="mb-10 flex gap-3 ">
+
+          {/* Edit */}
+
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => onEdit(echo.id)}
+            className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-violet-600 py-4 text-base font-semibold text-white shadow-lg"
+
+          >
+            <Pencil size={20} />
+            Edit
+          </motion.button>
+
+          {/* Add Media */}
+
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowAddMedia(true)}
+            className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-indigo-500 py-4 text-base font-semibold text-white shadow-lg"
+          >
+            <ImagePlus size={20} />
+            Add
+          </motion.button>
+
+          {/* Delete */}
+
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => {
+
+              const confirmDelete = window.confirm(
+                "Delete this memory permanently?"
+              );
+
+              if (!confirmDelete) return;
+
+              deleteEcho(echo.id);
+
+              onBack();
+
+            }}
+            className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-red-500 py-4 text-base font-semibold text-white shadow-lg"
+          >
+            <Trash2 size={20} />
+            Delete
+          </motion.button>
+
+        </div>
+
+      </motion.section>
+
+      {/* ---------------- Add Media Modal ---------------- */}
+
+      <AddMediaModal
+        open={showAddMedia}
+        onClose={() => setShowAddMedia(false)}
+        onSave={(media) => {
+
+          if (media.length === 0) return;
+
+          addMediaToEcho(
+            echo.id,
+            media
+          );
+
+          setShowAddMedia(false);
+
+        }}
+      />
 
     </main>
   );
