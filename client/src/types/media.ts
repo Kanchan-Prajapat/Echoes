@@ -9,5 +9,9 @@ export interface Media {
 
   thumbnail?: string;
 
+  file?: File;          
+
+  publicId?: string;   
+
   duration?: number;
 }

@@ -9,24 +9,13 @@ const upload = multer({
     fileSize: 50 * 1024 * 1024, // 50 MB
   },
 
-  fileFilter: (_req, file, cb) => {
-    const allowedMimeTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/jpg",
-      "image/webp",
+ fileFilter: (_req, file, cb) => {
 
-      "video/mp4",
-      "video/webm",
-      "video/quicktime",
-    ];
+  console.log("Incoming MIME:", file.mimetype);
 
-    if (allowedMimeTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Unsupported file type."));
-    }
-  },
+  cb(null, true);
+
+},
 });
 
 export default upload;

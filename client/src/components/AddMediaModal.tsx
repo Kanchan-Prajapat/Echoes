@@ -7,19 +7,14 @@ import { Media } from "@/types/media";
 interface Props {
 
     open: boolean;
-
     onClose: () => void;
-
     onSave: (media: Media[]) => void;
-
 }
 
 export default function AddMediaModal({
 
     open,
-
     onClose,
-
     onSave,
 
 }: Props) {
@@ -30,7 +25,6 @@ export default function AddMediaModal({
     const [media, setMedia] =
         useState<Media[]>([]);
 
-        
 
     if (!open) return null;
 
@@ -104,22 +98,14 @@ export default function AddMediaModal({
 
                         if (!e.target.files) return;
 
-                        const uploaded =
-                            Array.from(
-                                e.target.files
-                            ).map((file) => ({
-
-                                id: crypto.randomUUID(),
-
-                                url:
-                                    URL.createObjectURL(file),
-
-                                type:
-                                    file.type.startsWith("video")
-                                        ? "video"
-                                        : "image",
-
-                            }));
+                        const uploaded = Array.from(e.target.files).map((file) => ({
+                            id: crypto.randomUUID(),
+                            file,
+                            url: URL.createObjectURL(file),
+                            type: file.type.startsWith("video")
+                                ? "video"
+                                : "image",
+                        }));
 
                         setMedia(uploaded);
 
@@ -127,75 +113,75 @@ export default function AddMediaModal({
 
                 />
 
-               {media.length > 0 && (
+                {media.length > 0 && (
 
-<div className="mt-6">
+                    <div className="mt-6">
 
-    <p className="mb-3 font-medium">
+                        <p className="mb-3 font-medium">
 
-        Selected Media ({media.length})
+                            Selected Media ({media.length})
 
-    </p>
+                        </p>
 
-    <div className="grid grid-cols-3 gap-3">
+                        <div className="grid grid-cols-3 gap-3">
 
-        {media.map((item)=>(
+                            {media.map((item) => (
 
-            <div
-                key={item.id}
-                className="relative aspect-square overflow-hidden rounded-2xl"
-            >
+                                <div
+                                    key={item.id}
+                                    className="relative aspect-square overflow-hidden rounded-2xl"
+                                >
 
-                {item.type==="image" ? (
+                                    {item.type === "image" ? (
 
-                    <img
-                        src={item.url}
-                        className="h-full w-full object-cover"
-                    />
+                                        <img
+                                            src={item.url}
+                                            className="h-full w-full object-cover"
+                                        />
 
-                ) : (
+                                    ) : (
 
-                    <video
-                        src={item.url}
-                        className="h-full w-full object-cover"
-                    />
+                                        <video
+                                            src={item.url}
+                                            className="h-full w-full object-cover"
+                                        />
+
+                                    )}
+
+                                </div>
+
+                            ))}
+
+                        </div>
+
+                    </div>
 
                 )}
 
-            </div>
+                <div className="mt-8 flex gap-3">
 
-        ))}
+                    <button
+                        onClick={onClose}
+                        className="flex-1 rounded-2xl border border-gray-200 bg-white py-4 font-medium shadow-sm transition hover:bg-gray-50"
+                    >
+                        Cancel
+                    </button>
 
-    </div>
+                    <motion.button
+                        whileTap={{ scale: 0.97 }}
+                        disabled={media.length === 0}
+                        onClick={() => {
+                            onSave(media);
+                            setMedia([]);
+                            onClose();
+                        }}
+                        className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-violet-600 py-4 font-semibold text-white shadow-lg disabled:cursor-not-allowed disabled:bg-violet-300"
+                    >
+                        <Save size={18} />
+                        Add to Echo
+                    </motion.button>
 
-</div>
-
-)}
-
-               <div className="mt-8 flex gap-3">
-
-    <button
-        onClick={onClose}
-        className="flex-1 rounded-2xl border border-gray-200 bg-white py-4 font-medium shadow-sm transition hover:bg-gray-50"
-    >
-        Cancel
-    </button>
-
-    <motion.button
-        whileTap={{ scale: 0.97 }}
-        disabled={media.length === 0}
-        onClick={() => {
-            onSave(media);
-            setMedia([]);
-            onClose();
-        }}
-        className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-violet-600 py-4 font-semibold text-white shadow-lg disabled:cursor-not-allowed disabled:bg-violet-300"
-    >
-        <Save size={18} />
-        Add to Echo
-    </motion.button>
-
-</div>
+                </div>
 
             </motion.div>
 

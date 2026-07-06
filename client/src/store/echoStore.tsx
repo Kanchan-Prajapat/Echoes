@@ -31,6 +31,8 @@ setCoverMedia: (
   ) => void;
 
   markViewed: (id: string) => void;
+
+  setEchoes: (echoes: Echo[]) => void;
 }
 
 
@@ -39,6 +41,10 @@ export const useEchoStore = create<EchoStore>()(
   persist(
     (set) => ({
       echoes: [],
+      setEchoes: (echoes) =>
+  set({
+    echoes,
+  }),
 
       addEcho: (echo) =>
         set((state) => ({

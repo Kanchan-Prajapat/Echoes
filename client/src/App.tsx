@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useEffect } from "react";
+import { getEchoes } from "./services/echo.service";
+import { useEchoStore } from "./store/echoStore";
 
 import Splash from "./components/Splash";
 import Welcome from "./components/Welcome";
@@ -23,6 +26,25 @@ export default function App() {
   const [navigation, setNavigation] = useState<NavigationState>({
     screen: "home",
   });
+  const setEchoes = useEchoStore(
+  (state) => state.setEchoes
+);
+
+useEffect(() => {
+  async function loadEchoes() {
+    try {
+      const echoes = await getEchoes();
+
+      console.log("📦 Echoes from MongoDB", echoes);
+
+      setEchoes(echoes);
+    } catch (error) {
+      console.error("Failed to load echoes", error);
+    }
+  }
+
+  loadEchoes();
+}, [setEchoes]);
 
   if (loading) {
     return (

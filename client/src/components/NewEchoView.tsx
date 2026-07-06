@@ -6,8 +6,14 @@ import { useRef } from "react";
 import { Media } from "@/types/media";
 import MediaCarousel from "./MediaCarousel";
 import { Echo } from "@/types/echo";
+import { refreshEchoes } from "@/services/echoSync";
 import { format } from "date-fns";
 import CalendarModal from "@/components/Calendar/CalendarModal";
+import {
+    uploadMedia,
+    createEcho,
+    updateEcho as updateEchoApi,
+} from "@/services/echo.service";
 
 const moods = [
     "😊",
@@ -31,10 +37,7 @@ export default function NewEchoView({
     const editingEcho = useEchoStore((state) =>
         state.echoes.find((e) => e.id === editingEchoId)
     );
-    const addEcho =
-        useEchoStore(
-            (state) => state.addEcho
-        );
+
     const [selectedMood, setSelectedMood] = useState(
         editingEcho?.mood ?? "😊"
     );
@@ -64,10 +67,8 @@ export default function NewEchoView({
         editingEcho?.location ?? ""
     );
 
-    const updateEcho =
-        useEchoStore(
-            (state) => state.updateEcho
-        );
+    const [saving, setSaving] = useState(false);
+
 
     useEffect(() => {
         if (!editingEcho) return;
@@ -131,25 +132,26 @@ export default function NewEchoView({
                     accept="image/*,video/*"
                     type="file"
                     onChange={(e) => {
-
                         if (!e.target.files) return;
-
                         const files = Array.from(e.target.files);
-
-                        const uploadedMedia: Media[] = files.map(file => ({
-
+                        console.log(media);
+                        media.forEach((m) => {
+                            console.log(m.file);
+                        });
+                        const uploadedMedia: Media[] = files.map((file) => ({
                             id: crypto.randomUUID(),
-
                             type: file.type.startsWith("video")
                                 ? "video"
                                 : "image",
-
                             url: URL.createObjectURL(file),
-
+                            file,
                         }));
 
-                        setMedia(uploadedMedia);
+                        console.log("NEW MEDIA");
 
+                        console.log(uploadedMedia);
+
+                        setMedia(uploadedMedia);
                     }}
                 />
 
@@ -270,51 +272,128 @@ export default function NewEchoView({
             <div className="mt-10 px-6">
 
                 <motion.button
+                    disabled={saving}
                     whileTap={{ scale: .97 }}
-                    onClick={() => {
-
+                    onClick={async () => {
+                        console.log("===== SAVE CLICKED =====");
                         if (!title.trim()) {
                             alert("Please enter a title");
                             return;
                         }
 
-                        if (editingEcho) {
+                        try {
 
-                            updateEcho(editingEcho.id, {
-                                title,
-                                description,
-                                location,
-                                date,
-                                mood: selectedMood,
-                                media,
+                            setSaving(true);
+                            console.log("Saving started...");
+                            console.log("Media State:", media);
+                            media.forEach((m, i) => {
+                                console.log(
+                                    i,
+                                    m.file,
+                                    m.file?.name,
+                                    m.file instanceof File
+                                );
                             });
 
-                        } else {
+                            // Upload only new files
+                            console.log("Before upload");
+                            const uploadedMedia = await Promise.all(
 
-                            addEcho({
+                                media.map(async (item) => {
+                                    console.log("Current Item:", item);
+                                    console.log("File:", item.file);
+                                    if (!item.file) {
+                                        return item;
+                                    }
+                                    console.log("Calling uploadMedia...");
+                                    const uploaded = await uploadMedia(item.file);
 
-                                id: crypto.randomUUID(),
+                                    console.log("Uploaded =", uploaded);
+                                    console.log("UPLOADED RESPONSE");
+
+                                    if (!uploaded) {
+                                        throw new Error("uploadMedia returned undefined");
+                                    }
+
+                                    return {
+
+                                        ...item,
+
+                                        url: uploaded.url,
+                                        publicId: uploaded.publicId,
+                                        file: undefined,
+                                    };
+                                    console.log("Cloudinary Response:", uploaded);
+                                })
+
+                            );
+
+
+                            const payload = {
+
                                 title,
+
                                 description,
-                                media,
+
                                 date,
+
                                 location,
+
                                 mood: selectedMood,
-                                favorite: false,
-                                createdAt: new Date().toISOString(),
-                                updatedAt: new Date().toISOString(),
-                                lastViewedIndex: 0,
-                                viewed: false,
-                            });
+
+                                favorite: editingEcho?.favorite ?? false,
+
+                                coverMediaId:
+                                    uploadedMedia[0]?.id ?? "",
+
+                                media: uploadedMedia.map(
+                                    ({
+                                        id,
+                                        file,
+                                        thumbnail,
+                                        duration,
+                                        ...rest
+                                    }) => rest
+                                ),
+
+                            };
+
+
+                            console.log("========== Uploaded Media ==========");
+                            console.log(uploadedMedia);
+
+                            console.log("========== Payload ==========");
+                            console.log(payload);
+
+                            if (editingEcho) {
+
+                                await updateEchoApi(
+                                    editingEcho.id,
+                                    payload
+                                );
+                            } else {
+
+                                await createEcho(payload);
+                            }
+                            await refreshEchoes();
+                            onSaved();
+                        } catch (error) {
+
+                            console.error(error);
+                            alert("Failed to save Echo.");
+
+                        } finally {
+
+                            setSaving(false);
+
                         }
 
-                        onSaved();
                     }}
                     className="flex w-full items-center justify-center gap-3 rounded-2xl bg-violet-600 py-4 text-lg font-semibold text-white shadow-xl"
                 >
                     <Save size={20} />
 
-                    {editingEcho ? "Update Echo" : "Save Echo"}
+                    {saving ? "Saving..." : editingEcho ? "Update Echo" : "Save Echo"}
 
                 </motion.button>
 

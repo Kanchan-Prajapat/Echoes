@@ -14,6 +14,17 @@ import MediaCarousel from "./MediaCarousel";
 import EchoPlayer from "./EchoPlayer/EchoPlayer";
 import AddMediaModal from "./AddMediaModal";
 
+import {
+  deleteEcho as deleteEchoApi,
+  toggleFavorite as toggleFavoriteApi,
+  addMediaToEcho as addMediaToEchoApi,
+  deleteMediaFromEcho as deleteMediaApi,
+  setCoverMedia as setCoverMediaApi,
+  uploadMedia,
+} from "@/services/echo.service";
+
+import { refreshEchoes } from "@/services/echoSync";
+
 interface Props {
   echoId: string;
   onBack: () => void;
@@ -28,39 +39,12 @@ export default function EchoDetailView({
 
   /* ---------------- Store ---------------- */
 
-  const toggleFavorite = useEchoStore(
-    (state) => state.toggleFavorite
-  );
-
-  const deleteEcho = useEchoStore(
-    (state) => state.deleteEcho
-  );
-
-  const addMediaToEcho = useEchoStore(
-    (state) => state.addMediaToEcho
-  );
 
   const echo = useEchoStore((state) =>
     state.echoes.find((e) => e.id === echoId)
   );
 
-  if (!echo) {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      Echo not found.
-    </div>
-  );
-}
 
-  const deleteMediaFromEcho =
-    useEchoStore(
-      (state) => state.deleteMediaFromEcho
-    );
-
-  const setCoverMedia =
-    useEchoStore(
-      (state) => state.setCoverMedia
-    );
 
   /* ---------------- State ---------------- */
 
@@ -74,36 +58,53 @@ export default function EchoDetailView({
   const [selectedMediaIndex, setSelectedMediaIndex] =
     useState(0);
 
- useEffect(() => {
-  console.log("Selected:", selectedMediaIndex);
-}, [selectedMediaIndex]);
+  useEffect(() => {
+    if (!echo) {
+      onBack();
+    }
+  }, [echo]);
+
+  useEffect(() => {
+    console.log(selectedMediaIndex);
+  }, [selectedMediaIndex]);
+
 
 
   /* ---------------- Derived Data ---------------- */
 
-  const imageCount = useMemo(
-    () =>
-      echo.media.filter(
-        (m) => m.type === "image"
-      ).length,
-    [echo.media]
-  );
+  const imageCount = useMemo(() => {
+    if (!echo) return 0;
 
-  const videoCount = useMemo(
-    () =>
-      echo.media.filter(
-        (m) => m.type === "video"
-      ).length,
-    [echo.media]
-  );
+    return echo.media.filter(
+      (m) => m.type === "image"
+    ).length;
+  }, [echo]);
+
+  const videoCount = useMemo(() => {
+    if (!echo) return 0;
+
+    return echo.media.filter(
+      (m) => m.type === "video"
+    ).length;
+  }, [echo]);
+
+  if (!echo) {
+    return (
+      <div>
+        Echo not found
+      </div>
+    );
+  }
+
+ const coverMedia =
+  echo.media.find(
+    (m) => m.publicId === echo.coverMediaId
+  ) ?? echo.media[0];
 
 
-
-
-  const coverMedia: Media =
-    echo.media.find(
-      (m) => m.id === echo.coverMediaId
-    ) ?? echo.media[0];
+  const coverIndex = echo.media.findIndex(
+  m => m.publicId === echo.coverMediaId
+);
 
   /* ---------------- Player ---------------- */
 
@@ -111,13 +112,15 @@ export default function EchoDetailView({
     return (
       <EchoPlayer
         echo={echo}
-      initialIndex={selectedMediaIndex}
+        initialIndex={selectedMediaIndex}
         onClose={() =>
           setShowPlayer(false)
         }
       />
     );
   }
+
+
   return (
     <main className="min-h-screen bg-[#F8F9FD] pb-10">
 
@@ -125,15 +128,16 @@ export default function EchoDetailView({
 
       <section className="relative">
 
-       
+
     <MediaCarousel
-  media={echo.media}
-  height="h-[38vh]"
-  currentIndex={selectedMediaIndex}
-  onChange={setSelectedMediaIndex}
-  onOpenPlayer={() => setShowPlayer(true)}
-/>
-        
+    media={echo.media}
+    coverMediaId={echo.coverMediaId}
+          height="h-[38vh]"
+          currentIndex={selectedMediaIndex}
+          onChange={setSelectedMediaIndex}
+          onOpenPlayer={() => setShowPlayer(true)}
+        />
+
 
         {/* Gradient */}
 
@@ -156,7 +160,21 @@ export default function EchoDetailView({
             scale: 1.2,
             rotate: -15,
           }}
-          onClick={() => toggleFavorite(echo.id)}
+          onClick={async () => {
+            try {
+
+              await toggleFavoriteApi(echo.id);
+
+              await refreshEchoes();
+
+            } catch (error) {
+
+              console.error(error);
+
+              alert("Failed to update favorite.");
+
+            }
+          }}
           className="absolute right-5 top-5 rounded-full bg-white/70 backdrop-blur-xl border border-white/20 text-white p-3 backdrop-blur"
         >
           <Heart
@@ -272,8 +290,8 @@ export default function EchoDetailView({
             <button
               onClick={() => {
 
-               setShowPlayer(true);
-                
+                setShowPlayer(true);
+
 
               }}
               className="flex items-center gap-2 rounded-full bg-violet-100 px-4 py-2 text-violet-700 font-medium"            >
@@ -294,30 +312,20 @@ export default function EchoDetailView({
           <div className="grid grid-cols-3 gap-3">
 
             {echo.media.map((item, index) => (
-
               <motion.div
                 key={item.id}
                 className="relative aspect-square overflow-hidden rounded-2xl"
               >
-
                 <motion.div
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: .95 }}
-
                   onClick={() => {
-
                     setSelectedMediaIndex(index);
-
-
                     setShowPlayer(true);
-
                   }}
-
-                  className="h-full cursor-pointer"
+                className="h-full cursor-pointer"
                 >
-
                   {item.type === "image" ? (
-
                     <img
                       src={item.url}
                       className="h-full w-full object-cover"
@@ -338,21 +346,30 @@ export default function EchoDetailView({
                 {/* Delete */}
 
                 <button
-                
-                  onClick={(e) => {
+
+                  onClick={async (e) => {
 
                     e.stopPropagation();
+                    if (!confirm("Delete this media?")) {
+                      return;
+                    }
 
-                    if (confirm("Delete this media?")) {
-
-                      deleteMediaFromEcho(
+                    try {
+                      await deleteMediaApi(
                         echo.id,
-                        item.id
+                        item.publicId!
                       );
+                      await refreshEchoes();
+                    } catch (error) {
+                      console.error(error);
+
+                      alert("Failed to delete media.");
 
                     }
 
                   }}
+
+
                   className="absolute right-2 top-2 z-30 rounded-full bg-red-500 p-1 text-white"
                 >
                   <Trash2 size={14} />
@@ -360,19 +377,35 @@ export default function EchoDetailView({
 
                 {/* Cover */}
 
-                {echo.coverMediaId !== item.id && (
+                {echo.coverMediaId !== item.publicId && (
 
                   <button
-                    onClick={(e) => {
-
+                    onClick={async (e) => {
                       e.stopPropagation();
 
-                      setCoverMedia(
-                        echo.id,
-                        item.id
-                      );
+                      console.log("⭐ STAR CLICKED");
+                      console.log("Echo ID:", echo.id);
+                      console.log("Item:", item);
+                      console.log("PublicId:", item.publicId);
+                      try {
+                        await setCoverMediaApi(
+                          echo.id,
+                          item.publicId!
+                        );
 
+                        console.log("PATCH SUCCESS");
+
+                        await refreshEchoes();
+
+                      } catch (err) {
+
+                        console.log("PATCH FAILED");
+
+                        console.error(err);
+
+                      }
                     }}
+
                     className="absolute bottom-2 right-2 z-30 rounded-full bg-white/80 p-1 backdrop-blur"
                   >
                     <Star size={14} />
@@ -380,7 +413,7 @@ export default function EchoDetailView({
 
                 )}
 
-                {echo.coverMediaId === item.id && (
+                {echo.coverMediaId === item.publicId && (
 
                   <div className="absolute bottom-2 right-2 rounded-full bg-yellow-400 p-1">
 
@@ -459,7 +492,7 @@ export default function EchoDetailView({
           <motion.button
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => {
+            onClick={async () => {
 
               const confirmDelete = window.confirm(
                 "Delete this memory permanently?"
@@ -467,11 +500,24 @@ export default function EchoDetailView({
 
               if (!confirmDelete) return;
 
-              deleteEcho(echo.id);
+              try {
 
-              onBack();
+                await deleteEchoApi(echo.id);
+
+                await refreshEchoes();
+
+                onBack();
+
+              } catch (error) {
+
+                console.error(error);
+
+                alert("Failed to delete Echo.");
+
+              }
 
             }}
+
             className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-red-500 py-4 text-base font-semibold text-white shadow-lg"
           >
             <Trash2 size={20} />
@@ -487,16 +533,50 @@ export default function EchoDetailView({
       <AddMediaModal
         open={showAddMedia}
         onClose={() => setShowAddMedia(false)}
-        onSave={(media) => {
+        onSave={async (media) => {
 
           if (media.length === 0) return;
 
-          addMediaToEcho(
-            echo.id,
-            media
-          );
+          try {
 
-          setShowAddMedia(false);
+            const uploadedMedia = await Promise.all(
+
+              media.map(async (item) => {
+
+                if (!item.file) {
+                  return item;
+                }
+                const uploaded = await uploadMedia(item.file);
+
+                return {
+                  url: uploaded.url,
+                  publicId: uploaded.publicId,
+                  type: uploaded.type,
+                };
+              })
+            );
+
+            console.log("UPLOADED MEDIA");
+            console.log(uploadedMedia);
+
+            await addMediaToEchoApi(
+              echo.id,
+              uploadedMedia
+            );
+
+            await refreshEchoes();
+            setShowAddMedia(false);
+
+          } catch (error: any) {
+            console.log("ADD MEDIA ERROR");
+            console.log(error);
+
+            console.log(error.response);
+
+            console.log(error.response?.data);
+
+            alert("Failed to add media.");
+          }
 
         }}
       />
