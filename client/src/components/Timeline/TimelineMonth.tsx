@@ -1,17 +1,19 @@
-import TimelineCard from "./TimelineCard";
-import TimelineLine from "./TimelineLine";
-import { useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ChevronDown,
+  CalendarDays,
+} from "lucide-react";
 
 import { Echo } from "@/types/echo";
-import { AnimatePresence, motion } from "framer-motion";
+
+import TimelineLine from "./TimelineLine";
+import TimelineCard from "./TimelineCard";
 
 interface Props {
   month: string;
   echoes: Echo[];
 
   expanded: boolean;
-
   onToggle: () => void;
 
   onOpen: (echo: Echo) => void;
@@ -26,96 +28,138 @@ export default function TimelineMonth({
 }: Props) {
 
   return (
-    <section className="mb-12">
 
-      {/* Month Heading */}
-      <button
-        onClick={onToggle}
-        className="mb-6 flex w-full items-center justify-between rounded-2xl bg-white px-5 py-4 shadow"
-      >
+    <section className="relative">
 
-        <div className="flex items-center gap-3">
+      <div className="flex gap-6">
 
-          {expanded ? (
-            <ChevronDown size={18} />
-          ) : (
-            <ChevronRight size={18} />
-          )}
+        {/* Timeline Line */}
 
-          <h2 className="font-bold text-violet-700">
-            {month}
-          </h2>
+        <TimelineLine />
 
-        </div>
+        <div className="flex-1">
 
-        <span className="rounded-full bg-violet-100 px-3 py-1 text-sm text-violet-700">
+          {/* Month Header */}
 
-          {echoes.length}
-
-        </span>
-
-      </button>
-      {/* Timeline */}
-
-      <AnimatePresence>
-
-        {expanded && (
-
-          <motion.div
-
-            initial={{
-              height: 0,
-              opacity: 0
+          <motion.button
+            whileTap={{
+              scale: .98,
             }}
-
-            animate={{
-              height: "auto",
-              opacity: 1
-            }}
-
-            exit={{
-              height: 0,
-              opacity: 0
-            }}
-
-            transition={{
-              duration: .35
-            }}
-
-            className="overflow-hidden space-y-8"
+            onClick={onToggle}
+            className="
+              flex
+              w-full
+              items-center
+              justify-between
+              rounded-3xl
+              bg-white
+              px-6
+              py-5
+              shadow-md
+              transition
+              hover:shadow-lg
+            "
           >
 
-            {echoes.map((echo, index) => (
+            <div>
 
-              <div
-                key={echo.id}
-            className="flex items-start gap-6"
+              <div className="flex items-center gap-2">
+
+                <CalendarDays
+                  size={18}
+                  className="text-violet-600"
+                />
+
+                <h2 className="text-2xl font-bold">
+
+                  {month}
+
+                </h2>
+
+              </div>
+
+              <p className="mt-2 text-sm text-gray-500">
+
+                {echoes.length}
+                {" "}
+                {echoes.length === 1
+                  ? "memory"
+                  : "memories"}
+
+              </p>
+
+            </div>
+
+            <motion.div
+              animate={{
+                rotate: expanded
+                  ? 180
+                  : 0,
+              }}
+              transition={{
+                duration: .25,
+              }}
+            >
+
+              <ChevronDown
+                size={22}
+              />
+
+            </motion.div>
+
+          </motion.button>
+
+          {/* Cards */}
+
+          <AnimatePresence>
+
+            {expanded && (
+
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  height: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                  height: "auto",
+                }}
+                exit={{
+                  opacity: 0,
+                  height: 0,
+                }}
+                transition={{
+                  duration: .3,
+                }}
+                className="
+                  mt-6
+                  space-y-6
+                  overflow-hidden
+                "
               >
 
-              
-  <TimelineLine
-    last={index === echoes.length - 1}
-  />
-
-                <div className="flex-1">
+                {echoes.map((echo) => (
 
                   <TimelineCard
+                    key={echo.id}
                     echo={echo}
                     onOpen={onOpen}
                   />
 
-                </div>
+                ))}
 
-              </div>
+              </motion.div>
 
-            ))}
+            )}
 
-          </motion.div>
+          </AnimatePresence>
 
-        )}
+        </div>
 
-      </AnimatePresence>
+      </div>
 
     </section>
+
   );
+
 }

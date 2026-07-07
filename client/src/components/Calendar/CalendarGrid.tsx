@@ -1,12 +1,15 @@
-import { format } from "date-fns";
-import { Echo } from "@/types/echo";
+import { motion } from "framer-motion";
+
 import CalendarDay from "./CalendarDay";
+
+import { Echo } from "@/types/echo";
 
 interface Props {
   days: Date[];
   currentMonth: Date;
   selectedDate: Date;
   echoes: Echo[];
+
   onSelect: (date: Date) => void;
 }
 
@@ -28,38 +31,93 @@ export default function CalendarGrid({
   onSelect,
 }: Props) {
   return (
-    <>
-      {/* Week Days */}
 
-      <div className="mb-3 grid grid-cols-7">
+    <div>
+
+      {/* Week Header */}
+
+      <div
+        className="
+          mb-4
+          grid
+          grid-cols-7
+          gap-2
+        "
+      >
+
         {weekDays.map((day) => (
+
           <div
             key={day}
-            className="py-2 text-center text-sm font-semibold text-gray-400"
+            className="
+              text-center
+              text-xs
+              font-bold
+              uppercase
+              tracking-wider
+              text-gray-400
+            "
           >
             {day}
           </div>
+
         ))}
+
       </div>
 
       {/* Calendar */}
 
-      <div className="grid grid-cols-7 gap-2">
+      <motion.div
 
-        {days.map((date) => (
+        layout
 
-          <CalendarDay
-            key={date.toISOString()}
-            date={date}
-            currentMonth={currentMonth}
-            selectedDate={selectedDate}
-            echoes={echoes}
-            onSelect={onSelect}
-          />
+        className="
+          grid
+          grid-cols-7
+          gap-2
+        "
+
+      >
+
+        {days.map((day) => (
+
+          <motion.div
+
+            key={day.toISOString()}
+
+            layout
+
+            initial={{
+              opacity: 0,
+              scale: .9,
+            }}
+
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+
+            transition={{
+              duration: .22,
+            }}
+
+          >
+
+            <CalendarDay
+              date={day}
+              currentMonth={currentMonth}
+              selectedDate={selectedDate}
+              echoes={echoes}
+              onSelect={onSelect}
+            />
+
+          </motion.div>
 
         ))}
 
-      </div>
-    </>
+      </motion.div>
+
+    </div>
+
   );
 }

@@ -22,7 +22,7 @@ export default function StoryMedia({
   const [loaded, setLoaded] = useState(false);
   const [showHeart, setShowHeart] = useState(false);
 
-  
+
 
   /* ---------------- Pause / Resume Video ---------------- */
 
@@ -53,15 +53,15 @@ export default function StoryMedia({
 
   const handleDoubleClick = () => {
 
-  setShowHeart(true);
+    setShowHeart(true);
 
-  setTimeout(() => {
+    setTimeout(() => {
 
-    setShowHeart(false);
+      setShowHeart(false);
 
-  }, 900);
+    }, 900);
 
-};
+  };
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-black">
@@ -86,13 +86,24 @@ export default function StoryMedia({
         />
       )}
 
-      <div className="absolute inset-0 bg-black/40" />
+      <div
+        className="
+    absolute
+    inset-0
+    bg-gradient-to-b
+    from-black/25
+    via-black/40
+    to-black/75
+  "
+      />
+
+      <div className="absolute inset-0 backdrop-blur-sm" />
       {!loaded && (
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-black">
 
           <motion.div
-           onDoubleClick={handleDoubleClick}
-  key={media.id}
+            onDoubleClick={handleDoubleClick}
+            key={media.id}
             animate={{
               rotate: 360,
             }}
@@ -101,7 +112,15 @@ export default function StoryMedia({
               duration: 1,
               ease: "linear",
             }}
-            className="h-10 w-10 rounded-full border-4 border-violet-500 border-t-transparent"
+            className="
+  h-14
+  w-14
+  rounded-full
+  border-[5px]
+  border-violet-500
+  border-t-transparent
+  shadow-[0_0_35px_rgba(139,92,246,.6)]
+"
           />
 
         </div>
@@ -112,17 +131,34 @@ export default function StoryMedia({
       <motion.div
         key={media.id}
         initial={{
-          opacity: 0
+          opacity: 0,
+          scale: 0.96,
         }}
 
         animate={{
-          opacity: 1
+          opacity: 1,
+          scale: 1,
         }}
+
+        exit={{
+          opacity: 0,
+          scale: 1.03,
+        }}
+
         transition={{
-          duration: 0.28,
-          ease: "easeOut"
+          duration: .45,
+          ease: "easeOut",
         }}
-        className="relative flex h-full w-full items-center justify-center"
+        className="
+relative
+flex
+h-full
+w-full
+items-center
+justify-center
+px-6
+py-10
+"
       >
         {media.type === "image" ? (
           <img
@@ -130,7 +166,14 @@ export default function StoryMedia({
             onLoad={() => setLoaded(true)}
             alt=""
             draggable={false}
-            className="max-h-full max-w-full object-contain select-none"
+            className="
+  max-h-[92vh]
+  max-w-full
+  rounded-2xl
+  object-contain
+  shadow-2xl
+  select-none
+"
           />
         ) : (
           <video
@@ -142,7 +185,13 @@ export default function StoryMedia({
             playsInline
             controls={false}
             muted
-            className="max-h-full max-w-full object-contain"
+            className="
+  max-h-[92vh]
+  max-w-full
+  rounded-2xl
+  object-contain
+  shadow-2xl
+"
 
             onEnded={onNext}
 
@@ -163,58 +212,61 @@ export default function StoryMedia({
 
       <AnimatePresence>
 
-  {showHeart && (
+        {showHeart && (
 
-    <motion.div
+          <motion.div
 
-      initial={{
-        scale: 0,
-        opacity: 0,
-      }}
+            initial={{
+              scale: 0,
+              opacity: 0,
+            }}
 
-      animate={{
-        scale: 1,
-        opacity: 1,
-      }}
+            animate={{
+              scale: 1,
+              opacity: 1,
+            }}
 
-      exit={{
-        scale: 1.8,
-        opacity: 0,
-      }}
+            exit={{
+              scale: 1.8,
+              opacity: 0,
+            }}
 
-      transition={{
-        type: "spring",
-        stiffness: 300,
-        damping: 18,
-      }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 18,
+            }}
 
-      className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center"
+            className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center"
 
-    >
+          >
 
-      <motion.div
+            <motion.div
 
-        animate={{
-          y: [-10, -25],
-        }}
+              animate={{
+                y: [-5, -30],
+                scale: [1, 1.2, 1],
+              }}
 
-        transition={{
-          duration: .8,
-        }}
+              transition={{
+                duration: .8,
+              }}
+              className="
+  text-[90px]
+  drop-shadow-[0_0_25px_rgba(255,0,90,.6)]
+"
 
-        className="text-8xl drop-shadow-2xl"
+            >
 
-      >
+              ❤️
 
-        ❤️
+            </motion.div>
 
-      </motion.div>
+          </motion.div>
 
-    </motion.div>
+        )}
 
-  )}
-
-</AnimatePresence>
+      </AnimatePresence>
 
       {/* Pause Overlay */}
 
@@ -236,7 +288,15 @@ export default function StoryMedia({
               scale: 1,
             }}
 
-            className=" rounded-full bg-white/10 backdrop-blur-xl border border-white/20 p-8 shadow-2xl "          >
+            className="
+rounded-full
+border
+border-white/20
+bg-white/10
+backdrop-blur-2xl
+p-8
+shadow-[0_0_40px_rgba(255,255,255,.15)]
+"        >
             <span className="text-5xl text-white">
 
               ⏸

@@ -1,106 +1,130 @@
-import { useEchoStore } from "@/store/echoStore";
+import {
+  Images,
+  Video,
+  Heart,
+  BookOpen,
+} from "lucide-react";
 
-export default function QuickStats() {
+import Section from "@/styles/Section";
+import Card from "@/styles/Card";
 
-    const echoes = useEchoStore(
-        state => state.echoes
-    );
+import { Echo } from "@/types/echo";
 
-    const photos = echoes.reduce(
-        (a, e) => a + e.media.filter(
-            m => m.type === "image"
+interface Props {
+  echoes: Echo[];
+}
+
+export default function QuickStats({
+  echoes,
+}: Props) {
+
+  const totalEchoes =
+    echoes.length;
+
+  const totalImages =
+    echoes.reduce(
+      (sum, echo) =>
+        sum +
+        echo.media.filter(
+          (m) => m.type === "image"
         ).length,
-        0
+      0
     );
 
-    const videos = echoes.reduce(
-        (a, e) => a + e.media.filter(
-            m => m.type === "video"
+  const totalVideos =
+    echoes.reduce(
+      (sum, echo) =>
+        sum +
+        echo.media.filter(
+          (m) => m.type === "video"
         ).length,
-        0
+      0
     );
 
-    const favorites = echoes.filter(
-        e => e.favorite
+  const favorites =
+    echoes.filter(
+      (e) => e.favorite
     ).length;
 
-    const places = new Set(
-        echoes.map(e => e.location)
-    ).size;
+  const stats = [
 
-    const stats = [
+    {
+      title: "Echoes",
+      value: totalEchoes,
+      icon: BookOpen,
+    },
 
-        {
-            title: "Photos",
-            value: photos,
-            icon: "📷",
-        },
+    {
+      title: "Photos",
+      value: totalImages,
+      icon: Images,
+    },
 
-        {
-            title: "Videos",
-            value: videos,
-            icon: "🎥",
-        },
+    {
+      title: "Videos",
+      value: totalVideos,
+      icon: Video,
+    },
 
-        {
-            title: "Places",
-            value: places,
-            icon: "📍",
-        },
+    {
+      title: "Favorites",
+      value: favorites,
+      icon: Heart,
+    },
 
-        {
-            title: "Favorites",
-            value: favorites,
-            icon: "❤️",
-        },
+  ];
 
-    ];
+  return (
 
-    return (
+    <Section title="Your Memory Shelf">
 
-        <section className="mt-10">
+      <div
+        className="
+          grid
+          grid-cols-2
+          gap-4
+          lg:grid-cols-4
+        "
+      >
 
-            <h2 className="mb-5 text-2xl font-bold">
+        {stats.map((item) => {
 
-                Quick Stats
+          const Icon = item.icon;
 
-            </h2>
+          return (
 
-            <div className="grid grid-cols-2 gap-4">
+            <Card
+              key={item.title}
+              hover
+            >
 
-                {stats.map(stat => (
+              <Icon
+                size={22}
+                className="text-violet-600"
+              />
 
-                    <div
-                        key={stat.title}
-                        className="rounded-3xl bg-white p-5 shadow-md"
-                    >
+              <h2 className="mt-4 text-3xl font-bold">
 
-                        <p className="text-3xl">
+                {item.value}
 
-                            {stat.icon}
+              </h2>
 
-                        </p>
+              <p className="mt-1 text-sm text-gray-500">
 
-                        <h3 className="mt-3 text-3xl font-black">
+                {item.title}
 
-                            {stat.value}
+              </p>
 
-                        </h3>
+            </Card>
 
-                        <p className="mt-1 text-gray-500">
+          );
 
-                            {stat.title}
+        })}
 
-                        </p>
+      </div>
 
-                    </div>
+    </Section>
 
-                ))}
-
-            </div>
-
-        </section>
-
-    );
+  );
 
 }

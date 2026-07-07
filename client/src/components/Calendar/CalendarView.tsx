@@ -1,10 +1,13 @@
 import { useMemo, useState } from "react";
 import { format, isSameDay } from "date-fns";
-
-import Calendar from "./Calendar";
+import { CalendarDays } from "lucide-react";
 
 import { Echo } from "@/types/echo";
 import { useEchoStore } from "@/store/echoStore";
+
+import AppContainer from "@/styles/AppContainer";
+
+import Calendar from "./Calendar";
 import CalendarBottomSheet from "./CalendarBottomSheet";
 
 interface Props {
@@ -22,10 +25,12 @@ export default function CalendarView({
   const [selectedDate, setSelectedDate] =
     useState(new Date());
 
-    const [sheetOpen, setSheetOpen] =
-  useState(false);
+  const [showSheet, setShowSheet] =
+    useState(false);
 
-  const todaysEchoes = useMemo(() => {
+  /* ---------- Selected Day Echoes ---------- */
+
+  const selectedEchoes = useMemo(() => {
 
     return echoes.filter((echo) =>
       isSameDay(
@@ -38,160 +43,124 @@ export default function CalendarView({
 
   return (
 
-    <main className="min-h-screen bg-[#F8F9FD] pb-32">
+    <AppContainer className="py-8">
 
       {/* Header */}
 
-      <div className="px-6 pt-8">
+      <header className="mb-8">
 
-        <h1 className="text-5xl font-black">
-
+        <p
+          className="
+            text-xs
+            font-bold
+            uppercase
+            tracking-[0.28em]
+            text-violet-600
+          "
+        >
           Calendar
-
-        </h1>
-
-        <p className="mt-3 text-lg text-gray-500">
-
-          Browse your memories by date.
-
         </p>
 
-      </div>
+        <h1
+          className="
+            mt-2
+            text-4xl
+            font-black
+            text-gray-900
+          "
+        >
+          Your Memories
+        </h1>
 
-      {/* Calendar */}
+        <p
+          className="
+            mt-3
+            max-w-md
+            text-gray-500
+          "
+        >
+          Browse your memories day by day.
+        </p>
 
-      <div className="mt-8 px-5">
+      </header>
 
-     <Calendar
-    value={selectedDate}
-    onChange={(date) => {
-        setSelectedDate(date);
-        setSheetOpen(true);
-    }}
-/>
+      {/* Calendar Card */}
 
-      </div>
+      <Calendar
+        value={selectedDate}
+        onChange={(date) => {
 
-      {/* Selected Date */}
+          setSelectedDate(date);
 
-      <div className="mt-10 px-6">
+          setShowSheet(true);
 
-        <h2 className="mb-5 text-2xl font-bold">
+        }}
+      />
 
-          {format(
-            selectedDate,
-            "dd MMMM yyyy"
-          )}
+      {/* Quick Summary */}
 
-        </h2>
+      <div
+        className="
+          mt-8
+          rounded-3xl
+          bg-white
+          p-6
+          shadow-lg
+        "
+      >
 
-        {todaysEchoes.length === 0 ? (
+        <div className="flex items-center gap-3">
 
-          <div className="rounded-3xl bg-white py-12 text-center shadow">
+          <CalendarDays
+            className="text-violet-600"
+          />
 
-            <div className="text-5xl">
+          <div>
 
-              📅
+            <h3 className="font-bold">
 
-            </div>
-
-            <h3 className="mt-4 text-xl font-bold">
-
-              No Memories
+              {format(
+                selectedDate,
+                "dd MMMM yyyy"
+              )}
 
             </h3>
 
-            <p className="mt-2 text-gray-500">
+            <p className="text-sm text-gray-500">
 
-              No Echo found for this day.
+              {selectedEchoes.length}
+
+              {selectedEchoes.length === 1
+                ? " memory"
+                : " memories"}
 
             </p>
 
           </div>
 
-        ) : (
-
-          <div className="space-y-5">
-
-            {todaysEchoes.map((echo) => {
-
-              const cover =
-                echo.media.find(
-                  (m) =>
-                    m.id ===
-                    echo.coverMediaId
-                ) ?? echo.media[0];
-
-              return (
-
-                <button
-                  key={echo.id}
-                  onClick={() =>
-                    onOpenEcho(echo)
-                  }
-                  className="flex w-full gap-4 rounded-3xl bg-white p-4 text-left shadow transition hover:shadow-lg"
-                >
-
-                  {cover?.type ===
-                  "image" ? (
-
-                    <img
-                      src={cover.url}
-                      className="h-20 w-20 rounded-2xl object-cover"
-                    />
-
-                  ) : (
-
-                    <video
-                      src={cover?.url}
-                      className="h-20 w-20 rounded-2xl object-cover"
-                    />
-
-                  )}
-
-                  <div className="flex-1">
-
-                    <h3 className="text-lg font-bold">
-
-                      {echo.title}
-
-                    </h3>
-
-                    <p className="mt-2 text-gray-500">
-
-                      {echo.location}
-
-                    </p>
-
-                    <p className="mt-1 text-sm">
-
-                      {echo.mood}
-
-                    </p>
-
-                  </div>
-
-                </button>
-
-              );
-
-            })}
-
-          </div>
-
-        )}
+        </div>
 
       </div>
 
-      <CalendarBottomSheet
-    open={sheetOpen}
-    date={selectedDate}
-    echoes={todaysEchoes}
-    onClose={() => setSheetOpen(false)}
-    onOpenEcho={onOpenEcho}
-/>
+      {/* Bottom Sheet */}
 
-    </main>
+      <CalendarBottomSheet
+
+        open={showSheet}
+
+        date={selectedDate}
+
+        echoes={selectedEchoes}
+
+        onClose={() =>
+          setShowSheet(false)
+        }
+
+        onOpenEcho={onOpenEcho}
+
+      />
+
+    </AppContainer>
 
   );
 

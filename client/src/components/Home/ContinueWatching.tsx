@@ -1,5 +1,9 @@
 import { motion } from "framer-motion";
-import { Play } from "lucide-react";
+import {
+  Play,
+  RotateCcw,
+  Images,
+} from "lucide-react";
 
 import { Echo } from "@/types/echo";
 
@@ -12,19 +16,21 @@ export default function ContinueWatching({
   echoes,
   onResume,
 }: Props) {
-
   const continueEcho = echoes.find(
     (echo) =>
       echo.lastViewedIndex > 0 &&
       echo.lastViewedIndex < echo.media.length
   );
 
-  if (!continueEcho) return null;
+  if (!continueEcho) {
+    return null;
+  }
 
   const cover =
-    continueEcho.media[
-      continueEcho.lastViewedIndex
-    ] ?? continueEcho.media[0];
+    continueEcho.media.find(
+      (m) =>
+        m.publicId === continueEcho.coverMediaId
+    ) ?? continueEcho.media[0];
 
   const progress =
     (continueEcho.lastViewedIndex /
@@ -32,115 +38,80 @@ export default function ContinueWatching({
     100;
 
   return (
+    <motion.section
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      className="mb-8 overflow-hidden rounded-3xl shadow-lg"
+    >
+      <div className="relative aspect-[16/9]">
 
-    <section className="mt-10 px-6">
+        <img
+          src={cover.url}
+          className="h-full w-full object-cover"
+        />
 
-      <h2 className="mb-5 text-2xl font-bold">
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
 
-        Continue Watching
+        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
 
-      </h2>
-
-      <motion.div
-
-        whileHover={{
-          y: -3,
-        }}
-
-        whileTap={{
-          scale: .98,
-        }}
-
-        onClick={() =>
-          onResume(continueEcho)
-        }
-
-        className="overflow-hidden rounded-3xl bg-white shadow-lg"
-
-      >
-
-        <div className="relative h-56">
-
-          {cover.type === "image" ? (
-
-            <img
-              src={cover.url}
-              className="h-full w-full object-cover"
-            />
-
-          ) : (
-
-            <video
-              src={cover.url}
-              muted
-              className="h-full w-full object-cover"
-            />
-
-          )}
-
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-
-          <button className="absolute left-5 top-5 flex h-14 w-14 items-center justify-center rounded-full bg-white/90">
-
-            <Play
-              fill="black"
-              size={24}
-            />
-
-          </button>
-
-        </div>
-
-        <div className="p-5">
-
-          <h3 className="text-2xl font-bold">
-
-            {continueEcho.title}
-
-          </h3>
-
-          <p className="mt-2 text-gray-500">
-
-            Resume from
-
-            {" "}
-
-            {continueEcho.lastViewedIndex + 1}
-
-            {" / "}
-
-            {continueEcho.media.length}
-
+          <p className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-violet-200">
+            <RotateCcw size={14} />
+            Continue Watching
           </p>
 
-          <div className="mt-5 h-2 overflow-hidden rounded-full bg-gray-200">
+          <h2 className="text-2xl font-bold">
+            {continueEcho.title}
+          </h2>
 
+          <div className="mt-3 flex items-center gap-2 text-sm text-gray-200">
+            <Images size={16} />
+
+            <span>
+              {continueEcho.lastViewedIndex} /{" "}
+              {continueEcho.media.length}
+            </span>
+          </div>
+
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/20">
             <motion.div
-
               initial={{
                 width: 0,
               }}
-
               animate={{
                 width: `${progress}%`,
               }}
-
               transition={{
-                duration: .8,
+                duration: 0.7,
               }}
-
-              className="h-full rounded-full bg-violet-600"
-
+              className="h-full rounded-full bg-violet-400"
             />
-
           </div>
+
+          <motion.button
+            whileTap={{
+              scale: 0.95,
+            }}
+            onClick={() =>
+              onResume(continueEcho)
+            }
+            className="mt-6 flex items-center gap-2 rounded-full bg-white px-5 py-3 font-semibold text-black"
+          >
+            <Play
+              size={18}
+              fill="currentColor"
+            />
+            Resume Echo
+          </motion.button>
 
         </div>
 
-      </motion.div>
-
-    </section>
-
+      </div>
+    </motion.section>
   );
-
 }

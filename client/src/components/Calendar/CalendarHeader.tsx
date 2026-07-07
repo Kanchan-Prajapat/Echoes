@@ -14,30 +14,89 @@ export default function CalendarHeader({
   onNext,
 }: Props) {
   return (
-    <div className="mb-6 flex items-center justify-between">
+    <div className="mb-8">
 
-      <button
-        onClick={onPrevious}
-        className="rounded-full bg-gray-100 p-2 transition hover:bg-violet-100"
-      >
-        <ChevronLeft size={20} />
-      </button>
+      {/* Small Label */}
 
-      <motion.h2
-        key={month.toISOString()}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-xl font-bold"
+      <p
+        className="
+          text-xs
+          font-bold
+          uppercase
+          tracking-[0.28em]
+          text-violet-600
+        "
       >
-        {format(month, "MMMM yyyy")}
-      </motion.h2>
+        Calendar
+      </p>
 
-      <button
-        onClick={onNext}
-        className="rounded-full bg-gray-100 p-2 transition hover:bg-violet-100"
-      >
-        <ChevronRight size={20} />
-      </button>
+      {/* Header */}
+
+      <div className="mt-3 flex items-center justify-between">
+
+        <motion.button
+          whileTap={{ scale: 0.92 }}
+          onClick={onPrevious}
+          className="
+            flex
+            h-11
+            w-11
+            items-center
+            justify-center
+            rounded-2xl
+            bg-white
+            shadow-md
+            transition
+            hover:shadow-lg
+          "
+        >
+          <ChevronLeft size={20} />
+        </motion.button>
+
+        <motion.div
+          key={format(month, "MMMM yyyy")}
+          initial={{
+            opacity: 0,
+            y: 12,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: .25,
+          }}
+          className="text-center"
+        >
+          <h2 className="text-3xl font-black">
+            {format(month, "MMMM")}
+          </h2>
+
+          <p className="mt-1 text-gray-500">
+            {format(month, "yyyy")}
+          </p>
+        </motion.div>
+
+        <motion.button
+          whileTap={{ scale: 0.92 }}
+          onClick={onNext}
+          className="
+            flex
+            h-11
+            w-11
+            items-center
+            justify-center
+            rounded-2xl
+            bg-white
+            shadow-md
+            transition
+            hover:shadow-lg
+          "
+        >
+          <ChevronRight size={20} />
+        </motion.button>
+
+      </div>
 
     </div>
   );

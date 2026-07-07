@@ -6,7 +6,10 @@ import {
   X,
 } from "lucide-react";
 
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+} from "framer-motion";
 
 interface StoryControlsProps {
   visible: boolean;
@@ -19,6 +22,42 @@ interface StoryControlsProps {
   onMuteToggle: () => void;
 }
 
+function GlassButton({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <motion.button
+      whileHover={{
+        scale: 1.05,
+      }}
+      whileTap={{
+        scale: .92,
+      }}
+      onClick={onClick}
+      className="
+        flex
+        h-14
+        w-14
+        items-center
+        justify-center
+        rounded-full
+        border
+        border-white/10
+        bg-white/10
+        text-white
+        shadow-xl
+        backdrop-blur-xl
+      "
+    >
+      {children}
+    </motion.button>
+  );
+}
+
 export default function StoryControls({
   visible,
   paused,
@@ -28,67 +67,142 @@ export default function StoryControls({
   onPauseToggle,
   onMuteToggle,
 }: StoryControlsProps) {
+
   return (
+
     <AnimatePresence>
 
       {visible && (
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+
+          initial={{
+            opacity: 0,
+          }}
+
+          animate={{
+            opacity: 1,
+          }}
+
+          exit={{
+            opacity: 0,
+          }}
+
+          className="absolute inset-0 z-50 pointer-events-none"
+
         >
 
           {/* Top Gradient */}
 
-          <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/70 to-transparent z-40" />
+          <div
+            className="
+              absolute
+              inset-x-0
+              top-0
+              h-36
+              bg-gradient-to-b
+              from-black/80
+              via-black/20
+              to-transparent
+            "
+          />
+
+          {/* Bottom Gradient */}
+
+          <div
+            className="
+              absolute
+              inset-x-0
+              bottom-0
+              h-44
+              bg-gradient-to-t
+              from-black/70
+              via-black/20
+              to-transparent
+            "
+          />
 
           {/* Close */}
 
-          <motion.button
-            whileTap={{ scale: 0.92 }}
-            onClick={onClose}
-            className="absolute right-5 top-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/10 text-white backdrop-blur-xl"
+          <div className="pointer-events-auto">
+
+            <div className="absolute right-6 top-7">
+
+              <GlassButton onClick={onClose}>
+
+                <X size={22} />
+
+              </GlassButton>
+
+            </div>
+
+          </div>
+
+          {/* Bottom Controls */}
+
+          <div
+            className="
+              pointer-events-auto
+              absolute
+              bottom-8
+              left-1/2
+              flex
+              -translate-x-1/2
+              items-center
+              gap-5
+            "
           >
-            <X size={22} />
-          </motion.button>
 
-          {/* Play / Pause */}
-
-          <motion.button
-            whileTap={{ scale: 0.92 }}
-            onClick={onPauseToggle}
-            className="absolute bottom-8 left-1/2 z-50 flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-full border border-white/10 bg-white/10 text-white backdrop-blur-xl"
-          >
-            {paused ? (
-              <Play size={28} fill="white" />
-            ) : (
-              <Pause size={28} fill="white" />
-            )}
-          </motion.button>
-
-          {/* Mute */}
-
-          {isVideo && (
-
-            <motion.button
-              whileTap={{ scale: 0.92 }}
-              onClick={onMuteToggle}
-              className="absolute bottom-9 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/10 text-white backdrop-blur-xl"
+            <GlassButton
+              onClick={onPauseToggle}
             >
-              {muted ? (
-                <VolumeX size={22} />
-              ) : (
-                <Volume2 size={22} />
-              )}
-            </motion.button>
 
-          )}
+              {paused ? (
+
+                <Play
+                  size={24}
+                  fill="white"
+                />
+
+              ) : (
+
+                <Pause
+                  size={24}
+                  fill="white"
+                />
+
+              )}
+
+            </GlassButton>
+
+            {isVideo && (
+
+              <GlassButton
+                onClick={onMuteToggle}
+              >
+
+                {muted ? (
+
+                  <VolumeX size={22} />
+
+                ) : (
+
+                  <Volume2 size={22} />
+
+                )}
+
+              </GlassButton>
+
+            )}
+
+          </div>
 
         </motion.div>
 
       )}
 
     </AnimatePresence>
+
   );
+
 }

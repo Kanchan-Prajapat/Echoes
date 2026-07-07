@@ -5,7 +5,7 @@ import { useEchoStore } from "./store/echoStore";
 
 import Splash from "./components/Splash";
 import Welcome from "./components/Welcome";
-import BottomNav from "./components/BottomNav";
+import BottomNav from "./components/Shared/BottomNav";
 
 import AppNavigator from "./AppNavigator";
 

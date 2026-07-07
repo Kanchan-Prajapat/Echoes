@@ -1,4 +1,7 @@
+import { motion } from "framer-motion";
+
 const quotes = [
+
   "Collect moments, not things.",
   "Every Echo tells a story.",
   "Today's moments become tomorrow's memories.",
@@ -12,24 +15,27 @@ const quotes = [
   "In the silence between thoughts, an Echo of joy remains.",
   "Time moves on, but a perfect feeling stays perfectly still.",
   "Where peace resides, memories linger."
+
 ];
 
 export default function HomeQuote() {
-  const today = new Date().getDate();
-
-  const quote = quotes[today % quotes.length];
+  const quote =
+    quotes[Math.floor(Math.random() * quotes.length)];
 
   return (
-    <div className="mb-10 rounded-3xl bg-gradient-to-r from-violet-600 via-purple-500 to-indigo-500 p-6 text-white shadow-xl">
-
-      <p className="text-sm opacity-80">
+    <motion.section
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.15 }}
+      className="mb-8 overflow-hidden rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-white p-6 shadow-sm"
+    >
+      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-violet-500">
         Today's Thought
       </p>
 
-      <h2 className="mt-3 text-2xl font-bold leading-9">
-        {quote}
+      <h2 className="mt-4 text-xl font-semibold leading-relaxed text-gray-900">
+        "{quote}"
       </h2>
-
-    </div>
+    </motion.section>
   );
 }

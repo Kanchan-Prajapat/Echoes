@@ -1,5 +1,8 @@
+import { useMemo, useState } from "react";
+import { CalendarRange } from "lucide-react";
+
 import TimelineMonth from "./TimelineMonth";
-import { useState } from "react";
+
 import { Echo } from "@/types/echo";
 
 interface Props {
@@ -13,46 +16,124 @@ export default function TimelineYear({
   months,
   onOpen,
 }: Props) {
-  const orderedMonths = Object.keys(months);
-const [expandedMonth, setExpandedMonth] = useState(
-  orderedMonths[0]
-);
+
+  const orderedMonths =
+    Object.keys(months);
+
+  const [expandedMonth, setExpandedMonth] =
+    useState(
+      orderedMonths[0]
+    );
+
+  const totalMemories = useMemo(() => {
+
+    return Object.values(months)
+      .reduce(
+        (sum, echoes) =>
+          sum + echoes.length,
+        0
+      );
+
+  }, [months]);
+
   return (
-    <section className="mb-16">
 
-      {/* Year */}
+    <section className="relative">
 
-     <div className="sticky top-0 z-20 bg-[#F8F9FD]/90 backdrop-blur-xl py-4">
+      {/* Sticky Year */}
 
-    <h1 className="text-5xl font-black">
+      <div
+        className="
+          sticky
+          top-0
+          z-20
+          mb-8
+          bg-[#F8F9FD]/90
+          py-5
+          backdrop-blur-xl
+        "
+      >
 
-        {year}
+        <div className="flex items-center gap-4">
 
-    </h1>
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent to-violet-300" />
 
-</div>
+          <div className="text-center">
 
-      {orderedMonths.map((month) => (
+            <p
+              className="
+                text-5xl
+                font-black
+                tracking-tight
+                text-gray-900
+              "
+            >
+              {year}
+            </p>
 
-     <TimelineMonth
-    key={month}
-    month={month}
-    echoes={months[month]}
-    onOpen={onOpen}
+            <div
+              className="
+                mt-2
+                inline-flex
+                items-center
+                gap-2
+                rounded-full
+                bg-white
+                px-4
+                py-2
+                text-sm
+                font-medium
+                text-gray-600
+                shadow-md
+              "
+            >
 
-    expanded={expandedMonth === month}
+              <CalendarRange
+                size={15}
+                className="text-violet-600"
+              />
 
-    onToggle={() =>
-        setExpandedMonth(
-            expandedMonth === month
-                ? ""
-                : month
-        )
-    }
-/>
+              {totalMemories} memories
 
-      ))}
+            </div>
+
+          </div>
+
+          <div className="h-px flex-1 bg-gradient-to-l from-transparent to-violet-300" />
+
+        </div>
+
+      </div>
+
+      {/* Months */}
+
+      <div className="space-y-8">
+
+        {orderedMonths.map((month) => (
+
+          <TimelineMonth
+            key={month}
+            month={month}
+            echoes={months[month]}
+            onOpen={onOpen}
+            expanded={
+              expandedMonth === month
+            }
+            onToggle={() =>
+              setExpandedMonth(
+                expandedMonth === month
+                  ? ""
+                  : month
+              )
+            }
+          />
+
+        ))}
+
+      </div>
 
     </section>
+
   );
+
 }

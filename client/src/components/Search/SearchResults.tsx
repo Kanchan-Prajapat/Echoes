@@ -1,4 +1,14 @@
+import { motion } from "framer-motion";
+import {
+  CalendarDays,
+  MapPin,
+  Images,
+  Video,
+} from "lucide-react";
+
 import { Echo } from "@/types/echo";
+
+import AppContainer from "@/styles/AppContainer";
 
 interface Props {
   results: Echo[];
@@ -11,87 +21,186 @@ export default function SearchResults({
 }: Props) {
 
   if (results.length === 0) {
-
     return (
 
-      <div className="mt-24 text-center">
+      <AppContainer className="py-24">
 
-        <h2 className="text-2xl font-bold">
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          className="text-center"
+        >
 
-          No memories found
+          <div className="mb-6 text-6xl">
+            🔍
+          </div>
 
-        </h2>
+          <h2 className="text-3xl font-bold">
+            No memories found
+          </h2>
 
-        <p className="mt-2 text-gray-500">
+          <p className="mt-3 text-gray-500">
+            Try another title, location or mood.
+          </p>
 
-          Try another keyword.
+        </motion.div>
 
-        </p>
-
-      </div>
+      </AppContainer>
 
     );
-
   }
 
   return (
 
-    <div className="space-y-4 p-6">
+    <AppContainer className="space-y-5 py-6">
 
-      {results.map((echo) => {
+      {results.map((echo, index) => {
 
         const cover =
           echo.media.find(
-            (m) => m.id === echo.coverMediaId
+            (m) =>
+              m.publicId === echo.coverMediaId
           ) ?? echo.media[0];
+
+        const imageCount =
+          echo.media.filter(
+            (m) => m.type === "image"
+          ).length;
+
+        const videoCount =
+          echo.media.filter(
+            (m) => m.type === "video"
+          ).length;
 
         return (
 
-          <button
+          <motion.button
             key={echo.id}
-            onClick={() => onOpenEcho(echo)}
-            className="flex w-full gap-4 rounded-3xl bg-white p-4 text-left shadow transition hover:shadow-lg"
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              delay: index * 0.04,
+            }}
+            whileHover={{
+              y: -3,
+            }}
+            whileTap={{
+              scale: .98,
+            }}
+           onClick={() => {
+  console.log("OPEN CLICKED", echo.title);
+  onOpenEcho(echo);
+}}
+            className="
+              flex
+              w-full
+              overflow-hidden
+              rounded-3xl
+              bg-white
+              shadow-lg
+              transition
+              hover:shadow-xl
+            "
           >
 
-            {cover && (
+            {/* Cover */}
+
+            <div className="h-28 w-28 flex-shrink-0">
 
               <img
                 src={cover.url}
-                className="h-20 w-20 rounded-2xl object-cover"
+                className="h-full w-full object-cover"
               />
-
-            )}
-
-            <div className="flex-1">
-
-              <h2 className="text-lg font-bold">
-
-                {echo.title}
-
-              </h2>
-
-              <p className="mt-1 text-gray-500">
-
-                {echo.location}
-
-              </p>
-
-              <p className="text-sm text-gray-400">
-
-                {echo.date}
-
-              </p>
 
             </div>
 
-          </button>
+            {/* Content */}
+
+            <div className="flex flex-1 flex-col justify-between p-5">
+
+              <div>
+
+                <h2 className="text-lg font-bold text-gray-900">
+                  {echo.title}
+                </h2>
+
+                {echo.description && (
+
+                  <p className="mt-2 line-clamp-2 text-sm text-gray-500">
+                    {echo.description}
+                  </p>
+
+                )}
+
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-4 text-xs text-gray-500">
+
+                {echo.location && (
+
+                  <div className="flex items-center gap-1">
+
+                    <MapPin size={14} />
+
+                    {echo.location}
+
+                  </div>
+
+                )}
+
+                <div className="flex items-center gap-1">
+
+                  <CalendarDays size={14} />
+
+                  {new Date(
+                    echo.date
+                  ).toLocaleDateString()}
+
+                </div>
+
+              </div>
+
+              <div className="mt-3 flex gap-5 text-sm text-gray-600">
+
+                <div className="flex items-center gap-1">
+
+                  <Images size={15} />
+
+                  {imageCount}
+
+                </div>
+
+                <div className="flex items-center gap-1">
+
+                  <Video size={15} />
+
+                  {videoCount}
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </motion.button>
 
         );
 
       })}
 
-    </div>
+    </AppContainer>
 
   );
-
 }

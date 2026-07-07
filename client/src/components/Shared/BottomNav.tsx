@@ -6,7 +6,7 @@ import {
   Plus,
 } from "lucide-react";
 
-import { Tab } from "../App";
+import { Tab } from "../../App";
 
 type BottomNavProps = {
   active: Tab;

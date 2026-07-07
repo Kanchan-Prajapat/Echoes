@@ -1,4 +1,5 @@
-import { Search, Bell, Plus } from "lucide-react";
+import { Search, Bell } from "lucide-react";
+import AppContainer from "@/styles/AppContainer";
 
 import {
   Greeting,
@@ -24,14 +25,14 @@ export default function HomeView({
   onSearch,
 }: Props) {
   const echoes = useEchoStore(
-  (state) => state.echoes
-);
+    (state) => state.echoes
+  );
 
   return (
 
     <main className="min-h-screen bg-[#F8F9FD] pb-32">
 
-      <div className="px-6 pt-8">
+      <AppContainer className="space-y-8 py-8">
 
         {/* Header */}
 
@@ -60,38 +61,40 @@ export default function HomeView({
 
         {/* Highlights */}
 
-       <EchoHighlights
-    onOpenEcho={onOpenEcho}
-    onCreateEcho={onCreateEcho}
-/>
+        <EchoHighlights
+          echoes={echoes}
+          onOpen={onOpenEcho}
+        />
 
         {/* Quote */}
 
         <HomeQuote />
 
 
-<ContinueWatching
-    echoes={echoes}
-    onResume={onOpenEcho}
-/>
+        <ContinueWatching
+          echoes={echoes}
+          onResume={onOpenEcho}
+        />
 
-        
+
 
         {/* Recent */}
 
         <RecentEchoes
-          onOpenEcho={onOpenEcho}
+          echoes={echoes}
+          onOpen={onOpenEcho}
         />
 
         {/* Stats */}
 
-        <QuickStats />
+        <QuickStats
+          echoes={echoes} />
 
-      </div>
+      </AppContainer>
 
-   
 
-    
+
+
     </main>
 
   );

@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
 import {
+  CalendarDays,
   Images,
-  Video,
   MapPin,
-  Play,
+  Video,
   Heart,
 } from "lucide-react";
+
+import Card from "@/styles/Card";
 
 import { Echo } from "@/types/echo";
 
@@ -21,165 +23,181 @@ export default function CalendarDayPreview({
 
   const cover =
     echo.media.find(
-      (m) => m.id === echo.coverMediaId
+      (m) =>
+        m.publicId ===
+        echo.coverMediaId
     ) ?? echo.media[0];
 
-  const imageCount = echo.media.filter(
-    (m) => m.type === "image"
-  ).length;
+  const imageCount =
+    echo.media.filter(
+      (m) => m.type === "image"
+    ).length;
 
-  const videoCount = echo.media.filter(
-    (m) => m.type === "video"
-  ).length;
+  const videoCount =
+    echo.media.filter(
+      (m) => m.type === "video"
+    ).length;
 
   return (
-    <motion.button
+
+    <motion.div
+
       whileHover={{
         y: -3,
-        scale: 1.01,
       }}
+
       whileTap={{
-        scale: 0.98,
+        scale: .98,
       }}
+
       transition={{
-        duration: 0.2,
+        type: "spring",
+        stiffness: 300,
       }}
-      onClick={onClick}
-      className="
-        flex
-        w-full
-        gap-4
-        overflow-hidden
-        rounded-3xl
-        bg-white
-        p-4
-        text-left
-        shadow-lg
-      "
+
     >
 
-      {/* Cover */}
+      <Card
+        clickable
+        padding="none"
+        onClick={onClick}
+        className="overflow-hidden"
+      >
 
-      <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl">
+        <div className="flex">
 
-        {cover?.type === "image" ? (
+          {/* Cover */}
 
-          <img
-            src={cover.url}
-            alt={echo.title}
-            className="h-full w-full object-cover"
-          />
+          <div className="relative">
 
-        ) : (
-
-          <>
-            <video
+            <img
               src={cover?.url}
-              className="h-full w-full object-cover"
-              muted
+              className="
+                h-32
+                w-32
+                object-cover
+              "
             />
+
+            {echo.favorite && (
+
+              <div
+                className="
+                  absolute
+                  right-2
+                  top-2
+                  rounded-full
+                  bg-yellow-400
+                  p-1.5
+                "
+              >
+
+                <Heart
+                  size={12}
+                  fill="white"
+                  color="white"
+                />
+
+              </div>
+
+            )}
+
+          </div>
+
+          {/* Content */}
+
+          <div className="flex-1 p-5">
+
+            <h3
+              className="
+                line-clamp-1
+                text-lg
+                font-bold
+              "
+            >
+              {echo.title}
+            </h3>
+
+            {echo.description && (
+
+              <p
+                className="
+                  mt-2
+                  line-clamp-2
+                  text-sm
+                  text-gray-500
+                "
+              >
+                {echo.description}
+              </p>
+
+            )}
 
             <div
               className="
-                absolute
-                inset-0
+                mt-4
                 flex
-                items-center
-                justify-center
-                bg-black/30
+                flex-wrap
+                gap-4
+                text-xs
+                text-gray-500
               "
             >
-              <Play
-                size={24}
-                fill="white"
-                className="text-white"
-              />
+
+              <div className="flex items-center gap-1">
+
+                <MapPin size={13} />
+
+                {echo.location || "Unknown"}
+
+              </div>
+
+              <div className="flex items-center gap-1">
+
+                <CalendarDays size={13} />
+
+                {echo.date}
+
+              </div>
+
             </div>
-          </>
 
-        )}
+            <div
+              className="
+                mt-4
+                flex
+                gap-5
+                text-xs
+                font-semibold
+              "
+            >
 
-        {echo.favorite && (
+              <div className="flex items-center gap-1">
 
-          <div
-            className="
-              absolute
-              right-2
-              top-2
-              rounded-full
-              bg-white/90
-              p-1
-              shadow
-            "
-          >
-            <Heart
-              size={14}
-              className="fill-red-500 text-red-500"
-            />
-          </div>
+                <Images size={14} />
 
-        )}
+                {imageCount}
 
-      </div>
+              </div>
 
-      {/* Content */}
+              <div className="flex items-center gap-1">
 
-      <div className="flex flex-1 flex-col justify-between">
+                <Video size={14} />
 
-        <div>
+                {videoCount}
 
-          <div className="flex items-center justify-between">
+              </div>
 
-            <h3 className="text-lg font-bold">
-
-              {echo.title}
-
-            </h3>
-
-            <span className="text-2xl">
-
-              {echo.mood}
-
-            </span>
-
-          </div>
-
-          <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
-
-            <MapPin size={15} />
-
-            <span>
-
-              {echo.location || "Unknown Location"}
-
-            </span>
+            </div>
 
           </div>
 
         </div>
 
-        <div className="mt-4 flex items-center gap-5 text-sm text-gray-500">
+      </Card>
 
-          <div className="flex items-center gap-1">
+    </motion.div>
 
-            <Images size={16} />
-
-            {imageCount}
-
-          </div>
-
-          <div className="flex items-center gap-1">
-
-            <Video size={16} />
-
-            {videoCount}
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </motion.button>
   );
+
 }

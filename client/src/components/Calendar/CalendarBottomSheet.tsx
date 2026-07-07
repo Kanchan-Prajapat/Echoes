@@ -1,14 +1,20 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X, CalendarDays } from "lucide-react";
+import {
+  CalendarDays,
+  ChevronRight,
+  X,
+} from "lucide-react";
 import { format } from "date-fns";
 
 import { Echo } from "@/types/echo";
+
 import CalendarDayPreview from "./CalendarDayPreview";
 
 interface Props {
   open: boolean;
   date: Date;
   echoes: Echo[];
+
   onClose: () => void;
   onOpenEcho: (echo: Echo) => void;
 }
@@ -20,114 +26,287 @@ export default function CalendarBottomSheet({
   onClose,
   onOpenEcho,
 }: Props) {
+
   return (
+
     <AnimatePresence>
 
       {open && (
+
         <>
+
           {/* Backdrop */}
 
           <motion.div
+
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.45 }}
+
+            animate={{ opacity: .45 }}
+
             exit={{ opacity: 0 }}
+
+            transition={{
+              duration: .2,
+            }}
+
             onClick={onClose}
-            className="fixed inset-0 z-[998] bg-black"
+
+            className="
+              fixed
+              inset-0
+              z-[998]
+              bg-black
+              backdrop-blur-sm
+            "
+
           />
 
-          {/* Bottom Sheet */}
+          {/* Sheet */}
 
           <motion.div
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
+
+            initial={{
+              y: "100%",
+            }}
+
+            animate={{
+              y: 0,
+            }}
+
+            exit={{
+              y: "100%",
+            }}
+
             transition={{
               type: "spring",
-              stiffness: 280,
+              stiffness: 260,
               damping: 28,
             }}
+
             className="
               fixed
               bottom-0
               left-0
               right-0
               z-[999]
-              max-h-[82vh]
+
+              mx-auto
+
+              w-full
+              max-w-[560px]
+
               overflow-hidden
+
               rounded-t-[36px]
+
               bg-[#F8F9FD]
+
               shadow-2xl
             "
+
           >
 
             {/* Handle */}
 
-            <div className="flex justify-center pt-3">
+            <div className="flex justify-center py-4">
 
-              <div className="h-1.5 w-14 rounded-full bg-gray-300" />
+              <div
+                className="
+                  h-1.5
+                  w-16
+                  rounded-full
+                  bg-gray-300
+                "
+              />
 
             </div>
 
             {/* Header */}
 
-            <div className="flex items-center justify-between px-6 pt-5 pb-4">
+            <div
+              className="
+                flex
+                items-start
+                justify-between
+
+                px-7
+                pb-5
+              "
+            >
 
               <div>
 
-                <h2 className="text-2xl font-bold">
+                <p
+                  className="
+                    text-xs
+                    font-bold
+                    uppercase
+                    tracking-[0.25em]
+                    text-violet-600
+                  "
+                >
+                  Selected Date
+                </p>
 
-                  {format(date, "dd MMMM yyyy")}
-
+                <h2
+                  className="
+                    mt-2
+                    text-3xl
+                    font-black
+                  "
+                >
+                  {format(
+                    date,
+                    "dd MMMM"
+                  )}
                 </h2>
 
-                <p className="mt-1 text-gray-500">
-
-                  {echoes.length} Memory
-                  {echoes.length !== 1 && "ies"}
-
+                <p
+                  className="
+                    mt-2
+                    text-gray-500
+                  "
+                >
+                  {format(
+                    date,
+                    "EEEE, yyyy"
+                  )}
                 </p>
 
               </div>
 
-              <button
+              <motion.button
+
+                whileTap={{
+                  scale: .9,
+                }}
+
                 onClick={onClose}
-                className="rounded-full bg-gray-100 p-2 transition hover:bg-gray-200"
+
+                className="
+                  rounded-2xl
+                  bg-white
+                  p-3
+                  shadow-md
+                "
+
               >
+
                 <X size={20} />
-              </button>
+
+              </motion.button>
+
+            </div>
+
+            {/* Count */}
+
+            <div className="px-7">
+
+              <div
+                className="
+                  inline-flex
+                  items-center
+                  gap-2
+
+                  rounded-full
+
+                  bg-violet-100
+
+                  px-4
+                  py-2
+
+                  text-sm
+                  font-semibold
+
+                  text-violet-700
+                "
+              >
+
+                <CalendarDays size={16} />
+
+                {echoes.length}
+
+                {echoes.length === 1
+                  ? " Memory"
+                  : " Memories"}
+
+              </div>
 
             </div>
 
             {/* Content */}
 
-            <div className="max-h-[60vh] overflow-y-auto px-5 pb-8">
+            <div
+              className="
+                mt-6
+
+                max-h-[58vh]
+
+                overflow-y-auto
+
+                px-6
+                pb-8
+              "
+            >
 
               {echoes.length === 0 ? (
 
-                <div className="flex flex-col items-center py-16">
+                <motion.div
+
+                  initial={{
+                    opacity: 0,
+                  }}
+
+                  animate={{
+                    opacity: 1,
+                  }}
+
+                  className="
+                    flex
+                    flex-col
+                    items-center
+
+                    py-20
+                  "
+
+                >
 
                   <CalendarDays
-                    size={52}
+                    size={60}
                     className="text-violet-500"
                   />
 
-                  <h3 className="mt-5 text-xl font-bold">
+                  <h3
+                    className="
+                      mt-6
+                      text-2xl
+                      font-bold
+                    "
+                  >
 
                     No Memories
 
                   </h3>
 
-                  <p className="mt-2 text-center text-gray-500">
+                  <p
+                    className="
+                      mt-3
+                      max-w-xs
+                      text-center
+                      text-gray-500
+                    "
+                  >
 
-                    Create your first memory for this day.
+                    This day doesn't have any
+                    memories yet.
 
                   </p>
 
-                </div>
+                </motion.div>
 
               ) : (
 
-                <div className="space-y-4">
+                <div className="space-y-5">
 
                   {echoes.map((echo) => (
 
@@ -135,8 +314,11 @@ export default function CalendarBottomSheet({
                       key={echo.id}
                       echo={echo}
                       onClick={() => {
+
                         onClose();
+
                         onOpenEcho(echo);
+
                       }}
                     />
 
@@ -149,9 +331,13 @@ export default function CalendarBottomSheet({
             </div>
 
           </motion.div>
+
         </>
+
       )}
 
     </AnimatePresence>
+
   );
+
 }

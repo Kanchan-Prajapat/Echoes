@@ -64,8 +64,19 @@ const echoes = useEchoStore(
     onChange?.(date);
   };
 
-  return (
-    <div className="rounded-3xl bg-white p-5 shadow-xl">
+
+   return (
+  <div
+    className="
+      mx-auto
+      w-full
+      max-w-[520px]
+      rounded-3xl
+      bg-white
+      p-5
+      shadow-xl
+    "
+  >
 
       <CalendarHeader
         month={currentMonth}

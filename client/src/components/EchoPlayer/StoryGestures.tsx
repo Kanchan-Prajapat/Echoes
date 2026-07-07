@@ -1,5 +1,9 @@
-import { motion, PanInfo } from "framer-motion";
-import { ReactNode, useRef } from "react";
+import { ReactNode, useRef, useState } from "react";
+import {
+  motion,
+  PanInfo,
+  AnimatePresence,
+} from "framer-motion";
 
 interface StoryGesturesProps {
   children: ReactNode;
@@ -24,58 +28,93 @@ export default function StoryGestures({
   onResume,
   onDoubleTap,
 }: StoryGesturesProps) {
+
   const lastTap = useRef(0);
 
-  const handleTap = (x: number, width: number) => {
+  const [tapX, setTapX] =
+    useState<number | null>(null);
 
-  const now = Date.now();
+  /* ---------------- Tap ---------------- */
 
-  if (now - lastTap.current < 300) {
+  const handleTap = (
+    x: number,
+    width: number
+  ) => {
 
-    onDoubleTap?.();
+    setTapX(x);
 
-    lastTap.current = 0;
+    window.setTimeout(() => {
+      setTapX(null);
+    }, 180);
 
-    return;
+    const now = Date.now();
 
-  }
+    if (now - lastTap.current < 300) {
 
-  lastTap.current = now;
+      navigator.vibrate?.(20);
 
-  setTimeout(() => {
-
-    if (lastTap.current !== 0) {
-
-      if (x < width / 2) {
-
-        onPrevious();
-
-      } else {
-
-        onNext();
-
-      }
+      onDoubleTap?.();
 
       lastTap.current = 0;
 
+      return;
     }
 
-  }, 300);
+    lastTap.current = now;
 
-};
+    window.setTimeout(() => {
+
+      if (lastTap.current !== 0) {
+
+        if (x < width / 2) {
+
+          onPrevious();
+
+        } else {
+
+          onNext();
+
+        }
+
+        lastTap.current = 0;
+
+      }
+
+    }, 300);
+
+  };
+
+  /* ---------------- Swipe Down ---------------- */
 
   const handleDragEnd = (
     _: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo
   ) => {
-    if (info.offset.y > 150) {
+
+    const shouldClose =
+      info.offset.y > 140 ||
+      info.velocity.y > 700;
+
+    if (shouldClose) {
+
       onClose();
+
     }
+
   };
 
   return (
+
     <motion.div
-      className="absolute inset-0 z-20"
+
+      className="
+        absolute
+        inset-0
+        z-20
+        cursor-pointer
+        select-none
+        touch-none
+      "
 
       drag="y"
 
@@ -84,11 +123,29 @@ export default function StoryGestures({
         bottom: 0,
       }}
 
-      dragElastic={0.15}
+      dragElastic={0.08}
+
+      dragMomentum={false}
+
+      whileTap={{
+        scale: 0.995,
+      }}
+
+      transition={{
+        type: "spring",
+        stiffness: 260,
+        damping: 24,
+      }}
 
       onDragEnd={handleDragEnd}
 
-      onPointerDown={onPause}
+      onPointerDown={(e) => {
+
+        e.preventDefault();
+
+        onPause();
+
+      }}
 
       onPointerUp={onResume}
 
@@ -105,8 +162,60 @@ export default function StoryGestures({
         );
 
       }}
+
     >
+
+      {/* Tap Ripple */}
+
+      <AnimatePresence>
+
+        {tapX !== null && (
+
+          <motion.div
+
+            initial={{
+              scale: 0,
+              opacity: .35,
+            }}
+
+            animate={{
+              scale: 2.2,
+              opacity: 0,
+            }}
+
+            exit={{
+              opacity: 0,
+            }}
+
+            transition={{
+              duration: .35,
+            }}
+
+            className="
+              pointer-events-none
+              absolute
+              top-1/2
+              h-24
+              w-24
+              -translate-y-1/2
+              rounded-full
+              bg-white/20
+            "
+
+            style={{
+              left: tapX - 48,
+            }}
+
+          />
+
+        )}
+
+      </AnimatePresence>
+
       {children}
+
     </motion.div>
+
   );
+
 }

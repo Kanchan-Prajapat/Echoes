@@ -128,20 +128,18 @@ if (navigation.screen === "new-echo") {
   if (navigation.screen === "search") {
     return (
    <SearchView
-  onClose={() =>
-    setNavigation(
-      openScreen(
-        navigation.previousScreen ??
-          "home"
-      )
-    )
-  }
+onClose={() =>
+  setNavigation(
+    openScreen("home")
+  )
+}
 
-  onOpenEcho={(echo) =>
-    setNavigation(
-      openEcho("search", echo.id)
-    )
-  }
+
+onOpenEcho={(echo) =>
+  setNavigation(
+    openEcho("home", echo.id)
+  )
+}
 />
     );
   }
