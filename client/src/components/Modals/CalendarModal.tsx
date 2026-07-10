@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 
-import Calendar from "./Calendar";
+import Calendar from "@/components/Calendar/Calendar";
 
 interface Props {
   open: boolean;

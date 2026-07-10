@@ -1,71 +1,124 @@
 import api from "./api";
 
-export async function uploadMedia(file: File) {
+import { Echo } from "@/types/echo";
+
+import { Media } from "@/types/media";
+
+/* ---------------------------------- */
+/* Upload Media */
+/* ---------------------------------- */
+
+export async function uploadMedia(
+  file: File
+): Promise<Media> {
+
   const formData = new FormData();
 
-  formData.append("media", file);
+  formData.append("file", file);
 
-  const response = await api.post(
-    "/media/upload",
+  const { data } = await api.post(
+    "/upload",
     formData,
     {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type":
+          "multipart/form-data",
       },
     }
   );
 
-  return response.data.data;
+  return data;
 }
 
-export async function createEcho(body: any) {
-  const response = await api.post("/echo", body);
-
-  return response.data.data;
-}
-
+/* ---------------------------------- */
+/* Get My Echoes */
+/* ---------------------------------- */
 
 export async function getEchoes() {
+
   const { data } = await api.get(
-    "/echo"
+    "/echoes"
   );
 
-  return data.data;
+  return data;
 }
+
+/* ---------------------------------- */
+/* Get Single Echo */
+/* ---------------------------------- */
+
+export async function getEcho(
+  id: string
+) {
+
+  const { data } = await api.get(
+    `/echoes/${id}`
+  );
+
+  return data;
+}
+
+/* ---------------------------------- */
+/* Create Echo */
+/* ---------------------------------- */
+
+export async function createEcho(
+  echo: Partial<Echo>
+) {
+
+  const { data } = await api.post(
+    "/echoes",
+    echo
+  );
+
+  return data;
+}
+
+/* ---------------------------------- */
+/* Update Echo */
+/* ---------------------------------- */
+
+export async function updateEcho(
+  id: string,
+  echo: Partial<Echo>
+) {
+
+  const { data } = await api.put(
+    `/echoes/${id}`,
+    echo
+  );
+
+  return data;
+}
+
+/* ---------------------------------- */
+/* Delete Echo */
+/* ---------------------------------- */
 
 export async function deleteEcho(
   id: string
 ) {
-  await api.delete(
-    `/echo/${id}`
+
+  const { data } = await api.delete(
+    `/echoes/${id}`
   );
+
+  return data;
 }
 
-export async function updateEcho(
-  id: string,
-  body: any
-) {
-  const { data } =
-    await api.patch(
-      `/echo/${id}`,
-      body
-    );
-
-  return data.data;
-}
 
 export async function addMediaToEcho(
-  id: string,
-  media: any[]
+  echoId: string,
+  media: Omit<Media, "id" | "file">[]
 ) {
   const { data } = await api.patch(
-    `/echo/${id}/media`,
+    `/echoes/${echoId}/media`,
     {
       media,
     }
   );
 
-  return data.data;
+  return data;
 }
 
 export async function deleteMediaFromEcho(
@@ -73,41 +126,32 @@ export async function deleteMediaFromEcho(
   publicId: string
 ) {
   const { data } = await api.delete(
-    `/echo/${echoId}/media/${encodeURIComponent(publicId)}`
+    `/echoes/${echoId}/media/${publicId}`
   );
 
-  return data.data;
+  return data;
 }
-
-
-export async function toggleFavorite(
-  id: string
-) {
-  const { data } =
-    await api.patch(
-      `/echo/${id}/favorite`
-    );
-
-  return data.data;
-}
-
 
 export async function setCoverMedia(
   echoId: string,
   coverMediaId: string
 ) {
-  console.log("SERVICE CALLED");
-  console.log({ echoId, coverMediaId });
-
   const { data } = await api.patch(
-    `/echo/${echoId}/cover`,
+    `/echoes/${echoId}/cover`,
     {
       coverMediaId,
     }
   );
 
-  console.log("PATCH SUCCESS");
-  console.log(data);
+  return data;
+}
 
-  return data.data;
+export async function toggleFavorite(
+  echoId: string
+) {
+  const { data } = await api.patch(
+    `/echoes/${echoId}/favorite`
+  );
+
+  return data;
 }

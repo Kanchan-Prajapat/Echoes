@@ -5,48 +5,112 @@ import {
   getAllEchoesController,
   getEchoByIdController,
   updateEchoController,
-  addMediaToEchoController,
   deleteEchoController,
-  deleteMediaController,
-  toggleFavoriteController,
   searchEchoesController,
+  toggleFavoriteController,
+  addMediaToEchoController,
+  deleteMediaController,
   setCoverMediaController,
 } from "./echo.controller.js";
 
+import { authenticate } from "../../middleware/auth.middleware.js";
+
 const router = Router();
 
-/*
-|--------------------------------------------------------------------------
-| Echo Routes
-|--------------------------------------------------------------------------
-*/
+/* -------------------------------- */
+/* All Echo Routes Require Login */
+/* -------------------------------- */
 
-// Create Echo
-router.post("/", createEchoController);
+router.use(authenticate);
 
-// Get All Echoes
-router.get("/", getAllEchoesController);
+/* -------------------------------- */
+/* Create */
+/* -------------------------------- */
 
-// Search Echoes
-router.get("/search", searchEchoesController);
+router.post(
+  "/",
+  createEchoController
+);
 
-// Get Echo By ID
-router.get("/:id", getEchoByIdController);
+/* -------------------------------- */
+/* Get All */
+/* -------------------------------- */
 
-// Update Echo
-router.patch("/:id", updateEchoController);
+router.get(
+  "/",
+  getAllEchoesController
+);
 
-// Add Media to Echo
-router.patch( "/:id/media", addMediaToEchoController);
+/* -------------------------------- */
+/* Search */
+/* -------------------------------- */
 
-router.delete("/:id/media/:publicId", deleteMediaController);
+router.get(
+  "/search",
+  searchEchoesController
+);
 
-// Delete Echo
-router.delete("/:id", deleteEchoController);
+/* -------------------------------- */
+/* Get One */
+/* -------------------------------- */
 
-router.patch( "/:id/cover", setCoverMediaController);
+router.get(
+  "/:id",
+  getEchoByIdController
+);
 
-// Toggle Favorite
-router.patch( "/:id/favorite", toggleFavoriteController);
+/* -------------------------------- */
+/* Update */
+/* -------------------------------- */
+
+router.patch(
+  "/:id",
+  updateEchoController
+);
+
+/* -------------------------------- */
+/* Delete */
+/* -------------------------------- */
+
+router.delete(
+  "/:id",
+  deleteEchoController
+);
+
+/* -------------------------------- */
+/* Favorite */
+/* -------------------------------- */
+
+router.patch(
+  "/:id/favorite",
+  toggleFavoriteController
+);
+
+/* -------------------------------- */
+/* Cover */
+/* -------------------------------- */
+
+router.patch(
+  "/:id/cover",
+  setCoverMediaController
+);
+
+/* -------------------------------- */
+/* Add Media */
+/* -------------------------------- */
+
+router.patch(
+  "/:id/media",
+  addMediaToEchoController
+);
+
+/* -------------------------------- */
+/* Delete Media */
+/* -------------------------------- */
+
+router.delete(
+  "/:id/media/:publicId",
+  deleteMediaController
+);
 
 export default router;

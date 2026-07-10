@@ -2,6 +2,8 @@ import mongoose, { Schema } from "mongoose";
 
 const mediaSchema = new Schema(
   {
+
+    
     url: {
       type: String,
       required: true,
@@ -25,6 +27,13 @@ const mediaSchema = new Schema(
 
 const echoSchema = new Schema(
   {
+
+    owner: {
+  type: Schema.Types.ObjectId,
+  ref: "User",
+  required: true,
+},
+
     title: {
       type: String,
       required: true,
@@ -63,10 +72,7 @@ const echoSchema = new Schema(
         type: String,
       },
     ],
-    userId: {
-  type: Schema.Types.ObjectId,
-  ref: "User",
-},
+  
 
     favorite: {
       type: Boolean,

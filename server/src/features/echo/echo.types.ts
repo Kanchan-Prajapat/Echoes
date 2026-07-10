@@ -1,44 +1,17 @@
-import { Types } from "mongoose";
+export interface MediaDTO {
 
-export type MediaType = "image" | "video";
-
-export interface IMedia {
   url: string;
+
   publicId: string;
-  type: MediaType;
-}
 
-export interface IEcho {
-  _id?: Types.ObjectId;
+  type: "image" | "video";
 
-  userId?: Types.ObjectId;
-
-  title: string;
-
-  description?: string;
-
-  date: Date;
-
-  location?: string;
-
-  mood?: string;
-
-  weather?: string;
-
-  tags?: string[];
-
-  favorite?: boolean;
-
-  media: IMedia[];
-
-  coverMediaId?: string;
-
-  createdAt?: Date;
-
-  updatedAt?: Date;
 }
 
 export interface CreateEchoDTO {
+
+  owner: string;
+
   title: string;
 
   description?: string;
@@ -51,16 +24,18 @@ export interface CreateEchoDTO {
 
   weather?: string;
 
-  tags?: string[];
-
   favorite?: boolean;
 
-  media: IMedia[];
+  tags?: string[];
+
+  media?: MediaDTO[];
 
   coverMediaId?: string;
+
 }
 
 export interface UpdateEchoDTO {
+
   title?: string;
 
   description?: string;
@@ -73,11 +48,12 @@ export interface UpdateEchoDTO {
 
   weather?: string;
 
-  tags?: string[];
-
   favorite?: boolean;
 
-  media?: IMedia[];
+  tags?: string[];
+
+  media?: MediaDTO[];
 
   coverMediaId?: string;
+
 }

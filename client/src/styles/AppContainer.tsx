@@ -25,7 +25,7 @@ export default function AppContainer({
         className="
           mx-auto
           w-full
-          max-w-[460px]
+          max-w-[430px]
           lg:max-w-[520px]
         "
       >

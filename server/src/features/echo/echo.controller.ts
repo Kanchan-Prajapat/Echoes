@@ -1,16 +1,18 @@
-import { Request, Response } from "express";
+import { Response } from "express";
+
+import { AuthRequest } from "../../middleware/auth.middleware.js";
 
 import {
-  createEcho,
-  getAllEchoes,
-  getEchoById,
-  updateEcho,
-  deleteEcho,
-  toggleFavorite,
-  searchEchoes,
-  addMediaToEcho,
-  deleteMediaFromEcho,
-  setCoverMedia,
+  createEchoService,
+  getAllEchoesService,
+  getEchoByIdService,
+  updateEchoService,
+  deleteEchoService,
+  searchEchoesService,
+  toggleFavoriteService,
+  addMediaService,
+  removeMediaService,
+  setCoverMediaService,
 } from "./echo.service.js";
 
 import {
@@ -23,350 +25,454 @@ import {
   errorResponse,
 } from "../../utils/apiResponse.js";
 
+/* -------------------------------- */
+/* Create Echo */
+/* -------------------------------- */
+
 export async function createEchoController(
-  req: Request,
+  req: AuthRequest,
   res: Response
 ) {
+
   try {
+
     const body =
       createEchoSchema.parse(req.body);
 
     const echo =
-      await createEcho(body);
+      await createEchoService(
+        req.user!.id,
+        body
+      );
 
     return res.status(201).json(
+
       successResponse(
         "Echo created successfully.",
         echo
       )
+
     );
-  } catch (error: any) {
 
-  console.log("===== CREATE ECHO ERROR =====");
+  }
 
-  console.dir(error, { depth: null });
+  catch (error: any) {
 
-  return res.status(400).json({
-    success: false,
-    error,
-  });
+    return res.status(400).json(
+
+      errorResponse(
+        error.message
+      )
+
+    );
+
+  }
+
 }
-}
+
+/* -------------------------------- */
+/* Get All Echoes */
+/* -------------------------------- */
 
 export async function getAllEchoesController(
-  _req: Request,
+  req: AuthRequest,
   res: Response
 ) {
+
   try {
+
     const echoes =
-      await getAllEchoes();
+      await getAllEchoesService(
+        req.user!.id
+      );
 
     return res.json(
+
       successResponse(
         "Echoes fetched successfully.",
         echoes
       )
+
     );
-  } catch {
-    return res.status(500).json(
-      errorResponse(
-        "Failed to fetch Echoes."
-      )
-    );
+
   }
+
+  catch (error: any) {
+
+    return res.status(500).json(
+
+      errorResponse(
+        error.message
+      )
+
+    );
+
+  }
+
 }
 
+/* -------------------------------- */
+/* Get Echo By ID */
+/* -------------------------------- */
+
 export async function getEchoByIdController(
-  req: Request,
+  req: AuthRequest,
   res: Response
 ) {
-  try {
-    const echo =
-      await getEchoById(req.params.id);
 
-    if (!echo) {
-      return res.status(404).json(
-        errorResponse(
-          "Echo not found."
-        )
+  try {
+
+    const echo =
+      await getEchoByIdService(
+        req.user!.id,
+        req.params.id
       );
-    }
 
     return res.json(
+
       successResponse(
         "Echo fetched successfully.",
         echo
       )
+
     );
-  } catch {
-    return res.status(500).json(
-      errorResponse(
-        "Failed to fetch Echo."
-      )
-    );
+
   }
+
+  catch (error: any) {
+
+    return res.status(404).json(
+
+      errorResponse(
+        error.message
+      )
+
+    );
+
+  }
+
 }
 
+/* -------------------------------- */
+/* Update Echo */
+/* -------------------------------- */
+
 export async function updateEchoController(
-  req: Request,
+  req: AuthRequest,
   res: Response
 ) {
+
   try {
+
     const body =
       updateEchoSchema.parse(req.body);
 
     const echo =
-      await updateEcho(
-        req.params.id,
-        body
-      );
+      await updateEchoService(
 
-    if (!echo) {
-      return res.status(404).json(
-        errorResponse(
-          "Echo not found."
-        )
+        req.user!.id,
+
+        req.params.id,
+
+        body
+
       );
-    }
 
     return res.json(
+
       successResponse(
         "Echo updated successfully.",
         echo
       )
+
     );
-  } catch (error: any) {
+
+  }
+
+  catch (error: any) {
+
     return res.status(400).json(
+
       errorResponse(
-        error.message ??
-          "Failed to update Echo."
+        error.message
       )
+
     );
+
   }
-}
-
-
-export async function addMediaToEchoController(
-  req: Request,
-  res: Response
-) {
-  try {
-    const { media } = req.body;
-
-    if (!media || !Array.isArray(media)) {
-      return res.status(400).json(
-        errorResponse("Media array is required.")
-      );
-    }
-
-    const echo = await addMediaToEcho(
-      req.params.id,
-      media
-    );
-
-    if (!echo) {
-      return res.status(404).json(
-        errorResponse("Echo not found.")
-      );
-    }
-
-    return res.json(
-      successResponse(
-        "Media added successfully.",
-        echo
-      )
-    );
-
-  }catch (error: any) {
-
-  console.log("===== ADD MEDIA ERROR =====");
-
-  console.log(error);
-
-  return res.status(500).json(
-    errorResponse(
-      error.message ?? "Failed to add media."
-    )
-  );
 
 }
-}
 
-
-
-export async function deleteMediaController(
-  req: Request,
-  res: Response
-) {
-  try {
-    const { id, publicId } = req.params;
-
-    const echo = await deleteMediaFromEcho(
-      id,
-      publicId
-    );
-
-    if (!echo) {
-      return res.status(404).json(
-        errorResponse("Echo not found.")
-      );
-    }
-
-    return res.json(
-      successResponse(
-        "Media deleted successfully.",
-        echo
-      )
-    );
-
-  } catch (error) {
-
-    console.error(
-      "===== DELETE MEDIA ERROR ====="
-    );
-
-    console.error(error);
-
-    return res.status(500).json(
-      errorResponse(
-        "Failed to delete media."
-      )
-    );
-  }
-}
-
-
+/* -------------------------------- */
+/* Delete Echo */
+/* -------------------------------- */
 
 export async function deleteEchoController(
-  req: Request,
+  req: AuthRequest,
   res: Response
 ) {
-  try {
-    const echo =
-      await deleteEcho(req.params.id);
 
-    if (!echo) {
-      return res.status(404).json(
-        errorResponse(
-          "Echo not found."
-        )
-      );
-    }
+  try {
+
+    await deleteEchoService(
+
+      req.user!.id,
+
+      req.params.id
+
+    );
 
     return res.json(
+
       successResponse(
         "Echo deleted successfully."
       )
-    );
-  } catch {
-    return res.status(500).json(
-      errorResponse(
-        "Failed to delete Echo."
-      )
-    );
-  }
-}
 
-export async function toggleFavoriteController(
-  req: Request,
-  res: Response
-) {
-  try {
-    const echo =
-      await toggleFavorite(req.params.id);
-
-    if (!echo) {
-      return res.status(404).json(
-        errorResponse(
-          "Echo not found."
-        )
-      );
-    }
-
-    return res.json(
-      successResponse(
-        "Favorite updated.",
-        echo
-      )
-    );
-  } catch {
-    return res.status(500).json(
-      errorResponse(
-        "Failed to update favorite."
-      )
-    );
-  }
-}
-
-
-export async function setCoverMediaController(
-  req: Request,
-  res: Response
-) {
-  try {
-
-    const { id } = req.params;
-
-    const { coverMediaId } = req.body;
-
-    const echo = await setCoverMedia(
-      id,
-      coverMediaId
-    );
-
-    if (!echo) {
-      return res.status(404).json(
-        errorResponse("Echo not found.")
-      );
-    }
-
-    return res.json(
-      successResponse(
-        "Cover media updated successfully.",
-        echo
-      )
-    );
-
-  } catch (error) {
-
-    console.error(
-      "===== SET COVER ERROR ====="
-    );
-
-    console.error(error);
-
-    return res.status(500).json(
-      errorResponse(
-        "Failed to update cover media."
-      )
     );
 
   }
+
+  catch (error: any) {
+
+    return res.status(404).json(
+
+      errorResponse(
+        error.message
+      )
+
+    );
+
+  }
+
 }
 
+/* -------------------------------- */
+/* Search Echoes */
+/* -------------------------------- */
 
 export async function searchEchoesController(
-  req: Request,
+  req: AuthRequest,
   res: Response
 ) {
+
   try {
-    const q =
-      String(req.query.q ?? "");
 
     const echoes =
-      await searchEchoes(q);
+      await searchEchoesService(
+
+        req.user!.id,
+
+        String(req.query.q ?? "")
+
+      );
 
     return res.json(
+
       successResponse(
         "Search completed.",
         echoes
       )
+
     );
-  } catch {
-    return res.status(500).json(
-      errorResponse(
-        "Search failed."
-      )
-    );
+
   }
+
+  catch (error: any) {
+
+    return res.status(500).json(
+
+      errorResponse(
+        error.message
+      )
+
+    );
+
+  }
+
+}
+
+/* -------------------------------- */
+/* Toggle Favorite */
+/* -------------------------------- */
+
+export async function toggleFavoriteController(
+  req: AuthRequest,
+  res: Response
+) {
+
+  try {
+
+    const echo =
+      await toggleFavoriteService(
+
+        req.user!.id,
+
+        req.params.id
+
+      );
+
+    return res.json(
+
+      successResponse(
+        "Favorite updated.",
+        echo
+      )
+
+    );
+
+  }
+
+  catch (error: any) {
+
+    return res.status(404).json(
+
+      errorResponse(
+        error.message
+      )
+
+    );
+
+  }
+
+}
+
+/* -------------------------------- */
+/* Add Media */
+/* -------------------------------- */
+
+export async function addMediaToEchoController(
+  req: AuthRequest,
+  res: Response
+) {
+
+  try {
+
+    const echo =
+      await addMediaService(
+
+        req.user!.id,
+
+        req.params.id,
+
+        req.body.media
+
+      );
+
+    return res.json(
+
+      successResponse(
+        "Media added successfully.",
+        echo
+      )
+
+    );
+
+  }
+
+  catch (error: any) {
+
+    return res.status(400).json(
+
+      errorResponse(
+        error.message
+      )
+
+    );
+
+  }
+
+}
+
+/* -------------------------------- */
+/* Delete Media */
+/* -------------------------------- */
+
+export async function deleteMediaController(
+  req: AuthRequest,
+  res: Response
+) {
+
+  try {
+
+    const echo =
+      await removeMediaService(
+
+        req.user!.id,
+
+        req.params.id,
+
+        req.params.publicId
+
+      );
+
+    return res.json(
+
+      successResponse(
+        "Media deleted successfully.",
+        echo
+      )
+
+    );
+
+  }
+
+  catch (error: any) {
+
+    return res.status(404).json(
+
+      errorResponse(
+        error.message
+      )
+
+    );
+
+  }
+
+}
+
+/* -------------------------------- */
+/* Set Cover */
+/* -------------------------------- */
+
+export async function setCoverMediaController(
+  req: AuthRequest,
+  res: Response
+) {
+
+  try {
+
+    const echo =
+      await setCoverMediaService(
+
+        req.user!.id,
+
+        req.params.id,
+
+        req.body.coverMediaId
+
+      );
+
+    return res.json(
+
+      successResponse(
+        "Cover updated successfully.",
+        echo
+      )
+
+    );
+
+  }
+
+  catch (error: any) {
+
+    return res.status(400).json(
+
+      errorResponse(
+        error.message
+      )
+
+    );
+
+  }
+
 }

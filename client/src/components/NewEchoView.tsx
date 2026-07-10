@@ -14,7 +14,7 @@ import {
   SaveEchoButton,
 } from "@/components/NewEcho";
 
-import CalendarModal from "@/components/Calendar/CalendarModal";
+import CalendarModal from "@/components/Modals/CalendarModal";
 
 import { moods } from "@/components/NewEcho/moods";
 

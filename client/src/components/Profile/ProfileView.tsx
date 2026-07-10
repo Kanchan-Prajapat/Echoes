@@ -1,155 +1,221 @@
+import { useMemo } from "react";
+import { format } from "date-fns";
+
+import AppContainer from "@/styles/AppContainer";
+
+import { useEchoStore } from "@/store/echoStore";
+
 import {
-  Camera,
-  Heart,
-  MapPin,
-  Moon,
-  Settings,
-  Shield,
-  ChevronRight,
-} from "lucide-react";
-import { motion } from "framer-motion";
-
-const stats = [
-  {
-    label: "Memories",
-    value: "142",
-    icon: Camera,
-  },
-  {
-    label: "Places",
-    value: "34",
-    icon: MapPin,
-  },
-  {
-    label: "Favorites",
-    value: "56",
-    icon: Heart,
-  },
-];
-
-const menus = [
-  {
-    title: "Appearance",
-    subtitle: "Dark Mode",
-    icon: Moon,
-  },
-  {
-    title: "Privacy",
-    subtitle: "Your memories stay private",
-    icon: Shield,
-  },
-  {
-    title: "Settings",
-    subtitle: "Manage your preferences",
-    icon: Settings,
-  },
-];
+  ProfileHeader,
+  StatsGrid,
+  JourneyCard,
+  Achievements,
+  QuickActions,
+} from "@/components/Profile";
 
 export default function ProfileView() {
-  return (
-    <main className="min-h-screen bg-[#F8F9FD] pb-28">
 
-      {/* Cover */}
-
-      <div className="h-52 bg-gradient-to-br from-violet-600 via-indigo-500 to-purple-500" />
-
-      {/* Avatar */}
-
-      <div className="-mt-20 flex flex-col items-center">
-
-        <motion.img
-          whileHover={{ scale: 1.05 }}
-          src="/profile.jpg"
-          className="h-36 w-36 rounded-full border-8 border-white object-cover shadow-xl"
-        />
-
-        <h1 className="mt-5 text-3xl font-bold">
-          Kanchan Prajapat
-        </h1>
-
-        <p className="mt-2 text-gray-500">
-          Echo Keeper ✨
-        </p>
-
-      </div>
-
-      {/* Stats */}
-
-      <div className="mx-6 mt-10 grid grid-cols-3 gap-4">
-
-        {stats.map((item) => {
-          const Icon = item.icon;
-
-          return (
-            <motion.div
-              whileHover={{ y: -5 }}
-              key={item.label}
-              className="rounded-3xl bg-white p-5 text-center shadow-lg"
-            >
-              <Icon
-                className="mx-auto mb-3 text-violet-600"
-                size={24}
-              />
-
-              <h2 className="text-2xl font-bold">
-                {item.value}
-              </h2>
-
-              <p className="mt-2 text-sm text-gray-500">
-                {item.label}
-              </p>
-            </motion.div>
-          );
-        })}
-
-      </div>
-
-      {/* Menu */}
-
-      <div className="mx-6 mt-10 rounded-3xl bg-white shadow-lg">
-
-        {menus.map((item) => {
-          const Icon = item.icon;
-
-          return (
-            <button
-              key={item.title}
-              className="flex w-full items-center justify-between border-b px-6 py-5 last:border-none"
-            >
-              <div className="flex items-center gap-4">
-
-                <div className="rounded-2xl bg-violet-100 p-3">
-                  <Icon
-                    className="text-violet-600"
-                    size={22}
-                  />
-                </div>
-
-                <div className="text-left">
-
-                  <h3 className="font-semibold">
-                    {item.title}
-                  </h3>
-
-                  <p className="text-sm text-gray-500">
-                    {item.subtitle}
-                  </p>
-
-                </div>
-
-              </div>
-
-              <ChevronRight
-                size={20}
-                className="text-gray-400"
-              />
-
-            </button>
-          );
-        })}
-
-      </div>
-
-    </main>
+  const echoes = useEchoStore(
+    (state) => state.echoes
   );
+
+  /* ---------------- Statistics ---------------- */
+
+  const totalEchoes = echoes.length;
+
+  const photos = echoes.reduce(
+    (count, echo) =>
+      count +
+      echo.media.filter(
+        (m) => m.type === "image"
+      ).length,
+    0
+  );
+
+  const videos = echoes.reduce(
+    (count, echo) =>
+      count +
+      echo.media.filter(
+        (m) => m.type === "video"
+      ).length,
+    0
+  );
+
+  const favorites = echoes.filter(
+    (e) => e.favorite
+  ).length;
+
+  const locations = new Set(
+    echoes
+      .map((e) => e.location?.trim())
+      .filter(Boolean)
+  ).size;
+
+  /* ---------------- Journey ---------------- */
+
+  const sorted = useMemo(() => {
+
+    return [...echoes].sort(
+
+      (a, b) =>
+
+        new Date(a.date).getTime() -
+
+        new Date(b.date).getTime()
+
+    );
+
+  }, [echoes]);
+
+  const firstMemory =
+    sorted.length > 0
+      ? format(
+          new Date(sorted[0].date),
+          "dd/MM/yyyy"
+        )
+      : "--";
+
+  const latestMemory =
+    sorted.length > 0
+      ? format(
+          new Date(
+            sorted[sorted.length - 1].date
+          ),
+          "dd/MM/yyyy"
+        )
+      : "--";
+
+  /* ---------------- Most Used Mood ---------------- */
+
+  const favoriteMood = useMemo(() => {
+
+    const moodMap: Record<
+      string,
+      number
+    > = {};
+
+    echoes.forEach((echo) => {
+
+      moodMap[echo.mood] =
+        (moodMap[echo.mood] ?? 0) + 1;
+
+    });
+
+    return Object.entries(moodMap)
+
+      .sort(
+        (a, b) =>
+          b[1] - a[1]
+      )[0]?.[0] ?? "--";
+
+  }, [echoes]);
+
+  /* ---------------- Most Active Month ---------------- */
+
+  const activeMonth = useMemo(() => {
+
+    const monthMap: Record<
+      string,
+      number
+    > = {};
+
+    echoes.forEach((echo) => {
+
+      const month = format(
+        new Date(echo.date),
+        "MMMM yyyy"
+      );
+
+      monthMap[month] =
+        (monthMap[month] ?? 0) + 1;
+
+    });
+
+    return Object.entries(monthMap)
+
+      .sort(
+        (a, b) =>
+          b[1] - a[1]
+      )[0]?.[0] ?? "--";
+
+  }, [echoes]);
+
+  return (
+
+    <AppContainer className="py-8 pb-32">
+
+      <ProfileHeader
+        totalEchoes={totalEchoes}
+      />
+
+      <StatsGrid
+        photos={photos}
+        videos={videos}
+        favorites={favorites}
+        locations={locations}
+      />
+
+      <JourneyCard
+        firstMemory={firstMemory}
+        latestMemory={latestMemory}
+        favoriteMood={favoriteMood}
+        activeMonth={activeMonth}
+      />
+
+      <Achievements
+        totalEchoes={totalEchoes}
+        photos={photos}
+        videos={videos}
+        favorites={favorites}
+        locations={locations}
+      />
+
+      <QuickActions
+
+        onExport={() => {
+
+          console.log(
+            "Export Memories"
+          );
+
+        }}
+
+        onImport={() => {
+
+          console.log(
+            "Import Backup"
+          );
+
+        }}
+
+        onAppearance={() => {
+
+          console.log(
+            "Appearance"
+          );
+
+        }}
+
+        onDateFormat={() => {
+
+          console.log(
+            "Date Format"
+          );
+
+        }}
+
+        onAbout={() => {
+
+          console.log(
+            "About Echoes"
+          );
+
+        }}
+
+      />
+
+    </AppContainer>
+
+  );
+
 }

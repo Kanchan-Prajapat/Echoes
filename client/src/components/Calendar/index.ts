@@ -5,4 +5,4 @@ export { default as CalendarGrid } from "./CalendarGrid";
 export { default as CalendarDay } from "./CalendarDay";
 export { default as CalendarBottomSheet } from "./CalendarBottomSheet";
 export { default as CalendarDayPreview } from "./CalendarDayPreview";
-export { default as CalendarModal } from "./CalendarModal";
+export { default as CalendarModal } from "@/components/Modals/CalendarModal";

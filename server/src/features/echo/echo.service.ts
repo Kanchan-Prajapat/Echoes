@@ -1,181 +1,256 @@
-import EchoModel from "./echo.model.js";
+import {
+  createEcho,
+  findAllEchoes,
+  findEchoById,
+  updateEcho,
+  deleteEcho,
+  searchEchoes,
+  toggleFavorite,
+  addMedia,
+  removeMedia,
+  setCoverMedia,
+} from "./echo.repository.js";
 
 import {
   CreateEchoDTO,
   UpdateEchoDTO,
-  IMedia,
+  MediaDTO,
 } from "./echo.types.js";
-import cloudinary from "../../config/cloudinary.js";
 
-export async function createEcho(
-  data: CreateEchoDTO
+/* ------------------------------------------------ */
+/* Create */
+/* ------------------------------------------------ */
+
+export async function createEchoService(
+  owner: string,
+  data: Omit<CreateEchoDTO, "owner">
 ) {
-  const echo = await EchoModel.create(data);
 
-  return echo.toJSON();
+  return createEcho({
+    owner,
+    ...data,
+  });
+
 }
 
-export async function addMediaToEcho(
-  id: string,
-  media: IMedia[]
+/* ------------------------------------------------ */
+/* Get All */
+/* ------------------------------------------------ */
+
+export async function getAllEchoesService(
+  owner: string
 ) {
-  const echo = await EchoModel.findById(id);
+
+  return findAllEchoes(owner);
+
+}
+
+/* ------------------------------------------------ */
+/* Get By ID */
+/* ------------------------------------------------ */
+
+export async function getEchoByIdService(
+  owner: string,
+  id: string
+) {
+
+  const echo =
+    await findEchoById(id, owner);
 
   if (!echo) {
-    return null;
+
+    throw new Error(
+      "Echo not found."
+    );
+
   }
 
-  echo.media.push(...media);
+  return echo;
 
-  // If no cover image exists, make the first uploaded media the cover
-  if (!echo.coverMediaId && media.length > 0) {
-    echo.coverMediaId = media[0].publicId;
-  }
-
-  await echo.save();
-
-  return echo.toJSON();
 }
 
+/* ------------------------------------------------ */
+/* Update */
+/* ------------------------------------------------ */
 
+export async function updateEchoService(
+  owner: string,
+  id: string,
+  data: UpdateEchoDTO
+) {
 
-export async function deleteMediaFromEcho(
+  const echo =
+    await updateEcho(
+      id,
+      owner,
+      data
+    );
+
+  if (!echo) {
+
+    throw new Error(
+      "Echo not found."
+    );
+
+  }
+
+  return echo;
+
+}
+
+/* ------------------------------------------------ */
+/* Delete */
+/* ------------------------------------------------ */
+
+export async function deleteEchoService(
+  owner: string,
+  id: string
+) {
+
+  const echo =
+    await deleteEcho(
+      id,
+      owner
+    );
+
+  if (!echo) {
+
+    throw new Error(
+      "Echo not found."
+    );
+
+  }
+
+  return echo;
+
+}
+
+/* ------------------------------------------------ */
+/* Search */
+/* ------------------------------------------------ */
+
+export async function searchEchoesService(
+  owner: string,
+  query: string
+) {
+
+  return searchEchoes(
+    owner,
+    query
+  );
+
+}
+
+/* ------------------------------------------------ */
+/* Toggle Favorite */
+/* ------------------------------------------------ */
+
+export async function toggleFavoriteService(
+  owner: string,
+  id: string
+) {
+
+  const echo =
+    await toggleFavorite(
+      id,
+      owner
+    );
+
+  if (!echo) {
+
+    throw new Error(
+      "Echo not found."
+    );
+
+  }
+
+  return echo;
+
+}
+
+/* ------------------------------------------------ */
+/* Add Media */
+/* ------------------------------------------------ */
+
+export async function addMediaService(
+  owner: string,
+  id: string,
+  media: MediaDTO[]
+) {
+
+  const echo =
+    await addMedia(
+      id,
+      owner,
+      media
+    );
+
+  if (!echo) {
+
+    throw new Error(
+      "Echo not found."
+    );
+
+  }
+
+  return echo;
+
+}
+
+/* ------------------------------------------------ */
+/* Remove Media */
+/* ------------------------------------------------ */
+
+export async function removeMediaService(
+  owner: string,
   id: string,
   publicId: string
 ) {
-  const echo = await EchoModel.findById(id);
+
+  const echo =
+    await removeMedia(
+      id,
+      owner,
+      publicId
+    );
 
   if (!echo) {
-    return null;
+
+    throw new Error(
+      "Echo not found."
+    );
+
   }
 
-  // Delete from Cloudinary
-  await cloudinary.uploader.destroy(publicId);
+  return echo;
 
-  // Remove from MongoDB
-  echo.media = echo.media.filter(
-    (media) => media.publicId !== publicId
-  );
-
-  // If cover image was deleted, assign a new one
-  if (echo.coverMediaId === publicId) {
-    echo.coverMediaId =
-      echo.media[0]?.publicId ?? "";
-  }
-
-  await echo.save();
-
-  return echo.toJSON();
 }
 
+/* ------------------------------------------------ */
+/* Set Cover */
+/* ------------------------------------------------ */
 
-
-export async function getAllEchoes() {
-    return await EchoModel.find().sort({
-        date: -1,
-    });
-}
-
-export async function getEchoById(
-    id: string
-) {
-    return await EchoModel.findById(id);
-}
-
-export async function updateEcho(
-    id: string,
-    data: UpdateEchoDTO
-) {
-    return await EchoModel.findByIdAndUpdate(
-        id,
-        data,
-        {
-            new: true,
-            runValidators: true,
-        }
-    );
-}
-
-export async function deleteEcho(
-    id: string
-) {
-    return await EchoModel.findByIdAndDelete(
-        id
-    );
-}
-
-
-export async function setCoverMedia(
+export async function setCoverMediaService(
+  owner: string,
   id: string,
   coverMediaId: string
 ) {
-  const echo = await EchoModel.findById(id);
+
+  const echo =
+    await setCoverMedia(
+      id,
+      owner,
+      coverMediaId
+    );
 
   if (!echo) {
-    return null;
-  }
 
-  const mediaExists = echo.media.some(
-    (media) => media.publicId === coverMediaId
-  );
-
-  if (!mediaExists) {
     throw new Error(
-      "Selected media does not exist."
+      "Echo not found."
     );
+
   }
-  echo.coverMediaId = coverMediaId;
-  await echo.save();
-  return echo.toJSON();
-}
 
+  return echo;
 
-export async function toggleFavorite(
-    id: string
-) {
-    const echo =
-        await EchoModel.findById(id);
-
-    if (!echo) return null;
-
-    echo.favorite = !echo.favorite;
-
-    await echo.save();
-
-    return echo.toJSON();
-}
-
-export async function searchEchoes(
-    query: string
-) {
-    return await EchoModel.find({
-        $or: [
-            {
-                title: {
-                    $regex: query,
-                    $options: "i",
-                },
-            },
-            {
-                description: {
-                    $regex: query,
-                    $options: "i",
-                },
-            },
-            {
-                location: {
-                    $regex: query,
-                    $options: "i",
-                },
-            },
-            {
-                tags: {
-                    $regex: query,
-                    $options: "i",
-                },
-            },
-        ],
-    }).sort({
-        date: -1,
-    });
 }
