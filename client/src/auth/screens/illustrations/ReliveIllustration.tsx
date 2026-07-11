@@ -16,13 +16,15 @@ export default function ReliveIllustration() {
         relative
         flex
         h-330px]
-             max-w-[520px]
+         max-w-[520px]
 
         items-center
 
         justify-center
 
         overflow-visible
+
+        mb-15
       "
     >
 

@@ -21,7 +21,7 @@ export interface Echo {
   lastViewedIndex?:number;
 }
 
-export type TabType = "home" | "timeline" | "add" | "calendar" | "profile";
+export type TabType = "home" | "timeline" | "add" | "calendar" | "profile" ;
 
 export interface MoodConfig {
   name: string;

@@ -1,179 +1,156 @@
-import { motion } from "framer-motion";
+import { Camera } from "lucide-react";
+
+import { Profile } from "@/types/profile.types";
 
 interface Props {
-  totalEchoes: number;
+
+  profile: Profile;
+
+  onChangePhoto?: () => void;
+
 }
 
 export default function ProfileHeader({
-  totalEchoes,
+
+  profile,
+
+  onChangePhoto,
+
 }: Props) {
 
   return (
 
-    <motion.section
-
-      initial={{
-        opacity: 0,
-        y: 20,
-      }}
-
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-
-      transition={{
-        duration: .45,
-      }}
-
-      className="text-center"
-
+    <section
+      className="
+        rounded-3xl
+        bg-white
+        p-8
+        shadow-sm
+      "
     >
 
-      {/* Avatar */}
+      <div className="flex flex-col items-center">
 
-      <motion.div
+        {/* Avatar */}
 
-        whileHover={{
-          scale: 1.05,
-        }}
+        <div className="relative">
 
-        className="
-          mx-auto
+          <img
 
-          flex
-          h-28
-          w-28
+            src={
+              profile.avatar ||
 
-          items-center
-          justify-center
+              `https://ui-avatars.com/api/?background=7C3AED&color=fff&name=${profile.username}`
+            }
 
-          rounded-full
+            alt={profile.username}
 
-          bg-gradient-to-br
-          from-violet-500
-          to-purple-600
+            className="
+              h-32
+              w-32
+              rounded-full
+              border-4
+              border-violet-500
+              object-cover
+            "
 
-          text-6xl
+          />
 
-          shadow-xl
-        "
+          <button
 
-      >
+            onClick={onChangePhoto}
 
-        😊
+            className="
+              absolute
+              bottom-1
+              right-1
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-full
+              bg-violet-600
+              text-white
+              shadow-lg
+              transition
+              hover:bg-violet-700
+            "
 
-      </motion.div>
+          >
 
-      {/* Name */}
+            <Camera size={18} />
 
-      <h1
-        className="
-          mt-6
+          </button>
 
-          text-3xl
+        </div>
 
-          font-black
+        {/* Greeting */}
 
-          text-gray-900
-        "
-      >
-
-        Kanchan
-
-      </h1>
-
-      {/* Subtitle */}
-
-      <p
-        className="
-          mt-2
-
-          text-violet-600
-
-          font-semibold
-        "
-      >
-
-        Digital Memory Shelf
-
-      </p>
-
-      {/* Quote */}
-
-      <p
-        className="
-          mx-auto
-
-          mt-6
-
-          max-w-md
-
-          leading-relaxed
-
-          text-gray-500
-        "
-      >
-
-        Life isn't measured by the number of breaths we take,
-        but by the moments that take our breath away.
-
-      </p>
-
-      {/* Counter */}
-
-      <motion.div
-
-        whileHover={{
-          scale: 1.02,
-        }}
-
-        className="
-          mx-auto
-
-          mt-8
-
-          inline-flex
-
-          items-center
-
-          gap-3
-
-          rounded-full
-
-          bg-violet-50
-
-          px-6
-          py-3
-
-          shadow-sm
-        "
-
-      >
-
-        <span className="text-2xl">
-
-          ❤️
-
-        </span>
-
-        <span
+        <p
           className="
-            text-lg
-
-            font-bold
+            mt-6
+            text-sm
+            font-medium
+            text-violet-500
           "
         >
 
-          {totalEchoes}
+          Good to see you 👋
 
-          Memories
+        </p>
 
-        </span>
+        {/* Name */}
 
-      </motion.div>
+        <h1
+          className="
+            mt-2
+            text-3xl
+            font-bold
+            text-gray-900
+          "
+        >
 
-    </motion.section>
+          {profile.username}
+
+        </h1>
+
+        {/* Email */}
+
+        <p
+          className="
+            mt-2
+            text-gray-500
+          "
+        >
+
+          {profile.email}
+
+        </p>
+
+        {/* Bio */}
+
+        {profile.bio && (
+
+          <p
+            className="
+              mt-5
+              max-w-lg
+              text-center
+              leading-7
+              text-gray-600
+            "
+          >
+
+            {profile.bio}
+
+          </p>
+
+        )}
+
+      </div>
+
+    </section>
 
   );
 

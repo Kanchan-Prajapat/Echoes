@@ -23,6 +23,8 @@ export default function StoryIllustration() {
         justify-center
 
         overflow-visible
+
+         mb-5
       "
     >
 

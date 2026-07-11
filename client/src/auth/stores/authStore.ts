@@ -11,6 +11,8 @@ interface AuthState {
 
   loading: boolean;
 
+  sessionChecked: boolean;
+
   isAuthenticated: boolean;
 
   login: (
@@ -21,6 +23,10 @@ interface AuthState {
   logout: () => void;
 
   setLoading: (
+    value: boolean
+  ) => void;
+
+  setSessionChecked: (
     value: boolean
   ) => void;
 
@@ -39,6 +45,14 @@ export const useAuthStore = create<AuthState>()(
       loading: false,
 
       isAuthenticated: false,
+      sessionChecked: false,
+
+      setSessionChecked: (
+  sessionChecked
+) =>
+  set({
+    sessionChecked,
+  }),
 
       login: (user, token) =>
 
@@ -52,17 +66,13 @@ export const useAuthStore = create<AuthState>()(
 
         }),
 
-      logout: () =>
-
-        set({
-
-          user: null,
-
-          token: null,
-
-          isAuthenticated: false,
-
-        }),
+    logout: () =>
+  set({
+    user: null,
+    token: null,
+    isAuthenticated: false,
+    sessionChecked: true,
+  }),
 
       setLoading: (loading) =>
 

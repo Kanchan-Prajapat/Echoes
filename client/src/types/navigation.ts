@@ -4,6 +4,7 @@ export type Screen =
   | "calendar"
   | "search"
   | "profile"
+  | "echo-details"
   | "new-echo";
 
 export interface NavigationState {

@@ -1,220 +1,125 @@
-import { useMemo } from "react";
-import { format } from "date-fns";
+import useProfile from "@/hooks/useProfile";
+import useProfileStats from "@/hooks/useProfileStats";
 
-import AppContainer from "@/styles/AppContainer";
+import ProfileHeader from "./ProfileHeader";
+import ProfileStats from "./ProfileStats";
+import ProfileActions from "./ProfileActions";
 
-import { useEchoStore } from "@/store/echoStore";
-
-import {
-  ProfileHeader,
-  StatsGrid,
-  JourneyCard,
-  Achievements,
-  QuickActions,
-} from "@/components/Profile";
+import { useAuthStore } from "@/auth/stores/authStore";
 
 export default function ProfileView() {
 
-  const echoes = useEchoStore(
-    (state) => state.echoes
+  const {
+
+    profile,
+
+    loading,
+
+    error,
+
+  } = useProfile();
+
+  const {
+
+    totalEchoes,
+
+    favoriteEchoes,
+
+    totalPhotos,
+
+    totalVideos,
+
+  } = useProfileStats();
+
+  const logout = useAuthStore(
+    (state) => state.logout
   );
 
-  /* ---------------- Statistics ---------------- */
+  if (loading) {
 
-  const totalEchoes = echoes.length;
+    return (
 
-  const photos = echoes.reduce(
-    (count, echo) =>
-      count +
-      echo.media.filter(
-        (m) => m.type === "image"
-      ).length,
-    0
-  );
+      <div className="p-8">
 
-  const videos = echoes.reduce(
-    (count, echo) =>
-      count +
-      echo.media.filter(
-        (m) => m.type === "video"
-      ).length,
-    0
-  );
+        Loading profile...
 
-  const favorites = echoes.filter(
-    (e) => e.favorite
-  ).length;
-
-  const locations = new Set(
-    echoes
-      .map((e) => e.location?.trim())
-      .filter(Boolean)
-  ).size;
-
-  /* ---------------- Journey ---------------- */
-
-  const sorted = useMemo(() => {
-
-    return [...echoes].sort(
-
-      (a, b) =>
-
-        new Date(a.date).getTime() -
-
-        new Date(b.date).getTime()
+      </div>
 
     );
 
-  }, [echoes]);
+  }
 
-  const firstMemory =
-    sorted.length > 0
-      ? format(
-          new Date(sorted[0].date),
-          "dd/MM/yyyy"
-        )
-      : "--";
+  if (error) {
 
-  const latestMemory =
-    sorted.length > 0
-      ? format(
-          new Date(
-            sorted[sorted.length - 1].date
-          ),
-          "dd/MM/yyyy"
-        )
-      : "--";
+    return (
 
-  /* ---------------- Most Used Mood ---------------- */
+      <div className="p-8 text-red-500">
 
-  const favoriteMood = useMemo(() => {
+        {error}
 
-    const moodMap: Record<
-      string,
-      number
-    > = {};
+      </div>
 
-    echoes.forEach((echo) => {
+    );
 
-      moodMap[echo.mood] =
-        (moodMap[echo.mood] ?? 0) + 1;
+  }
 
-    });
-
-    return Object.entries(moodMap)
-
-      .sort(
-        (a, b) =>
-          b[1] - a[1]
-      )[0]?.[0] ?? "--";
-
-  }, [echoes]);
-
-  /* ---------------- Most Active Month ---------------- */
-
-  const activeMonth = useMemo(() => {
-
-    const monthMap: Record<
-      string,
-      number
-    > = {};
-
-    echoes.forEach((echo) => {
-
-      const month = format(
-        new Date(echo.date),
-        "MMMM yyyy"
-      );
-
-      monthMap[month] =
-        (monthMap[month] ?? 0) + 1;
-
-    });
-
-    return Object.entries(monthMap)
-
-      .sort(
-        (a, b) =>
-          b[1] - a[1]
-      )[0]?.[0] ?? "--";
-
-  }, [echoes]);
+ if (!profile) {
 
   return (
 
-    <AppContainer className="py-8 pb-32">
+    <div className="p-6">
+
+      No profile found
+
+    </div>
+
+  );
+
+}
+
+  return (
+
+    <main
+      className="
+        mx-auto
+        max-w-5xl
+        px-6
+        py-8
+        pb-32
+      "
+    >
 
       <ProfileHeader
+
+        profile={profile}
+
+      />
+
+      <ProfileStats
+
         totalEchoes={totalEchoes}
-      />
 
-      <StatsGrid
-        photos={photos}
-        videos={videos}
-        favorites={favorites}
-        locations={locations}
-      />
+        favoriteEchoes={favoriteEchoes}
 
-      <JourneyCard
-        firstMemory={firstMemory}
-        latestMemory={latestMemory}
-        favoriteMood={favoriteMood}
-        activeMonth={activeMonth}
-      />
+        totalPhotos={totalPhotos}
 
-      <Achievements
-        totalEchoes={totalEchoes}
-        photos={photos}
-        videos={videos}
-        favorites={favorites}
-        locations={locations}
-      />
-
-      <QuickActions
-
-        onExport={() => {
-
-          console.log(
-            "Export Memories"
-          );
-
-        }}
-
-        onImport={() => {
-
-          console.log(
-            "Import Backup"
-          );
-
-        }}
-
-        onAppearance={() => {
-
-          console.log(
-            "Appearance"
-          );
-
-        }}
-
-        onDateFormat={() => {
-
-          console.log(
-            "Date Format"
-          );
-
-        }}
-
-        onAbout={() => {
-
-          console.log(
-            "About Echoes"
-          );
-
-        }}
+        totalVideos={totalVideos}
 
       />
 
-    </AppContainer>
+      <ProfileActions
+
+        onEdit={() => {}}
+
+        onFavorites={() => {}}
+
+        onSettings={() => {}}
+
+        onLogout={logout}
+
+      />
+
+    </main>
 
   );
 

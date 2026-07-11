@@ -7,6 +7,7 @@ import { getEchoes } from "./services/echo.service";
 import { useEchoStore } from "./store/echoStore";
 import { useAuthStore } from "@/auth/stores/authStore";
 import RootNavigator from "./navigation/RootNavigator";
+import useSession from "@/auth/hooks/useSession";
 
 export default function App() {
 
@@ -44,6 +45,7 @@ useEffect(() => {
   loadEchoes();
 
 }, [authenticated, setEchoes]);
+    useSession();
 
   return <RootNavigator />;
 
