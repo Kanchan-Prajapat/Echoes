@@ -7,6 +7,7 @@ interface SignupData {
   confirmPassword: string;
 }
 import { useAuthStore } from "@/auth/stores/authStore";
+import { useNavigationStore } from "@/store/navigationStore";
 export default function useSignup() {
 const login = useAuthStore(
   (state) => state.login
@@ -82,6 +83,12 @@ login(
   response.user,
   response.token
 );
+
+
+
+useNavigationStore
+  .getState()
+  .reset("home");
 
 console.log(response);
 

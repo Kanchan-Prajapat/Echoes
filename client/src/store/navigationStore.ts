@@ -1,59 +1,42 @@
-// export async function toggleFavorite(
-//   echoId: string
-// ) {
-//   const { data } = await api.patch(
-//     `/echoes/${echoId}/favorite`
-//   );
-
-//   return data;
-// }
-
 import { create } from "zustand";
 
-export type Screen =
+import {
 
-  | "splash"
+  NavigationState,
 
-  | "welcome"
+  Screen,
 
-  | "login"
+} from "@/types/navigation";
 
-  | "signup"
-
-  | "forgot-password"
-
-  | "home"
-
-  | "new-echo"
-
-  | "echo-detail"
-
-  | "profile"
-
-  | "search"
-
-  | "timeline"
-
-  | "settings";
-
-interface NavigationStore {
-
-  current: Screen;
-
-  history: Screen[];
+interface NavigationStore
+  extends NavigationState {
 
   navigate: (
-    screen: Screen
+
+    screen: Screen,
+
+    options?: {
+
+      selectedEchoId?: string;
+
+      editingEchoId?: string;
+
+    }
+
   ) => void;
 
   replace: (
+
     screen: Screen
+
   ) => void;
 
   goBack: () => void;
 
   reset: (
+
     screen: Screen
+
   ) => void;
 
 }
@@ -61,11 +44,21 @@ interface NavigationStore {
 export const useNavigationStore =
 create<NavigationStore>((set, get) => ({
 
-  current: "splash",
+  current: "home",
 
   history: [],
 
-  navigate: (screen) =>
+  selectedEchoId: undefined,
+
+  editingEchoId: undefined,
+
+  navigate: (
+
+    screen,
+
+    options
+
+  ) =>
 
     set((state) => ({
 
@@ -79,9 +72,19 @@ create<NavigationStore>((set, get) => ({
 
       current: screen,
 
+      selectedEchoId:
+        options?.selectedEchoId,
+
+      editingEchoId:
+        options?.editingEchoId,
+
     })),
 
-  replace: (screen) =>
+  replace: (
+
+    screen
+
+  ) =>
 
     set({
 
@@ -91,34 +94,65 @@ create<NavigationStore>((set, get) => ({
 
   goBack: () => {
 
-    const history = get().history;
+    const history =
 
-    if (history.length === 0) return;
+      get().history;
+
+    if (!history.length)
+
+      return;
 
     const previous =
 
-      history[history.length - 1];
+      history[
+        history.length - 1
+      ];
 
     set({
 
       current: previous,
 
-      history: history.slice(
-        0,
-        history.length - 1
-      ),
+      history:
+
+        history.slice(
+
+          0,
+
+          history.length - 1
+
+        ),
+
+      selectedEchoId:
+
+        undefined,
+
+      editingEchoId:
+
+        undefined,
 
     });
 
   },
 
-  reset: (screen) =>
+  reset: (
+
+    screen
+
+  ) =>
 
     set({
 
       current: screen,
 
       history: [],
+
+      selectedEchoId:
+
+        undefined,
+
+      editingEchoId:
+
+        undefined,
 
     }),
 

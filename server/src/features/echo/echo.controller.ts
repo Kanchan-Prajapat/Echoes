@@ -78,37 +78,34 @@ export async function getAllEchoesController(
   req: AuthRequest,
   res: Response
 ) {
-
   try {
+
+    console.log("User:", req.user);
 
     const echoes =
       await getAllEchoesService(
         req.user!.id
       );
 
-    return res.json(
+    console.log("Echoes:", echoes);
 
+    return res.json(
       successResponse(
         "Echoes fetched successfully.",
         echoes
       )
-
     );
 
-  }
+  } catch (error: any) {
 
-  catch (error: any) {
+    console.log("========== ERROR ==========");
+    console.log(error);
+    console.log(error.stack);
 
     return res.status(500).json(
-
-      errorResponse(
-        error.message
-      )
-
+      errorResponse(error.message)
     );
-
   }
-
 }
 
 /* -------------------------------- */

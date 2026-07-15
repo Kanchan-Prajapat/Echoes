@@ -63,7 +63,7 @@ export default function HomeView({
 
         <EchoHighlights
           echoes={echoes}
-          onOpen={onOpenEcho}
+          onOpenEcho={onOpenEcho}
         />
 
         {/* Quote */}

@@ -10,7 +10,8 @@ import {
 } from "@/services/echo.service";
 
 import { refreshEchoes } from "@/services/echoSync";
-
+import useToast from "@/hooks/useToast";
+import useConfirm from "@/hooks/useConfirm";
 import { Media } from "@/types/media";
 interface Props {
     editingEchoId?: string;
@@ -65,6 +66,10 @@ export default function useNewEcho({
     const [showCalendar, setShowCalendar] =
         useState(false);
 
+    const toast = useToast();
+
+const { confirm } = useConfirm();
+
     const [showMoodPicker, setShowMoodPicker] =
         useState(false);
 
@@ -103,25 +108,50 @@ export default function useNewEcho({
     }, [editingEcho]);
 
 
-  const removeMedia = (mediaId: string) => {
+ const removeMedia = (mediaId: string) => {
 
-  setMedia((prev) => {
+  confirm({
 
-    const updated = prev.filter(
-      (m) => m.id !== mediaId
-    );
+    title: "Remove Media",
 
-    if (coverMediaId === mediaId) {
-      setCoverMediaId(updated[0]?.id);
-    }
+    message:
+      "This media will be removed from your memory.",
 
-    return updated;
+    confirmText: "Remove",
+
+    cancelText: "Cancel",
+
+    danger: true,
+
+    onConfirm: () => {
+
+      setMedia((prev) =>
+        prev.filter(
+          (item) => item.id !== mediaId
+        )
+      );
+
+      if (coverMediaId === mediaId) {
+
+        setCoverMediaId(undefined);
+
+      }
+
+      toast.success(
+        "Media removed."
+      );
+
+    },
+
   });
 
 };
 
 const setCover = (mediaId: string) => {
     setCoverMediaId(mediaId);
+    toast.success(
+  "Cover photo updated."
+);
 };
 
 
@@ -160,6 +190,13 @@ const setCover = (mediaId: string) => {
             ...uploaded,
 
         ]);
+
+        if (!coverMediaId && uploaded.length > 0) {
+
+  setCoverMediaId(uploaded[0].id);
+
+}
+
 e.target.value = "";
     };
 
@@ -199,7 +236,12 @@ e.target.value = "";
 
                 })
 
+                
+
             );
+            console.log("========= Uploaded Media =========");
+console.log(uploadedMedia);
+console.table(uploadedMedia);
 
             /* ---------- Cover ---------- */
 
@@ -257,9 +299,17 @@ uploadedMedia[0]?.id;
 
             /* ---------- Refresh ---------- */
 
-            await refreshEchoes();
+           await refreshEchoes();
 
-            onSaved();
+toast.success(
+
+  editingEchoId
+    ? "Memory updated successfully."
+    : "Memory created successfully."
+
+);
+
+onSaved();
 
         }
 
@@ -267,9 +317,9 @@ uploadedMedia[0]?.id;
 
             console.error(error);
 
-            alert(
-                "Unable to save memory."
-            );
+           toast.error(
+  "Failed to save memory."
+);
 
         }
 

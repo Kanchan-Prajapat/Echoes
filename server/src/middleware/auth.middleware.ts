@@ -24,27 +24,17 @@ export function authenticate(
       req.headers.authorization;
 
     if (!authorization) {
-
       return res.status(401).json({
-
         success: false,
-
         message: "Authorization header missing.",
-
       });
-
     }
 
     if (!authorization.startsWith("Bearer ")) {
-
       return res.status(401).json({
-
         success: false,
-
         message: "Invalid authorization format.",
-
       });
-
     }
 
     const token =
@@ -63,18 +53,12 @@ export function authenticate(
 
   } catch (error) {
 
-    console.error(
-      "===== AUTH MIDDLEWARE ERROR ====="
-    );
-
+    console.error("AUTH ERROR");
     console.error(error);
 
     return res.status(401).json({
-
       success: false,
-
       message: "Invalid or expired token.",
-
     });
 
   }

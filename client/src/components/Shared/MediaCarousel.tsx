@@ -26,7 +26,8 @@ export default function MediaCarousel({
   onOpenPlayer,
 }: Props) {
 
-
+  const [internalIndex, setInternalIndex] = useState(0);
+  
   if (media.length === 0) {
     return (
       <div
@@ -36,7 +37,7 @@ export default function MediaCarousel({
       </div>
     );
   }
-  const [internalIndex, setInternalIndex] = useState(0);
+
 
   const activeIndex =
     currentIndex ?? internalIndex;

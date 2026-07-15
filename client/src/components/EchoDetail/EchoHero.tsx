@@ -39,7 +39,17 @@ export default function EchoHero({
 
   return (
     <section
-      className=" relative h-[65vh] min-h-[520px] overflow-hidden rounded-b-[40px]">
+      className="
+    relative
+    mx-4
+    mt-4
+    h-[31vh]
+    min-h-[260px]
+    max-h-[340px]
+    overflow-hidden
+    rounded-[28px]
+  "
+    >
 
       {/* Carousel */}
 
@@ -52,7 +62,17 @@ export default function EchoHero({
 
       {/* Gradient */}
 
-      <div className="  pointer-events-none  absolute  inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/80" />
+      <div
+        className="
+    pointer-events-none
+    absolute
+    inset-0
+    bg-gradient-to-t
+    from-black/65
+    via-black/20
+    to-transparent
+  "
+      />
 
       {/* Top Bar */}
 
@@ -60,7 +80,7 @@ export default function EchoHero({
 
         <motion.button whileTap={{ scale: 0.92 }}
           onClick={onBack}
-          className="h-12 w-12 flex items-center justify-center rounded-full border border-white/15 bg-white/10 backdrop-blur-xl
+          className="h-10 w-10 flex items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-xl
  shadow-xl" >
           <ArrowLeft size={20} />
         </motion.button>
@@ -68,9 +88,9 @@ export default function EchoHero({
         <motion.button
           whileTap={{ scale: 0.92 }}
           onClick={onFavorite}
-          animate={{ scale: echo.favorite ? 1.2 : 1,}}
+          animate={{ scale: echo.favorite ? 1.2 : 1, }}
 
-          transition={{ type: "spring", stiffness: 300}}
+          transition={{ type: "spring", stiffness: 300 }}
           className="rounded-full bg-white/20 p-3 text-white backdrop-blur-md" >
           <Heart
             size={20}
@@ -88,11 +108,20 @@ export default function EchoHero({
 
         transition={{ duration: .45 }}
 
-        className="absolute bottom-0 left-0 right-0 z-20 p-6">
+        className="
+absolute
+bottom-0
+left-0
+right-0
+z-20
+px-5
+pb-5
+pt-8
+">
 
         <div className="absolute bottom-0 left-0 right-0 z-20 p-6 text-white">
 
-          <h1 className="text-4xl font-black leading-tight tracking-tight font-bold">
+          <h1 className="text-2xl font-black leading-tight tracking-tight font-bold">
             {echo.title}
           </h1>
 
@@ -103,37 +132,12 @@ export default function EchoHero({
 
               <CalendarDays size={15} />
 
-              <span>{echo.date}</span>
+              <span>
+                {new Date(echo.date).toLocaleDateString()}
+              </span>
 
             </div>
 
-
-            <div
-              className="flex items-centergap-2 rounded-full bg-white/10 px-4 py-2 backdrop-blur-xl"            >
-
-              <MapPin size={15} />
-
-              <span>{echo.location}</span>
-
-            </div>
-
-          </div>
-
-          <div className="mt-5 flex items-center gap-5">
-
-            <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 backdrop-blur-md">
-              <Images size={16} />
-              <span>{imageCount}</span>
-            </div>
-
-            <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 backdrop-blur-md">
-              <Video size={16} />
-              <span>{videoCount}</span>
-            </div>
-
-            <div className="rounded-full bg-white/20 px-4 py-2 backdrop-blur-md">
-              {echo.mood}
-            </div>
 
           </div>
 

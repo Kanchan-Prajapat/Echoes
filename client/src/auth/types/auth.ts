@@ -20,7 +20,7 @@ export interface AuthResponse {
 
   token: string;
 
-  user: {
+  owner: {
     id: string;
     name: string;
     email: string;

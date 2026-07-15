@@ -160,7 +160,8 @@ export default function EchoStats({
         <StatCard
           icon={<CalendarDays size={22} />}
           title="Created"
-          value={echo.date}
+          value= {new Date(echo.date).toLocaleDateString()}
+            
           color="bg-emerald-100 text-emerald-600"
         />
 

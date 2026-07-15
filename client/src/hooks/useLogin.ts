@@ -3,7 +3,7 @@ import { useState } from "react";
 import { login } from "../auth/api/auth.api";
 
 import { useAuthStore } from "@/auth/stores/authStore";
-
+import { useNavigationStore } from "@/store/navigationStore";
 
 
 interface LoginData {
@@ -69,6 +69,9 @@ loginStore(
   response.user,
   response.token
 );
+useNavigationStore
+    .getState()
+    .reset("home");
 
     }
 

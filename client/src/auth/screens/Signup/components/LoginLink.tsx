@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 
-import { useAuthNavigationStore } from "@/store/authNavigationStore";
+import { useNavigationStore } from "@/store/navigationStore";
 
 export default function LoginLink() {
 
-  const navigate = useAuthNavigationStore(
+  const navigate = useNavigationStore(
     (state) => state.navigate
   );
 

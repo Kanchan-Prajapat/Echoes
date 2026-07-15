@@ -5,7 +5,17 @@ import { Media } from "@/types/media";
 import { useEchoStore } from "@/store/echoStore";
 import EchoPlayer from "./EchoPlayer/EchoPlayer";
 import AddMediaModal from "./Modals/AddMediaModal";
-
+import ShareModal from "./Share/ShareModel";
+// import ShareCard from "@/components/Share/ShareCard";
+import useToast from "@/hooks/useToast";
+import useConfirm from "@/hooks/useConfirm";
+import PDFCover from "@/components/Share/PDF/PDFCover";
+import PDFGallery from "@/components/Share/PDF/PDFGallery";
+import PDFDetails from "@/components/Share/PDF/PDFDetails";
+import PDFFooter from "@/components/Share/PDF/PDFFooter";
+import {
+  createShareLink,
+} from "@/services/share.service";
 import {
   EchoHero,
   EchoGallery,
@@ -22,10 +32,12 @@ import {
   setCoverMedia as setCoverMediaApi,
   toggleFavorite as toggleFavoriteApi,
 } from "@/services/echo.service";
-
+import useShareMemory from "@/hooks/useShareMemory";
 import { refreshEchoes } from "@/services/echoSync";
 
 import AppContainer from "@/styles/AppContainer";
+
+import useExportPdf from "@/hooks/useExportPDF";
 
 interface Props {
   echoId: string;
@@ -47,6 +59,8 @@ export default function EchoDetailView({
       (e) => e.id === echoId
     )
   );
+
+  const {saveAsImage,} = useShareMemory();
   /* ---------------- State ---------------- */
 
   const [showPlayer, setShowPlayer] =
@@ -55,103 +69,225 @@ export default function EchoDetailView({
   const [showAddMedia, setShowAddMedia] =
     useState(false);
 
+const [showShare, setShowShare] =
+  useState(false);
+
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
+const toast = useToast();
 
 
-  useEffect(() => {
-    if (!echo) {
-      onBack();
-    }
-  }, [echo, onBack]);
+const { exportPdf } = useExportPdf();
 
+const { confirm } = useConfirm();
+
+useEffect(() => {
   if (!echo) {
-    return null;
+    onBack();
+  }
+}, [echo, onBack]);
+
+const imageCount = useMemo(() => {
+  if (!echo) return 0;
+
+  return echo.media.filter(
+    (m) => m.type === "image"
+  ).length;
+}, [echo]);
+
+const videoCount = useMemo(() => {
+  if (!echo) return 0;
+
+  return echo.media.filter(
+    (m) => m.type === "video"
+  ).length;
+}, [echo]);
+
+if (!echo) {
+  return null;
+}
+
+const handleFavorite = async () => {
+
+  try {
+
+    await toggleFavoriteApi(echo.id);
+
+    await refreshEchoes();
+
+    toast.success(
+
+      echo.favorite
+
+        ? "Removed from favorites."
+
+        : "Added to favorites."
+
+    );
+
   }
 
+  catch (error) {
 
-  /* ---------------- Derived Data ---------------- */
+    console.error(error);
 
-  const imageCount = useMemo(() => {
-    return echo.media.filter(
-      (m) => m.type === "image"
-    ).length;
-  }, [echo.media]);
+    toast.error(
 
-  const videoCount = useMemo(() => {
-    return echo.media.filter(
-      (m) => m.type === "video"
-    ).length;
-  }, [echo.media]);
+      "Failed to update favorite."
 
-
-  const handleFavorite = async () => {
-    try {
-      await toggleFavoriteApi(echo.id);
-      await refreshEchoes();
-      setShowAddMedia(false);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to update favorite.");
-    }
-  };
-
-
-  const handleDeleteEcho = async () => {
-    const confirmed = confirm(
-      "Are you sure you want to delete this Echo?"
     );
 
-    if (!confirmed) return;
-    try {
-      await deleteEchoApi(echo.id);
-      await refreshEchoes();
-      onBack();
-    } catch (error) {
-      console.error(error);
-      alert("Failed to delete Echo.");
-    }
-  };
+  }
+
+};
 
 
-  const handleDeleteMedia = async (
-    media: Media
-  ) => {
-    const confirmed = confirm(
-      "Delete this media?"
+const handleDeleteEcho = () => {
+
+  confirm({
+
+    title: "Delete Memory",
+
+    message:
+      "This memory will be permanently deleted. This action cannot be undone.",
+
+    confirmText: "Delete",
+
+    cancelText: "Cancel",
+
+    danger: true,
+
+    onConfirm: async () => {
+
+      try {
+
+        await deleteEchoApi(echo.id);
+
+        await refreshEchoes();
+
+        toast.success(
+          "Memory deleted successfully."
+        );
+
+        onBack();
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        toast.error(
+          "Failed to delete memory."
+        );
+
+      }
+
+    },
+
+  });
+
+};
+
+
+const handleDeleteMedia = (
+
+  media: Media
+
+) => {
+
+  confirm({
+
+    title: "Delete Media",
+
+    message:
+      "This photo or video will be permanently removed from this memory.",
+
+    confirmText: "Delete",
+
+    cancelText: "Cancel",
+
+    danger: true,
+
+    onConfirm: async () => {
+
+      try {
+
+        await deleteMediaApi(
+
+          echo.id,
+
+          media.publicId!
+
+        );
+
+        await refreshEchoes();
+
+        toast.success(
+
+          "Media deleted successfully."
+
+        );
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        toast.error(
+
+          "Failed to delete media."
+
+        );
+
+      }
+
+    },
+
+  });
+
+};
+
+
+const handleSetCover = async (
+
+  media: Media
+
+) => {
+
+  try {
+
+    await setCoverMediaApi(
+
+      echo.id,
+
+      media.publicId!
+
     );
 
-    if (!confirmed) return;
+    await refreshEchoes();
 
-    try {
-      await deleteMediaApi(
-        echo.id,
-        media.publicId!
-      );
+    toast.success(
 
-      await refreshEchoes();
-    } catch (error) {
-      console.error(error);
-      alert("Failed to delete media.");
-    }
-  };
+      "Cover photo updated."
 
+    );
 
+  }
 
-  const handleSetCover = async (
-    media: Media
-  ) => {
-    try {
-      await setCoverMediaApi(
-        echo.id,
-        media.publicId!
-      );
-      await refreshEchoes();
-    } catch (error) {
-      console.error(error);
-      alert("Failed to update cover.");
-    }
-  };
+  catch (error) {
 
+    console.error(error);
+
+    toast.error(
+
+      "Failed to update cover."
+
+    );
+
+  }
+
+};
 
   const handleOpenMedia = (
     index: number
@@ -161,46 +297,135 @@ export default function EchoDetailView({
   };
 
 
-  const handleAddMedia = async (
-    media: Media[]
-  ) => {
-    try {
-      const uploadedMedia = await Promise.all(
+  const handleWhatsappShare = async () => {
+
+  try {
+
+    const share =
+      await createShareLink(
+        echo.id
+      );
+
+    const text =
+`✨ Check out one of my memories on Echoes!
+
+${share.url}`;
+
+    window.open(
+
+      `https://wa.me/?text=${encodeURIComponent(text)}`,
+
+      "_blank"
+
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    toast.error(
+      "Failed to create share link."
+    );
+
+  }
+
+};
+
+const handleAddMedia = async (
+
+  media: Media[]
+
+) => {
+
+  try {
+
+    const uploadedMedia =
+
+      await Promise.all(
+
         media.map(async (item) => {
+
           if (!item.file) {
+
             return item;
+
           }
 
           const uploaded =
-            await uploadMedia(item.file);
+
+            await uploadMedia(
+
+              item.file
+
+            );
+
           return {
+
             ...item,
+
             url: uploaded.url,
+
             publicId: uploaded.publicId,
+
             type: uploaded.type,
+
             file: undefined,
+
           };
+
         })
+
       );
 
-      await addMediaApi(
-        echo.id,
-        uploadedMedia.map(
-          ({
-            id,
-            thumbnail,
-            duration,
-            file,
-            ...rest
-          }) => rest
-        )
-      );
-      await refreshEchoes();
-    } catch (error) {
-      console.error(error);
-      alert("Failed to add media.");
-    }
-  };
+    await addMediaApi(
+
+      echo.id,
+
+      uploadedMedia.map(
+
+        ({
+
+          id,
+
+          thumbnail,
+
+          duration,
+
+          file,
+
+          ...rest
+
+        }) => rest
+
+      )
+
+    );
+
+    await refreshEchoes();
+
+    toast.success(
+
+      "Media added successfully."
+
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    toast.error(
+
+      "Failed to add media."
+
+    );
+
+  }
+
+};
 
 
 
@@ -234,17 +459,14 @@ export default function EchoDetailView({
         onFavorite={handleFavorite}
       />
 
-      <EchoActions
-        favorite={echo.favorite}
-        onFavorite={handleFavorite}
-        onEdit={() =>
-          onEdit(echo.id)
-        }
-        onAddMedia={() =>
-          setShowAddMedia(true)
-        }
-        onDelete={handleDeleteEcho}
-      />
+    <EchoActions
+  favorite={echo.favorite}
+  onFavorite={handleFavorite}
+  onEdit={() => onEdit(echo.id)}
+  onAddMedia={() => setShowAddMedia(true)}
+  onShare={() => setShowShare(true)}
+  onDelete={handleDeleteEcho}
+/>
 
         <EchoGallery
         media={echo.media}
@@ -269,6 +491,62 @@ export default function EchoDetailView({
         }
         onSave={handleAddMedia}
       />
+
+
+      <ShareModal
+
+  open={showShare}
+
+  onClose={() =>
+    setShowShare(false)
+  }
+
+ onSaveImage={() => {
+
+       saveAsImage(echo.title);
+    }}
+
+onExportPdf={() =>
+  exportPdf(echo.title)
+}
+ onWhatsapp={handleWhatsappShare}
+
+  onInstagram={() => {
+    console.log("Instagram");
+  }}
+/>
+
+<div
+    className="fixed left-[-9999px] top-0"
+>
+
+    <div id="pdf-cover">
+
+        <PDFCover
+            echo={echo}
+        />
+
+    </div>
+
+    <div id="pdf-gallery">
+
+        <PDFGallery
+            media={echo.media}
+        />
+
+    </div>
+
+    <div id="pdf-details">
+
+        <PDFDetails
+            echo={echo}
+        />
+
+        <PDFFooter />
+
+    </div>
+
+</div>
 
     </AppContainer>
   );

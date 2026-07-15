@@ -5,6 +5,7 @@ import {
   loginController,
   meController,
   updateProfileController,
+  changePasswordController,
 } from "./auth.controller.js";
 
 import {
@@ -42,9 +43,15 @@ router.get(
 
 // Update Profile
 router.patch(
-  "/profile",
+  "/me",
   authenticate,
   updateProfileController
+);
+
+router.patch(
+  "/change-password",
+  authenticate,
+  changePasswordController
 );
 
 export default router;

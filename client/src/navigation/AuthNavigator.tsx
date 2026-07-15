@@ -2,11 +2,11 @@ import WelcomeScreen from "@/auth/screens/welcome/WelcomeScreen";
 import SignupScreen from "@/auth/screens/Signup/SignupScreen";
 import LoginScreen from "@/auth/screens/Login/LoginScreen";
 
-import { useAuthNavigationStore } from "@/store/authNavigationStore";
+import { useNavigationStore } from "@/store/navigationStore";
 
 export default function AuthNavigator() {
 
-  const current = useAuthNavigationStore(
+  const current = useNavigationStore(
     (state) => state.current
   );
 

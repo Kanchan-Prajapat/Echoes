@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 export default function Greeting() {
   const hour = new Date().getHours();
-
+console.log("Greeting Render");
   let greeting = "Good Evening";
 
   if (hour >= 5 && hour < 12) {

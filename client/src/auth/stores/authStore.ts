@@ -5,7 +5,7 @@ import { User } from "../types/user";
 
 interface AuthState {
 
-  user: User | null;
+  owner: User | null;
 
   token: string | null;
 
@@ -16,7 +16,7 @@ interface AuthState {
   isAuthenticated: boolean;
 
   login: (
-    user: User,
+    owner: User,
     token: string
   ) => void;
 
@@ -38,7 +38,7 @@ export const useAuthStore = create<AuthState>()(
 
     (set) => ({
 
-      user: null,
+      owner: null,
 
       token: null,
 
@@ -54,11 +54,11 @@ export const useAuthStore = create<AuthState>()(
     sessionChecked,
   }),
 
-      login: (user, token) =>
+      login: (owner, token) =>
 
         set({
 
-          user,
+          owner,
 
           token,
 
@@ -68,7 +68,7 @@ export const useAuthStore = create<AuthState>()(
 
     logout: () =>
   set({
-    user: null,
+    owner: null,
     token: null,
     isAuthenticated: false,
     sessionChecked: true,

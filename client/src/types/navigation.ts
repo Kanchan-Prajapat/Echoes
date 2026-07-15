@@ -1,30 +1,35 @@
 export type Screen =
+  | "splash"
+  | "welcome"
+
+  | "login"
+  | "signup"
+  | "forgot-password"
+
   | "home"
   | "timeline"
   | "calendar"
   | "search"
+
   | "profile"
-  | "echo-details"
+  | "settings"
+
+  | "about"
+  | "privacy"
+  | "terms"
+  | "change-password"
+
+  | "echo-detail"
   | "new-echo";
 
 export interface NavigationState {
-  /**
-   * Current visible screen
-   */
-  screen: Screen;
 
-  /**
-   * Used when closing Detail/Search/New Echo
-   */
-  previousScreen?: Screen;
+  current: Screen;
 
-  /**
-   * Opened Echo
-   */
+  history: Screen[];
+
   selectedEchoId?: string;
 
-  /**
-   * Editing Echo
-   */
   editingEchoId?: string;
+
 }

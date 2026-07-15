@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/auth/stores/authStore";
 
 import AuthNavigator from "./AuthNavigator";
-import HomeNavigator from "./HomeNavigator";
+import AppNavigator from "./AppNavigator";
 import AppSplash from "@/auth/screens/Splash/AppSplash";
 
 export default function RootNavigator() {
@@ -31,7 +31,7 @@ if (!authenticated) {
 
 }
 
-return <HomeNavigator />;
+return <AppNavigator />;
 
 
 }

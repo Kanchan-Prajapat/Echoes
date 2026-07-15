@@ -130,11 +130,9 @@ export default function EchoJournal({
 
             <CalendarDays size={16} />
 
-            <span>
-
-              {echo.date}
-
-            </span>
+           <span>
+                {new Date(echo.date).toLocaleDateString()}
+              </span>
 
           </div>
 

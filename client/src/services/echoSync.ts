@@ -5,13 +5,14 @@ export async function refreshEchoes() {
   try {
     const echoes = await getEchoes();
 
+    console.log("===== REFRESH =====");
+    console.log(echoes);
+    console.log("Is Array:", Array.isArray(echoes));
+    console.log("Type:", typeof echoes);
+
     useEchoStore.getState().setEchoes(echoes);
 
-    console.log("✅ Echoes synchronized");
   } catch (error) {
-    console.error(
-      "❌ Failed to synchronize Echoes",
-      error
-    );
+    console.error(error);
   }
 }

@@ -1,16 +1,17 @@
 import { Request, Response } from "express";
-
 import {
   signup,
   login,
   getCurrentUser,
   updateMyProfile,
+  changePassword,
 } from "./auth.service.js";
 
 import {
   signupSchema,
   loginSchema,
   updateProfileSchema,
+  changePasswordSchema,
 } from "./auth.validation.js";
 
 import { AuthRequest } from "../../middleware/auth.middleware.js";
@@ -180,6 +181,70 @@ export async function updateProfileController(
 
       errorResponse(
         error.message
+      )
+
+    );
+
+  }
+
+}
+
+
+
+
+export async function changePasswordController(
+
+  req: AuthRequest,
+
+  res: Response
+
+) {
+
+  try {
+
+
+    const {
+
+      currentPassword,
+
+      newPassword,
+
+    } = req.body;
+
+
+const body = changePasswordSchema.parse(req.body);
+
+await changePassword(
+
+  req.user!.id,
+
+  body.currentPassword,
+
+  body.newPassword
+
+);
+    return res.status(200).json(
+
+      successResponse(
+
+        "Password changed successfully."
+
+      )
+
+    );
+
+  }
+
+  catch (error: any) {
+
+    return res.status(400).json(
+
+      errorResponse(
+
+        error.message ||
+
+        "Failed to change password."
+
       )
 
     );

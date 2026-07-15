@@ -123,25 +123,26 @@ useEffect(() => {
         "
       >
 
-        {media.map((item, index) => (
+     {media.map((item, index) => (
 
-         <div
+  <div
+    key={item.id}
     ref={(el) => {
-        thumbnailRefs.current[index] = el;
+      thumbnailRefs.current[index] = el;
     }}
->
+  >
 
     <MediaThumbnail
-        media={item}
-        active={currentIndex === index}
-        isCover={coverMediaId === item.id}
-        onSelect={() => onSelect(index)}
-        onSetCover={() => onSetCover(item.id)}
+      media={item}
+      active={currentIndex === index}
+      isCover={coverMediaId === item.id}
+      onSelect={() => onSelect(index)}
+      onSetCover={() => onSetCover(item.id)}
     />
 
-</div>
+  </div>
 
-        ))}
+))}
 
       </motion.div>
 

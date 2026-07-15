@@ -4,7 +4,9 @@ import {
   Pencil,
   Plus,
   Trash2,
+  Share2,
 } from "lucide-react";
+
 
 interface Props {
   favorite: boolean;
@@ -13,6 +15,7 @@ interface Props {
   onEdit: () => void;
   onAddMedia: () => void;
   onDelete: () => void;
+  onShare: ()=> void;
 }
 
 interface ActionCardProps {
@@ -95,6 +98,7 @@ export default function EchoActions({
   onEdit,
   onAddMedia,
   onDelete,
+  onShare,
 }: Props) {
 
   return (
@@ -144,6 +148,13 @@ export default function EchoActions({
         danger
         onClick={onDelete}
       />
+
+   <ActionCard
+  icon={<Share2 size={20} />}
+  title="Share"
+  subtitle="Share memory"
+  onClick={onShare}
+/>
 
     </section>
 

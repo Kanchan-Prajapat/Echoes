@@ -1,23 +1,31 @@
 import useProfile from "@/hooks/useProfile";
 import useProfileStats from "@/hooks/useProfileStats";
+import { useState } from "react";
 
-import ProfileHeader from "./ProfileHeader";
-import ProfileStats from "./ProfileStats";
-import ProfileActions from "./ProfileActions";
+import EditProfileModal from "./components/EditProfileModal";
 
+import useEditProfile from "@/hooks/useEditProfile";
+import ProfileHeader from "./components/ProfileHeader";
+import ProfileStats from "./components/ProfileStats";
+import ProfileActions from "./components/ProfileActions";
+import { useNavigationStore } from "@/store/navigationStore";
 import { useAuthStore } from "@/auth/stores/authStore";
+import useToast from "@/hooks/useToast";
+import useConfirm from "@/hooks/useConfirm";
 
 export default function ProfileView() {
 
-  const {
+ const {
 
-    profile,
+  profile,
 
-    loading,
+  loading,
 
-    error,
+  error,
 
-  } = useProfile();
+  refreshProfile,
+
+} = useProfile();
 
   const {
 
@@ -30,6 +38,75 @@ export default function ProfileView() {
     totalVideos,
 
   } = useProfileStats();
+
+  
+const [openEdit, setOpenEdit] =
+  useState(false);
+
+const [username, setUsername] =
+  useState("");
+
+const [bio, setBio] =
+  useState("");
+
+const [avatar, setAvatar] =
+  useState("");
+
+const {
+
+  saveProfile,
+
+  loading: saving,
+
+} = useEditProfile();
+
+
+const toast = useToast();
+const {confirm} = useConfirm();
+
+const navigate = useNavigationStore(
+    state => state.navigate
+);
+
+async function handleSave() {
+
+  try {
+
+    await saveProfile({
+
+      username,
+
+      bio,
+
+      avatar,
+
+    });
+
+    await refreshProfile();
+
+    toast.success(
+
+      "Profile updated successfully."
+
+    );
+
+    setOpenEdit(false);
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    toast.error(
+
+      "Failed to update profile."
+
+    );
+
+  }
+
+}
 
   const logout = useAuthStore(
     (state) => state.logout
@@ -109,15 +186,85 @@ export default function ProfileView() {
 
       <ProfileActions
 
-        onEdit={() => {}}
+      onEdit={() => {
+
+  if (!profile) return;
+
+  setUsername(profile.username);
+
+  setBio(profile.bio ?? "");
+
+  setAvatar(profile.avatar ?? "");
+
+  setOpenEdit(true);
+
+}}
 
         onFavorites={() => {}}
 
-        onSettings={() => {}}
+        onSettings={() =>
+        navigate("settings")
+    }
+       onLogout={() =>
 
-        onLogout={logout}
+  confirm({
+
+    title: "Logout",
+
+    message:
+      "Are you sure you want to logout from Echoes?",
+
+    confirmText: "Logout",
+
+    cancelText: "Cancel",
+
+    danger: false,
+
+    onConfirm: () => {
+
+      logout();
+
+      toast.success(
+
+        "Logged out successfully."
+
+      );
+
+    },
+
+  })
+
+}
 
       />
+
+<EditProfileModal
+
+  open={openEdit}
+
+  profile={profile}
+
+  username={username}
+
+  bio={bio}
+
+  avatar={avatar}
+
+  loading={saving}
+
+  onClose={() =>
+    setOpenEdit(false)
+  }
+
+  onUsernameChange={setUsername}
+
+  onBioChange={setBio}
+
+  onAvatarChange={setAvatar}
+
+  onSave={handleSave}
+
+/>
 
     </main>
 

@@ -1,13 +1,13 @@
 import { useState } from "react";
 
 import { slides } from "@/auth/utils/slides";
-import { useAuthNavigationStore } from "@/store/authNavigationStore";
+import { useNavigationStore } from "@/store/navigationStore";
 
 export default function useWelcome() {
 
   const [current, setCurrent] = useState(0);
 
-  const navigate = useAuthNavigationStore(
+  const navigate = useNavigationStore(
     (state) => state.navigate
   );
 

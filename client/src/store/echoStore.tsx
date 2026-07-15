@@ -41,10 +41,16 @@ export const useEchoStore = create<EchoStore>()(
   persist(
     (set) => ({
       echoes: [],
-      setEchoes: (echoes) =>
+     setEchoes: (echoes) => {
+
+  console.log("SET ECHOES");
+  console.log(echoes);
+  console.log(Array.isArray(echoes));
+
   set({
     echoes,
-  }),
+  });
+},
 
       addEcho: (echo) =>
         set((state) => ({

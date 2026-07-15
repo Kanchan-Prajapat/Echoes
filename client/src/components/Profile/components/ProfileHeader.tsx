@@ -56,32 +56,7 @@ export default function ProfileHeader({
 
           />
 
-          <button
-
-            onClick={onChangePhoto}
-
-            className="
-              absolute
-              bottom-1
-              right-1
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-              rounded-full
-              bg-violet-600
-              text-white
-              shadow-lg
-              transition
-              hover:bg-violet-700
-            "
-
-          >
-
-            <Camera size={18} />
-
-          </button>
+        
 
         </div>
 

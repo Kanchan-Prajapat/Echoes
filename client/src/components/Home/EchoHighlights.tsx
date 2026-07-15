@@ -13,7 +13,7 @@ interface Props {
 export default function EchoHighlights({
   echoes,
   onOpenEcho,
-}: Props) {
+}: Props){
 
   if (echoes.length === 0) {
     return null;

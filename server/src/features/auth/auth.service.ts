@@ -8,6 +8,7 @@ import {
   findUserByEmail,
   findUserById,
   updateProfile,
+  updatePassword,
 } from "../user/user.repository.js";
 
 import {
@@ -16,9 +17,9 @@ import {
   AuthResponse,
 } from "./auth.types.js";
 
-/* ------------------------------------------------ */
+/* -------------------------------- */
 /* Generate JWT */
-/* ------------------------------------------------ */
+/* -------------------------------- */
 
 function generateToken(userId: string) {
   return jwt.sign(
@@ -32,9 +33,9 @@ function generateToken(userId: string) {
   );
 }
 
-/* ------------------------------------------------ */
+/* -------------------------------- */
 /* Signup */
-/* ------------------------------------------------ */
+/* -------------------------------- */
 
 export async function signup(
   data: SignupDTO
@@ -44,11 +45,9 @@ export async function signup(
     await findUserByEmail(data.email);
 
   if (existingUser) {
-
     throw new Error(
       "Email already registered."
     );
-
   }
 
   const hashedPassword =
@@ -59,29 +58,22 @@ export async function signup(
 
   const user =
     await createUser({
-
       ...data,
-
       password: hashedPassword,
-
     });
 
   const token =
     generateToken(user.id);
 
   return {
-
     user,
-
     token,
-
   };
-
 }
 
-/* ------------------------------------------------ */
+/* -------------------------------- */
 /* Login */
-/* ------------------------------------------------ */
+/* -------------------------------- */
 
 export async function login(
   data: LoginDTO
@@ -94,48 +86,35 @@ export async function login(
     );
 
   if (!user) {
-
     throw new Error(
       "Invalid email or password."
     );
-
   }
 
-  const passwordMatched =
+  const matched =
     await bcrypt.compare(
-
       data.password,
-
       user.password
-
     );
 
-  if (!passwordMatched) {
-
+  if (!matched) {
     throw new Error(
       "Invalid email or password."
     );
-
   }
 
   const token =
-    generateToken(
-      user.id
-    );
+    generateToken(user.id);
 
   return {
-
     user: user.toJSON(),
-
     token,
-
   };
-
 }
 
-/* ------------------------------------------------ */
+/* -------------------------------- */
 /* Current User */
-/* ------------------------------------------------ */
+/* -------------------------------- */
 
 export async function getCurrentUser(
   id: string
@@ -145,27 +124,26 @@ export async function getCurrentUser(
     await findUserById(id);
 
   if (!user) {
-
     throw new Error(
       "User not found."
     );
-
   }
 
   return user;
-
 }
 
-/* ------------------------------------------------ */
+/* -------------------------------- */
 /* Update Profile */
-/* ------------------------------------------------ */
+/* -------------------------------- */
 
 export async function updateMyProfile(
-
   id: string,
-
-  data: any
-
+  data: {
+    username?: string;
+    avatar?: string;
+    bio?: string;
+    onboardingCompleted?: boolean;
+  }
 ) {
 
   const user =
@@ -175,13 +153,68 @@ export async function updateMyProfile(
     );
 
   if (!user) {
-
     throw new Error(
       "User not found."
     );
-
   }
 
   return user;
+}
 
+/* -------------------------------- */
+/* Change Password */
+/* -------------------------------- */
+
+export async function changePassword(
+  userId: string,
+  currentPassword: string,
+  newPassword: string
+) {
+
+  const user =
+    await findUserById(
+      userId,
+      true
+    );
+
+  if (!user) {
+    throw new Error(
+      "User not found."
+    );
+  }
+
+  const matched =
+    await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+
+  if (!matched) {
+    throw new Error(
+      "Current password is incorrect."
+    );
+  }
+
+  const samePassword =
+    await bcrypt.compare(
+      newPassword,
+      user.password
+    );
+
+  if (samePassword) {
+    throw new Error(
+      "New password cannot be the same as current password."
+    );
+  }
+
+  const hashedPassword =
+    await bcrypt.hash(
+      newPassword,
+      10
+    );
+
+  await updatePassword(
+    userId,
+    hashedPassword
+  );
 }

@@ -18,6 +18,10 @@ export default function useEditProfile() {
 
   ) {
 
+     console.log("saveProfile called");
+
+  console.log(data);
+
     try {
 
       setLoading(true);

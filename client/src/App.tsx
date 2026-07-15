@@ -8,11 +8,13 @@ import { useEchoStore } from "./store/echoStore";
 import { useAuthStore } from "@/auth/stores/authStore";
 import RootNavigator from "./navigation/RootNavigator";
 import useSession from "@/auth/hooks/useSession";
-
+import Toast from "@/components/Toast/Toast";
+import ConfirmModal from "./components/ConfirmModal/ConfirmModal";
 export default function App() {
 
   const setEchoes = useEchoStore(
     (state) => state.setEchoes
+
   );
 
 
@@ -21,32 +23,49 @@ const authenticated = useAuthStore(
 );
 
 useEffect(() => {
+  console.log("authenticated:", authenticated);
+}, [authenticated]);
+
+useEffect(() => {
+  console.log("Echoes:", useEchoStore.getState().echoes);
+});
+
+
+useEffect(() => {
 
   if (!authenticated) return;
 
   async function loadEchoes() {
+  try {
+    const response = await getEchoes();
 
-    try {
+    console.log("API Response:", response);
 
-      const response = await getEchoes();
+    setEchoes(response);
 
-      setEchoes(response.data ?? response);
+    console.log("Store After:", useEchoStore.getState().echoes);
 
-    }
-
-    catch (error) {
-
-      console.error(error);
-
-    }
-
+  } catch (e) {
+    console.error(e);
   }
+}
 
   loadEchoes();
 
 }, [authenticated, setEchoes]);
     useSession();
 
-  return <RootNavigator />;
+ return (
 
+  <>
+
+    <RootNavigator />
+
+    <Toast />
+
+    <ConfirmModal />
+
+  </>
+
+);
 }
