@@ -11,7 +11,7 @@ import SettingsFooter from "./components/SettingsFooter";
 import AccountCard from "./components/AccountCard";
 import useProfile from "@/hooks/useProfile";
 import { useNavigationStore } from "@/store/navigationStore";
-
+import ErrorState from "../Shared/ErrorState";
 interface Props {
 
     onBack: () => void;
@@ -154,7 +154,13 @@ export default function SettingsView({
 
     return (
 
+
         <AppContainer className="py-8 pb-32">
+<ErrorState
+
+    message="Unable to load settings."
+
+/>
 
             <SettingsHeader
 

@@ -9,9 +9,19 @@ import {
   RecentEchoes,
   ContinueWatching
 } from ".";
-
+import HomeSkeleton from "../Skeleton/HomeSkeleton";
 import { Echo } from "@/types/echo";
 import { useEchoStore } from "@/store/echoStore";
+import EmptyState from "../Shared/EmptyState";
+
+import usePullToRefresh
+from "@/hooks/usePullToRefresh";
+
+import PullToRefresh
+from "@/components/Shared/PullToRefresh";
+
+import { refreshEchoes }
+from "@/services/echoSync";
 
 interface Props {
   onOpenEcho: (echo: Echo) => void;
@@ -28,9 +38,72 @@ export default function HomeView({
     (state) => state.echoes
   );
 
+const loading = useEchoStore(
+    state => state.loading
+);
+
+const {
+
+  pull,
+
+  refreshing,
+
+} = usePullToRefresh({
+
+  onRefresh:
+    refreshEchoes,
+
+});
+
+if (loading) {
+    return <HomeSkeleton />;
+}
+
+if (!loading && echoes.length === 0) {
+
+  return (
+
+    <EmptyState
+
+      emoji="✨"
+
+      title="No Echoes Yet"
+
+      description="Every unforgettable journey starts with a single memory."
+
+      action={
+
+        <button
+
+          onClick={onCreateEcho}
+
+          className="rounded-full bg-violet-600 px-8 py-4 font-semibold text-white"
+
+        >
+
+          Create Your First Echo
+
+        </button>
+
+      }
+
+    />
+
+  );
+
+}
+
   return (
 
     <main className="min-h-screen bg-[#F8F9FD] pb-32">
+    
+    <PullToRefresh
+
+pull={pull}
+
+refreshing={refreshing}
+
+/>
 
       <AppContainer className="space-y-8 py-8">
 

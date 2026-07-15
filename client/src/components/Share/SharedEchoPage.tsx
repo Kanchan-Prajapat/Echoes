@@ -7,7 +7,7 @@ import { getSharedEcho } from "@/services/share.service";
 import { Echo } from "@/types/echo";
 
 import AppSplash from "@/auth/screens/Splash/AppSplash";
-
+import ErrorState from "../Shared/ErrorState";
 export default function SharedEchoPage() {
 
   const { token } = useParams();
@@ -59,34 +59,11 @@ export default function SharedEchoPage() {
 
   }
 
-  if (!echo) {
+<ErrorState
 
-    return (
+    message="This shared memory doesn't exist or has been removed."
 
-      <div className="flex min-h-screen items-center justify-center">
-
-        <div className="text-center">
-
-          <h2 className="text-2xl font-bold">
-
-            Memory not found
-
-          </h2>
-
-          <p className="mt-2 text-gray-500">
-
-            This shared memory may have expired
-            or doesn't exist.
-
-          </p>
-
-        </div>
-
-      </div>
-
-    );
-
-  }
+/>
 
   return (
 

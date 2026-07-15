@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { Clock3 } from "lucide-react";
-
+import TimelineSkeleton from "@/components/Skeleton/TimelineSkeleton";
 import { useEchoStore } from "@/store/echoStore";
 import { Echo } from "@/types/echo";
 
 import AppContainer from "@/styles/AppContainer";
-
+import EmptyState from "../Shared/EmptyState";
 import TimelineYear from "./TimelineYear";
 
 interface Props {
@@ -20,6 +20,15 @@ export default function TimelineView({
     (state) => state.echoes
   );
 
+const loading = useEchoStore(
+    state => state.loading
+);
+
+if (loading) {
+
+    return <TimelineSkeleton />;
+
+}
   /* ---------- Group By Year ---------- */
 
   const groupedYears = useMemo(() => {
@@ -61,6 +70,16 @@ export default function TimelineView({
   const orderedYears =
     Object.keys(groupedYears)
       .sort((a, b) => Number(b) - Number(a));
+
+   <EmptyState
+
+    emoji="🕰️"
+
+    title="Nothing to Remember Yet"
+
+    description="Your life's timeline is waiting for its first story."
+
+/>
 
   return (
 

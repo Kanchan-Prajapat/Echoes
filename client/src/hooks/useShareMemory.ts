@@ -1,32 +1,54 @@
-import { domToPng } from "modern-screenshot";
+import { toPng } from "html-to-image";
+
 export default function useShareMemory() {
 
- async function saveAsImage(
-  title: string
-){
+  async function saveAsImage(title: string) {
 
-    const element = document.getElementById("share-card");
+    const element =
+      document.getElementById("share-card");
 
     if (!element) return;
 
-    const dataUrl = await domToPng(element);
+    try {
 
-    const link = document.createElement("a");
+      const dataUrl = await toPng(element, {
 
- const fileName = title
-  .trim()
-  .replace(/[<>:"/\\|?*]+/g, "")
-  .replace(/\s+/g, " ");
+        cacheBust: true,
 
-link.download = `${fileName}.png`;
-    link.href = dataUrl;
+        pixelRatio: 3,
 
-    link.click();
+        backgroundColor: "#ffffff",
+
+      });
+
+      const link =
+        document.createElement("a");
+
+      const fileName = title
+        .trim()
+        .replace(/[<>:"/\\|?*]+/g, "")
+        .replace(/\s+/g, " ");
+
+      link.download = `${fileName}.png`;
+
+      link.href = dataUrl;
+
+      link.click();
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+    }
 
   }
 
   return {
+
     saveAsImage,
+
   };
 
 }

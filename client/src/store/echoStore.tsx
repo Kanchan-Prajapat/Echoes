@@ -5,21 +5,35 @@ import { Echo } from "@/types/echo";
 import { Media } from "@/types/media";
 
 interface EchoStore {
+
   echoes: Echo[];
 
-  addEcho: (echo: Echo) => void;
-  deleteEcho: (id: string) => void;
-  addMediaToEcho: (echoId: string, media: Media[]) => void;
-  toggleFavorite: (id: string) => void;
-  deleteMediaFromEcho: (
-  echoId: string,
-  mediaId: string
-) => void;
+  loading: boolean;
 
-setCoverMedia: (
-  echoId: string,
-  mediaId: string
-) => void;
+  error: string | null;
+
+  setLoading: (loading: boolean) => void;
+
+  setError: (error: string | null) => void;
+
+  addEcho: (echo: Echo) => void;
+
+  deleteEcho: (id: string) => void;
+
+  addMediaToEcho: (echoId: string, media: Media[]) => void;
+
+  toggleFavorite: (id: string) => void;
+
+  deleteMediaFromEcho: (
+    echoId: string,
+    mediaId: string
+  ) => void;
+
+  setCoverMedia: (
+    echoId: string,
+    mediaId: string
+  ) => void;
+
   updateEcho: (
     id: string,
     data: Partial<Echo>
@@ -27,7 +41,7 @@ setCoverMedia: (
 
   updateLastViewed: (
     id: string,
-    index: number,
+    index: number
   ) => void;
 
   markViewed: (id: string) => void;
@@ -36,94 +50,107 @@ setCoverMedia: (
 }
 
 
-
 export const useEchoStore = create<EchoStore>()(
   persist(
     (set) => ({
       echoes: [],
-     setEchoes: (echoes) => {
 
-  console.log("SET ECHOES");
-  console.log(echoes);
-  console.log(Array.isArray(echoes));
+      loading: false,
 
+      error: null,
+      setLoading: (loading) =>
+        set({
+          loading,
+        }),
+
+      setError: (error) =>
+        set({
+          error,
+        }),
+
+    setEchoes: (echoes) =>
   set({
+
     echoes,
-  });
-},
+
+    loading: true,
+
+    error: null,
+
+  }),
 
       addEcho: (echo) =>
         set((state) => ({
           echoes: [echo, ...state.echoes],
         })),
 
-    
-  addMediaToEcho: (echoId, media) =>
-  set((state) => {
 
-    const updated = state.echoes.map((echo) =>
-      echo.id === echoId
-        ? {
-            ...echo,
-            media: [...echo.media, ...media],
-            updatedAt: new Date().toISOString(),
-            viewed: false,
-          }
-        : echo
-    );
+      addMediaToEcho: (echoId, media) =>
+        set((state) => {
 
-    updated.sort(
-      (a, b) =>
-        new Date(b.updatedAt).getTime() -
-        new Date(a.updatedAt).getTime()
-    );
+          const updated = state.echoes.map((echo) =>
+            echo.id === echoId
+              ? {
+                ...echo,
+                media: [...echo.media, ...media],
+                updatedAt: new Date().toISOString(),
+                viewed: false,
+              }
+              : echo
+          );
 
-    return {
-      echoes: updated,
-    };
-  }),
+          updated.sort(
+            (a, b) =>
+              new Date(b.updatedAt).getTime() -
+              new Date(a.updatedAt).getTime()
+          );
 
-  deleteMediaFromEcho: (echoId, mediaId) =>
-  set((state) => ({
-    echoes: state.echoes.map((echo) => {
+          return {
+            echoes: updated,
+          };
+        }),
 
-      if (echo.id !== echoId) return echo;
+      deleteMediaFromEcho: (echoId, mediaId) =>
+        set((state) => ({
+          echoes: state.echoes.map((echo) => {
 
-      const remainingMedia = echo.media.filter(
-        (m) => m.id !== mediaId
-      );
+            if (echo.id !== echoId) return echo;
 
-      return {
+            const remainingMedia = echo.media.filter(
+              (m) => m.id !== mediaId
+            );
 
-        ...echo,
+            return {
 
-        media: remainingMedia,
+              ...echo,
 
-        coverMediaId:
-          echo.coverMediaId === mediaId
-            ? remainingMedia[0]?.id
-            : echo.coverMediaId,
+              media: remainingMedia,
 
-        updatedAt: new Date().toISOString(),
+              coverMediaId:
+                echo.coverMediaId === mediaId
+                  ? remainingMedia[0]?.id
+                  : echo.coverMediaId,
 
-      };
+              updatedAt: new Date().toISOString(),
 
-    }),
-  })),
+            };
+
+          }),
+        })),
 
 
-  setCoverMedia: (echoId, mediaId) =>
-  set((state) => ({
-    echoes: state.echoes.map((echo) =>
-      echo.id === echoId
-        ? {
-            ...echo,
-            coverMediaId: mediaId,
-            updatedAt: new Date().toISOString(),
-          }
-        : echo
-    ),
-  })),
+      setCoverMedia: (echoId, mediaId) =>
+        set((state) => ({
+          echoes: state.echoes.map((echo) =>
+            echo.id === echoId
+              ? {
+                ...echo,
+                coverMediaId: mediaId,
+                updatedAt: new Date().toISOString(),
+              }
+              : echo
+          ),
+        })),
 
       deleteEcho: (id) =>
         set((state) => ({
@@ -144,18 +171,18 @@ export const useEchoStore = create<EchoStore>()(
           ),
         })),
 
-        updateEcho: (id, data) =>
-  set((state) => ({
-    echoes: state.echoes.map((e) =>
-      e.id === id
-        ? {
-            ...e,
-            ...data,
-            updatedAt: new Date().toISOString(),
-          }
-        : e
-    ),
-  })),
+      updateEcho: (id, data) =>
+        set((state) => ({
+          echoes: state.echoes.map((e) =>
+            e.id === id
+              ? {
+                ...e,
+                ...data,
+                updatedAt: new Date().toISOString(),
+              }
+              : e
+          ),
+        })),
 
 
       updateLastViewed: (id, index) =>

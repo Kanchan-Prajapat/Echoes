@@ -2,7 +2,6 @@ import {
   Download,
   FileText,
   MessageCircle,
-  Camera,
   X,
 } from "lucide-react";
 
@@ -36,7 +35,6 @@ export default function ShareModal({
 
   onWhatsapp,
 
-  onInstagram,
 
 }: Props) {
 
@@ -193,17 +191,7 @@ export default function ShareModal({
 
           />
 
-          <ShareOption
-
-            icon={<Camera size={24} />}
-
-            title="Instagram Story"
-
-            subtitle="Post this memory to your story"
-
-            onClick={onInstagram}
-
-          />
+      
 
         </div>
 

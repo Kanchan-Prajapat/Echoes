@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { format, isSameDay } from "date-fns";
 import { CalendarDays } from "lucide-react";
+import CalendarSkeleton from "@/components/Skeleton/CalendarSkeleton";
 
 import { Echo } from "@/types/echo";
 import { useEchoStore } from "@/store/echoStore";
@@ -9,7 +10,8 @@ import AppContainer from "@/styles/AppContainer";
 
 import Calendar from "./Calendar";
 import CalendarBottomSheet from "./CalendarBottomSheet";
-
+import EmptyState from "@/components/Shared/EmptyState";
+import ErrorState from "@/components/Shared/ErrorState";
 interface Props {
   onOpenEcho: (echo: Echo) => void;
 }
@@ -21,6 +23,10 @@ export default function CalendarView({
   const echoes = useEchoStore(
     (state) => state.echoes
   );
+
+const loading = useEchoStore(
+  state => state.loading
+);
 
   const [selectedDate, setSelectedDate] =
     useState(new Date());
@@ -41,6 +47,17 @@ export default function CalendarView({
 
   }, [echoes, selectedDate]);
 
+if (loading) {
+
+  return <CalendarSkeleton />;
+
+}
+
+<EmptyState
+    emoji="📅"
+    title="No Memories Yet"
+    description="Once you create memories they'll appear here."
+/>
   return (
 
     <AppContainer className="py-8">

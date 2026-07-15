@@ -12,7 +12,7 @@ import { useNavigationStore } from "@/store/navigationStore";
 import { useAuthStore } from "@/auth/stores/authStore";
 import useToast from "@/hooks/useToast";
 import useConfirm from "@/hooks/useConfirm";
-
+import ErrorState from "../Shared/ErrorState";
 export default function ProfileView() {
 
  const {
@@ -144,11 +144,9 @@ async function handleSave() {
 
   return (
 
-    <div className="p-6">
-
-      No profile found
-
-    </div>
+ <ErrorState
+    message="Unable to load profile."
+/>
 
   );
 

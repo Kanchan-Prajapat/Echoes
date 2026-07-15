@@ -3,14 +3,17 @@ import { motion } from "framer-motion";
 
 import { useEchoStore } from "@/store/echoStore";
 import { Echo } from "@/types/echo";
-
+import SearchSkeleton from "@/components/Skeleton/SearchSkeleton";
 import SearchBar from "./SearchBar";
 import SearchResults from "./SearchResults";
-
+import { AppContainer } from "@/styles";
+import EmptyState from "../Shared/EmptyState";
+import ErrorState from "../Shared/ErrorState";
 interface Props {
   onClose: () => void;
   onOpenEcho: (echo: Echo) => void;
 }
+
 
 export default function SearchView({
   onClose,
@@ -20,6 +23,10 @@ export default function SearchView({
   const echoes = useEchoStore(
     (state) => state.echoes
   );
+
+const loading = useEchoStore(
+    state => state.loading
+);
 
   const [query, setQuery] =
     useState("");
@@ -58,15 +65,75 @@ export default function SearchView({
 
   }, [echoes, query]);
 
+  if (loading){
+    return<SearchSkeleton/>;
+  }
+
+const noResults =
+  !loading &&
+  results.length === 0 &&
+  query.trim();
+
+<EmptyState
+
+    emoji="🔍"
+
+    title="No Results Found"
+
+    description="We couldn't find any memories matching your search."
+
+/>
+
   return (
 
     <main className="min-h-screen bg-[#F8F9FD]">
 
-      <SearchBar
-        query={query}
-        setQuery={setQuery}
-        onBack={onClose}
-      />
+     {noResults ? (
+
+<div
+className="
+flex
+min-h-[60vh]
+flex-col
+items-center
+justify-center
+text-center
+px-6
+"
+>
+
+<div className="text-6xl">
+
+🔍
+
+</div>
+
+<h2 className="mt-6 text-3xl font-black">
+
+No Results Found
+
+</h2>
+
+<p className="mt-3 max-w-sm text-gray-500">
+
+We couldn't find any memories
+matching your search.
+
+</p>
+
+</div>
+
+) : (
+
+<SearchResults
+results={results}
+onOpenEcho={(echo) => {
+onOpenEcho(echo);
+onClose();
+}}
+/>
+
+)}
 
       {!query && (
 

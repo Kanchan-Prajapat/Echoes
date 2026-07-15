@@ -6,7 +6,7 @@ import { useEchoStore } from "@/store/echoStore";
 import EchoPlayer from "./EchoPlayer/EchoPlayer";
 import AddMediaModal from "./Modals/AddMediaModal";
 import ShareModal from "./Share/ShareModel";
-// import ShareCard from "@/components/Share/ShareCard";
+import ShareCard from "@/components/Share/ShareCard";
 import useToast from "@/hooks/useToast";
 import useConfirm from "@/hooks/useConfirm";
 import PDFCover from "@/components/Share/PDF/PDFCover";
@@ -36,7 +36,7 @@ import useShareMemory from "@/hooks/useShareMemory";
 import { refreshEchoes } from "@/services/echoSync";
 
 import AppContainer from "@/styles/AppContainer";
-
+import ErrorState from "./Shared/ErrorState";
 import useExportPdf from "@/hooks/useExportPDF";
 
 interface Props {
@@ -438,7 +438,6 @@ ${share.url}`;
   };
 
 
-
   if (showPlayer) {
     return (
       <EchoPlayer
@@ -455,6 +454,13 @@ ${share.url}`;
 
   return (
     <AppContainer className="space-y-8 py-6">
+    <ErrorState
+
+    message="Unable to load this memory."
+
+    onRetry={onBack}
+
+/>
 
       <EchoHero
         echo={echo}
@@ -510,6 +516,22 @@ ${share.url}`;
       )}
 
 
+      <div
+        className="
+fixed
+top-0
+left-0
+opacity-0
+pointer-events-none
+-z-50
+"
+      >
+        <ShareCard
+          echo={echo}
+        />
+      </div>
+
+
       {!publicMode && (
         <ShareModal
 
@@ -538,37 +560,37 @@ ${share.url}`;
 
 
       {!publicMode && (
-      <div
-        className="fixed left-[-9999px] top-0"
-      >
+        <div
+          className="fixed left-[-9999px] top-0"
+        >
 
-        <div id="pdf-cover">
+          <div id="pdf-cover">
 
-          <PDFCover
-            echo={echo}
-          />
+            <PDFCover
+              echo={echo}
+            />
+
+          </div>
+
+          <div id="pdf-gallery">
+
+            <PDFGallery
+              media={echo.media}
+            />
+
+          </div>
+
+          <div id="pdf-details">
+
+            <PDFDetails
+              echo={echo}
+            />
+
+            <PDFFooter />
+
+          </div>
 
         </div>
-
-        <div id="pdf-gallery">
-
-          <PDFGallery
-            media={echo.media}
-          />
-
-        </div>
-
-        <div id="pdf-details">
-
-          <PDFDetails
-            echo={echo}
-          />
-
-          <PDFFooter />
-
-        </div>
-
-      </div>
       )}
 
     </AppContainer>

@@ -8,11 +8,13 @@ import EchoDetailView from "@/components/EchoDetailView";
 import NewEchoView from "@/components/NewEchoView";
 import ChangePasswordView from "@/components/Settings/ChangePassword/ChangePasswordView";
 import BottomNav from "@/components/Shared/BottomNav";
+import { AnimatePresence } from "framer-motion";
+import PageTransition from "@/components/Shared/PageTransition";
 
 import { useNavigationStore } from "@/store/navigationStore";
 
 export default function AppNavigator() {
-  
+
 
   const current = useNavigationStore(
     (state) => state.current
@@ -34,7 +36,7 @@ export default function AppNavigator() {
     (state) => state.editingEchoId
   );
 
-  
+
   /* -----------------------------
      Echo Detail
   ----------------------------- */
@@ -130,14 +132,14 @@ export default function AppNavigator() {
 
   if (current === "change-password") {
 
-  return (
+    return (
 
-    <ChangePasswordView 
-     onBack={goBack}/>
+      <ChangePasswordView
+        onBack={goBack} />
 
-  );
+    );
 
-}
+  }
 
   /* -----------------------------
      Settings
@@ -184,98 +186,108 @@ export default function AppNavigator() {
   /* -----------------------------
      Main Screens
   ----------------------------- */
-console.log("Current Screen:", current);
+  console.log("Current Screen:", current);
   return (
 
     <>
 
       {current === "home" && (
-        
-        <HomeView
 
-          onOpenEcho={(echo) =>
+        <PageTransition>
 
-            navigate(
+          <HomeView
 
-              "echo-detail",
+            onOpenEcho={(echo) =>
 
-              {
+              navigate(
 
-                selectedEchoId: echo.id,
+                "echo-detail",
 
-              }
+                {
 
-            )
+                  selectedEchoId: echo.id,
 
-          }
+                }
 
-          onCreateEcho={() =>
+              )
 
-            navigate("new-echo")
+            }
 
-          }
+            onCreateEcho={() =>
 
-          onSearch={() =>
+              navigate("new-echo")
 
-            navigate("search")
+            }
 
-          }
+            onSearch={() =>
 
-        />
+              navigate("search")
+
+            }
+
+          />
+        </PageTransition>
 
       )}
 
       {current === "timeline" && (
 
-        <TimelineView
+        <PageTransition>
 
-          onOpenEcho={(echo) =>
+          <TimelineView
 
-            navigate(
+            onOpenEcho={(echo) =>
 
-              "echo-detail",
+              navigate(
 
-              {
+                "echo-detail",
 
-                selectedEchoId: echo.id,
+                {
 
-              }
+                  selectedEchoId: echo.id,
 
-            )
+                }
 
-          }
+              )
 
-        />
+            }
+
+          />
+        </PageTransition>
 
       )}
 
       {current === "calendar" && (
 
-        <CalendarView
+        <PageTransition>
 
-          onOpenEcho={(echo) =>
+          <CalendarView
 
-            navigate(
+            onOpenEcho={(echo) =>
 
-              "echo-detail",
+              navigate(
 
-              {
+                "echo-detail",
 
-                selectedEchoId: echo.id,
+                {
 
-              }
+                  selectedEchoId: echo.id,
 
-            )
+                }
 
-          }
+              )
 
-        />
+            }
+
+          />
+        </PageTransition>
 
       )}
 
       {current === "profile" && (
-
-        <ProfileView />
+        <PageTransition>
+          <ProfileView />
+        </PageTransition>
 
       )}
 

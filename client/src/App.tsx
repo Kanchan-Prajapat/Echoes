@@ -12,13 +12,22 @@ import RootNavigator from "./navigation/RootNavigator";
 import useSession from "@/auth/hooks/useSession";
 import Toast from "@/components/Toast/Toast";
 import ConfirmModal from "./components/ConfirmModal/ConfirmModal";
+
 export default function App() {
 
   const setEchoes = useEchoStore(
     (state) => state.setEchoes
 
   );
+const setLoading =
+useEchoStore(
+    state => state.setLoading
+);
 
+const setError =
+useEchoStore(
+    state => state.setError
+);
 
 const authenticated = useAuthStore(
   (state) => state.isAuthenticated
@@ -52,8 +61,36 @@ useEffect(() => {
   }
 }
 
-  loadEchoes();
+ async function loadEchoes() {
 
+  try {
+
+    setLoading(true);
+
+    const response =
+      await getEchoes();
+
+    setEchoes(response);
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    setError(
+      "Failed to load memories."
+    );
+
+  }
+
+  finally {
+
+    setLoading(false);
+
+  }
+
+}
 }, [authenticated, setEchoes]);
     useSession();
 
