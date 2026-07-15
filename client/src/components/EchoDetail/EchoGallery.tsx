@@ -19,6 +19,8 @@ interface Props {
 
   onDelete: (media: Media) => void;
 
+  publicMode?: boolean;
+
   onSetCover: (media: Media) => void;
 }
 
@@ -26,6 +28,7 @@ export default function EchoGallery({
   media,
   coverMediaId,
   onOpen,
+  publicMode,
   onDelete,
   onSetCover,
 }: Props) {
@@ -253,7 +256,7 @@ export default function EchoGallery({
                   )}
 
                   {/* Actions */}
-
+{!publicMode && (
                   <div
                     className="
                       absolute
@@ -292,6 +295,7 @@ export default function EchoGallery({
                     </button>
 
                   </div>
+)}
 
                 </div>
 

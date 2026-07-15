@@ -120,9 +120,9 @@ export async function deleteMediaFromEcho(
   echoId: string,
   publicId: string
 ) {
-  const { data } = await api.delete(
-    `/echo/${echoId}/media/${publicId}`
-  );
+  const { data } =await api.delete(
+  `/echo/${echoId}/media/${encodeURIComponent(publicId)}`
+);
 
   return data.data;
 }

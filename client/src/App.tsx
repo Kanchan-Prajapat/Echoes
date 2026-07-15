@@ -2,6 +2,8 @@
 
 
  import { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import SharedEchoPage from "../src/components/Share/SharedEchoPage";
 
 import { getEchoes } from "./services/echo.service";
 import { useEchoStore } from "./store/echoStore";
@@ -57,15 +59,27 @@ useEffect(() => {
 
  return (
 
-  <>
+    <>
 
-    <RootNavigator />
+      <Routes>
 
-    <Toast />
+        <Route
+          path="/share/:token"
+          element={<SharedEchoPage />}
+        />
 
-    <ConfirmModal />
+        <Route
+          path="/*"
+          element={<RootNavigator />}
+        />
 
-  </>
+      </Routes>
+
+      <Toast />
+
+      <ConfirmModal />
+
+    </>
 
 );
 }

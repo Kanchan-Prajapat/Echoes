@@ -10,27 +10,27 @@ import {
   errorResponse,
 } from "../../utils/apiResponse.js";
 import { env } from "../../config/env.js";
-import { Response, Request } from "express";
+import { Response } from "express";
 
 /* -------------------------------- */
 /* Create Share Link */
 /* -------------------------------- */
 
 export async function createShareController(
-  req: AuthRequest & Request<{ echoId: string }>,
+  req: AuthRequest,
   res: Response
 ) {
 
   try {
 console.log("Params:", req.params);
 console.log("echoId:", req.params.echoId);
-console.log("owner:", req.owner);
+console.log("user:", req.user);
 
 
     const share =
       await createShareService(
 
-        req.owner!.id,
+        req.user!.id,
 
         req.params.echoId
 

@@ -398,7 +398,7 @@ export async function deleteMediaController(
 
         req.params.id,
 
-        req.params.publicId
+       decodeURIComponent(req.params.publicId),
 
       );
 

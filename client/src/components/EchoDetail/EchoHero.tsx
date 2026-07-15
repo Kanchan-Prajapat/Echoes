@@ -19,7 +19,7 @@ interface Props {
 
   imageCount: number;
   videoCount: number;
-
+  publicMode: boolean;
   onBack: () => void;
   onOpenPlayer: () => void;
   onFavorite: () => void;
@@ -31,6 +31,7 @@ export default function EchoHero({
   setSelectedMediaIndex,
   imageCount,
   videoCount,
+  publicMode,
   onBack,
   onOpenPlayer,
   onFavorite,
@@ -85,18 +86,33 @@ export default function EchoHero({
           <ArrowLeft size={20} />
         </motion.button>
 
-        <motion.button
-          whileTap={{ scale: 0.92 }}
-          onClick={onFavorite}
-          animate={{ scale: echo.favorite ? 1.2 : 1, }}
+       {!publicMode && (
 
-          transition={{ type: "spring", stiffness: 300 }}
-          className="rounded-full bg-white/20 p-3 text-white backdrop-blur-md" >
-          <Heart
-            size={20}
-            fill={echo.favorite ? "currentColor" : "none"}
-          />
-        </motion.button>
+<motion.button
+    whileTap={{ scale: 0.92 }}
+    onClick={onFavorite}
+    animate={{
+        scale: echo.favorite ? 1.2 : 1,
+    }}
+    transition={{
+        type: "spring",
+        stiffness: 300,
+    }}
+    className="rounded-full bg-white/20 p-3 text-white backdrop-blur-md"
+>
+
+    <Heart
+        size={20}
+        fill={
+            echo.favorite
+                ? "currentColor"
+                : "none"
+        }
+    />
+
+</motion.button>
+
+)}
 
       </div>
 
