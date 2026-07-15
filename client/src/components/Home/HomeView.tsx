@@ -13,7 +13,8 @@ import HomeSkeleton from "../Skeleton/HomeSkeleton";
 import { Echo } from "@/types/echo";
 import { useEchoStore } from "@/store/echoStore";
 import EmptyState from "../Shared/EmptyState";
-
+import { useState } from "react";
+import EchoPlayer from "@/components/EchoPlayer";
 import usePullToRefresh
 from "@/hooks/usePullToRefresh";
 
@@ -41,6 +42,12 @@ export default function HomeView({
 const loading = useEchoStore(
     state => state.loading
 );
+
+const [showPlayer, setShowPlayer] =
+    useState(false);
+
+const [selectedEchoIndex, setSelectedEchoIndex] =
+    useState(0);
 
 const {
 
@@ -96,7 +103,7 @@ if (!loading && echoes.length === 0) {
   return (
 
     <main className="min-h-screen bg-[#F8F9FD] pb-32">
-    
+
     <PullToRefresh
 
 pull={pull}
@@ -136,7 +143,18 @@ refreshing={refreshing}
 
         <EchoHighlights
           echoes={echoes}
-          onOpenEcho={onOpenEcho}
+          onOpenEcho={(echo) => {
+
+    const index =
+       echoes.findIndex(
+  e => e.id === echo.id
+)
+
+    setSelectedEchoIndex(index);
+
+    setShowPlayer(true);
+
+}}
         />
 
         {/* Quote */}
@@ -162,6 +180,17 @@ refreshing={refreshing}
 
         <QuickStats
           echoes={echoes} />
+
+          {showPlayer && (
+
+<EchoPlayer
+    echoes={echoes}
+    currentEchoIndex={selectedEchoIndex}
+    initialMediaIndex={selectedEchoIndex}
+    onClose={() => setShowPlayer(false)}
+/>
+
+)}
 
       </AppContainer>
 

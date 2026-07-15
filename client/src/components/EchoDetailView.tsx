@@ -36,7 +36,6 @@ import useShareMemory from "@/hooks/useShareMemory";
 import { refreshEchoes } from "@/services/echoSync";
 
 import AppContainer from "@/styles/AppContainer";
-import ErrorState from "./Shared/ErrorState";
 import useExportPdf from "@/hooks/useExportPDF";
 
 interface Props {
@@ -440,13 +439,14 @@ ${share.url}`;
 
   if (showPlayer) {
     return (
-      <EchoPlayer
-        echo={echo}
-        initialIndex={selectedMediaIndex}
-        onClose={() =>
-          setShowPlayer(false)
-        }
-      />
+     <EchoPlayer
+  echoes={[echo]}
+  currentEchoIndex={0}
+  initialMediaIndex={selectedMediaIndex}
+  onClose={() =>
+    setShowPlayer(false)
+  }
+/>
     );
 
   }
@@ -454,14 +454,7 @@ ${share.url}`;
 
   return (
     <AppContainer className="space-y-8 py-6">
-    <ErrorState
-
-    message="Unable to load this memory."
-
-    onRetry={onBack}
-
-/>
-
+ 
       <EchoHero
         echo={echo}
         selectedMediaIndex={selectedMediaIndex}

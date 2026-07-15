@@ -13,7 +13,7 @@ const IMAGE_DURATION = 4000;
 export default function useEchoPlayer(
   media: Media[],
   initialIndex: number,
-  onClose: () => void
+  onFinished: () => void
 ){
 const [safeIndex, setSafeIndex] = useState(initialIndex);
 
@@ -46,7 +46,7 @@ safeIndex === media.length - 1;
 
   setTimeout(() => {
 
-    onClose();
+    onFinished();
 
   }, 250);
 
@@ -58,7 +58,7 @@ safeIndex === media.length - 1;
 
     setVideoProgress(0);
 
-  }, [safeIndex, media.length, onClose]);
+  }, [safeIndex, media.length, onFinished]);
 
   /* ---------------- PREVIOUS ---------------- */
 
@@ -72,9 +72,15 @@ safeIndex === media.length - 1;
 
   }, [safeIndex]);
 
-  useEffect(() => {
-  setSafeIndex(initialIndex);
-}, [initialIndex]);
+useEffect(() => {
+
+  setSafeIndex(0);
+
+  setVideoProgress(0);
+
+  setPaused(false);
+
+}, [media]);
 
   /* ---------------- IMAGE TIMER ---------------- */
 

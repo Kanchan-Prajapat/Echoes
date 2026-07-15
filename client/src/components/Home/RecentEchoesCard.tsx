@@ -6,6 +6,7 @@ import {
   Video,
   Heart,
 } from "lucide-react";
+import MediaCarousel from "@/components/Shared/MediaCarousel";
 
 import Card from "@/styles/Card";
 
@@ -22,11 +23,9 @@ export default function RecentEchoCard({
 }: Props) {
   if (echo.media.length === 0) return null;
 
-  const cover =
-    echo.media.find(
-      (m) => m.publicId === echo.coverMediaId
-    ) ?? echo.media[0];
-
+ const coverIndex = echo.media.findIndex(
+  (m) => m.publicId === echo.coverMediaId
+);
   const imageCount = echo.media.filter(
     (m) => m.type === "image"
   ).length;
@@ -57,42 +56,43 @@ export default function RecentEchoCard({
       >
         {/* Cover */}
 
-        <div className="relative aspect-[16/9] overflow-hidden">
+     <div className="relative overflow-hidden">
 
-          {cover.type === "image" ? (
-            <img
-              src={cover.url}
-              alt={echo.title}
-              className="h-full w-full object-cover transition duration-500 hover:scale-105"
-            />
-          ) : (
-            <video
-              src={cover.url}
-              muted
-              className="h-full w-full object-cover"
-            />
-          )}
+<MediaCarousel
+    media={echo.media}
 
-          {/* Favorite */}
+    height="h-56"
 
-          {echo.favorite && (
-            <div className="absolute right-4 top-4 rounded-full bg-white/90 p-2 shadow-md backdrop-blur">
-              <Heart
-                size={16}
-                className="fill-red-500 text-red-500"
-              />
-            </div>
-          )}
+    initialIndex={
+      coverIndex === -1
+        ? 0
+        : coverIndex
+    }
 
-          {/* Mood */}
+    showControls={false}
 
-          {echo.mood && (
-            <div className="absolute bottom-4 right-4 rounded-full bg-black/50 px-3 py-1 text-sm text-white backdrop-blur">
-              {echo.mood}
-            </div>
-          )}
-        </div>
+    onOpenPlayer={() => onOpen(echo)}
+/>
+  {/* Favorite */}
 
+  {echo.favorite && (
+    <div className="absolute right-4 top-4 z-20 rounded-full bg-white/90 p-2 shadow-md backdrop-blur">
+      <Heart
+        size={16}
+        className="fill-red-500 text-red-500"
+      />
+    </div>
+  )}
+
+  {/* Mood */}
+
+  {echo.mood && (
+    <div className="absolute bottom-4 right-4 z-20 rounded-full bg-black/50 px-3 py-1 text-sm text-white backdrop-blur">
+      {echo.mood}
+    </div>
+  )}
+
+</div>
         {/* Content */}
 
         <div className="space-y-4 p-5">

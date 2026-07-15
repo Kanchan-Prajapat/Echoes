@@ -16,7 +16,7 @@ export default function EchoBubble({
 
   const cover =
     echo.media.find(
-      (m) => m.id === echo.coverMediaId
+      (m) => m.publicId === echo.coverMediaId
     ) ?? echo.media[0];
 
   return (

@@ -10,12 +10,18 @@ import { Media } from "@/types/media";
 
 interface Props {
   media: Media[];
+
   height?: string;
 
   currentIndex?: number;
+
   onChange?: (index: number) => void;
 
   onOpenPlayer?: () => void;
+
+  initialIndex?: number;
+
+  showControls?: boolean;
 }
 
 export default function MediaCarousel({
@@ -24,11 +30,16 @@ export default function MediaCarousel({
   currentIndex,
   onChange,
   onOpenPlayer,
-}: Props) {
+  initialIndex = 0,
+  showControls = true,
+}: Props){
 
-  const [internalIndex, setInternalIndex] = useState(0);
+const [internalIndex, setInternalIndex] = useState(
+  initialIndex ?? 0
+);
   
-  if (media.length === 0) {
+  if (media.length === 0)
+   {
     return (
       <div
         className={`${height} flex items-center justify-center bg-gray-100 text-gray-400`}
@@ -146,7 +157,7 @@ const next = () => {
 
       </AnimatePresence>
 
-      {media.length > 1 && (
+      {showControls && media.length > 1 && (
         <>
           <button
             onClick={(e) => {
