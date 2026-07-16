@@ -5,7 +5,10 @@ export interface UserDocument {
   password: string;
   avatar?: string;
   bio?: string;
-  onboardingCompleted: boolean;
+  dateOfBirth?: Date;
+  gender?: "male" | "female" | "other" | "prefer_not_to_say";
+  city?: string;
+  profileCompleted: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,8 +20,10 @@ export interface CreateUserDTO {
 }
 
 export interface UpdateProfileDTO {
-  username?: string;
+  username: string;
   avatar?: string;
   bio?: string;
-  onboardingCompleted?: boolean;
+  dateOfBirth: string;
+  gender?: "male" | "female" | "other" | "prefer_not_to_say";
+  city?: string;
 }

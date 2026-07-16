@@ -26,6 +26,7 @@ const login = useAuthStore(
   const [error, setError] =
     useState("");
 
+
   const updateField = (
     field: keyof SignupData,
     value: string
@@ -84,13 +85,18 @@ login(
   response.token
 );
 
+const navigation =
+  useNavigationStore.getState();
 
+if (response.user.profileCompleted) {
 
-useNavigationStore
-  .getState()
-  .reset("home");
+  navigation.reset("home");
 
-console.log(response);
+} else {
+
+  navigation.reset("setup-profile");
+
+}
 
 // Next we'll navigate to Login screen
 

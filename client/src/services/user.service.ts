@@ -1,0 +1,29 @@
+import api from "@/services/api";
+
+import {
+  Profile,
+  UpdateProfileDTO,
+} from "@/types/user";
+
+export async function getMyProfile(): Promise<Profile> {
+
+  const response = await api.get(
+    "/auth/me"
+  );
+
+  return response.data.data;
+
+}
+
+export async function updateProfile(
+  data: UpdateProfileDTO
+): Promise<Profile> {
+
+  const response = await api.patch(
+    "/auth/profile",
+    data
+  );
+
+  return response.data.data;
+
+}

@@ -14,7 +14,13 @@ export interface Profile {
 
   bio?: string;
 
-  onboardingCompleted: boolean;
+  dateOfBirth?: string;
+
+  gender?: "male" | "female" | "other" | "prefer_not_to_say";
+
+  city?: string;
+
+  profileCompleted: boolean;
 
   createdAt: string;
 
@@ -28,10 +34,16 @@ export interface Profile {
 
 export interface UpdateProfileDTO {
 
-  username?: string;
+  username: string;
 
   bio?: string;
 
   avatar?: string;
+
+  dateOfBirth: string;
+
+  gender?: "male" | "female" | "other" | "prefer_not_to_say";
+
+  city?: string;
 
 }

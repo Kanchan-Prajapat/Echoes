@@ -30,6 +30,10 @@ interface AuthState {
     value: boolean
   ) => void;
 
+  updateOwner: (
+    owner: User
+) => void;
+
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -47,12 +51,22 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       sessionChecked: false,
 
+      
+
       setSessionChecked: (
   sessionChecked
 ) =>
   set({
     sessionChecked,
   }),
+
+  updateOwner: (owner) =>
+
+    set({
+
+        owner,
+
+    }),
 
       login: (owner, token) =>
 
@@ -73,6 +87,8 @@ export const useAuthStore = create<AuthState>()(
     isAuthenticated: false,
     sessionChecked: true,
   }),
+
+  
 
       setLoading: (loading) =>
 

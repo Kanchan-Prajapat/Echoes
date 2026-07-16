@@ -1,5 +1,5 @@
 import User from "./user.model.js";
-
+import { UpdateProfileDTO } from "./user.types.js";
 /* -------------------------------- */
 /* Create User */
 /* -------------------------------- */
@@ -52,13 +52,11 @@ export async function findUserById(
 /* Update Profile */
 /* -------------------------------- */
 
+
 export async function updateProfile(
   id: string,
-  data: {
-    username?: string;
-    avatar?: string;
-    bio?: string;
-    onboardingCompleted?: boolean;
+  data: UpdateProfileDTO & {
+    profileCompleted?: boolean;
   }
 ) {
   return User.findByIdAndUpdate(
@@ -70,7 +68,6 @@ export async function updateProfile(
     }
   );
 }
-
 /* -------------------------------- */
 /* Update Password */
 /* -------------------------------- */

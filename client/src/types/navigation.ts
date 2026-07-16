@@ -20,6 +20,7 @@ export type Screen =
   | "change-password"
 
   | "echo-detail"
+  | "setup-profile"
   | "new-echo";
 
 export interface NavigationState {

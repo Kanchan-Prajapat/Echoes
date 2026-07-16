@@ -1,13 +1,25 @@
 export interface User {
 
-    id: string;
+  id: string;
 
-    name: string;
+  username: string;
 
-    email: string;
+  email: string;
 
-    avatar?: string;
+  avatar: string;
 
-    createdAt: string;
+  bio?: string;
+
+  dateOfBirth?: string;
+
+  gender?:
+    | "male"
+    | "female"
+    | "other"
+    | "prefer_not_to_say";
+
+  city?: string;
+
+  profileCompleted: boolean;
 
 }

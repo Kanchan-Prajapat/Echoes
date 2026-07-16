@@ -69,11 +69,19 @@ loginStore(
   response.user,
   response.token
 );
-useNavigationStore
-    .getState()
-    .reset("home");
 
-    }
+const navigation =
+  useNavigationStore.getState();
+
+if (response.user.profileCompleted) {
+
+  navigation.reset("home");
+
+} else {
+
+  navigation.reset("setup-profile");
+
+}
 
     catch (error: any) {
 

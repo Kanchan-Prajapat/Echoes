@@ -17,6 +17,8 @@ import {
   AuthResponse,
 } from "./auth.types.js";
 
+import { UpdateProfileDTO } from "../user/user.types.js";
+
 /* -------------------------------- */
 /* Generate JWT */
 /* -------------------------------- */
@@ -138,27 +140,28 @@ export async function getCurrentUser(
 
 export async function updateMyProfile(
   id: string,
-  data: {
-    username?: string;
-    avatar?: string;
-    bio?: string;
-    onboardingCompleted?: boolean;
-  }
+  data: UpdateProfileDTO
 ) {
 
-  const user =
-    await updateProfile(
-      id,
-      data
-    );
+  const user = await updateProfile(id, {
+    username: data.username,
+    avatar: data.avatar,
+    bio: data.bio,
+    dateOfBirth: new Date(data.dateOfBirth),
+    gender: data.gender,
+    city: data.city,
+    profileCompleted: true,
+
+  });
 
   if (!user) {
-    throw new Error(
-      "User not found."
-    );
+
+    throw new Error("User not found.");
+
   }
 
   return user;
+
 }
 
 /* -------------------------------- */

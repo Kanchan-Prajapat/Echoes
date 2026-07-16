@@ -14,12 +14,25 @@ export interface JwtPayload {
 }
 
 export interface AuthUser {
+
   id: string;
+
   username: string;
+
   email: string;
+
   avatar: string;
+
   bio: string;
-  onboardingCompleted: boolean;
+
+  dateOfBirth?: string;
+
+  gender?: string;
+
+  city?: string;
+
+  profileCompleted: boolean;
+
 }
 
 export interface AuthResponse {

@@ -21,9 +21,9 @@ export const updateProfileSchema = z.object({
 
   username: z
     .string()
+    .trim()
     .min(3)
-    .max(25)
-    .optional(),
+    .max(25),
 
   avatar: z
     .string()
@@ -34,7 +34,21 @@ export const updateProfileSchema = z.object({
     .max(250)
     .optional(),
 
-  onboardingCompleted:
-    z.boolean().optional(),
+  dateOfBirth: z.string(),
+
+  gender: z
+    .enum([
+      "male",
+      "female",
+      "other",
+      "prefer_not_to_say",
+    ])
+    .optional(),
+
+  city: z
+    .string()
+    .trim()
+    .max(50)
+    .optional(),
 
 });

@@ -33,10 +33,30 @@ const userSchema = new Schema(
       default: "",
     },
 
-    onboardingCompleted: {
+    dateOfBirth: {
+      type: Date,
+    },
+
+    gender: {
+      type: String,
+      enum: [
+        "male",
+        "female",
+        "other",
+        "prefer_not_to_say",
+      ],
+    },
+
+    city: {
+      type: String,
+      trim: true,
+    },
+
+    profileCompleted: {
       type: Boolean,
       default: false,
     },
+
   },
   {
     timestamps: true,
@@ -51,12 +71,8 @@ userSchema.set("toJSON", {
     ret.id = ret._id.toString();
 
     delete ret._id;
-
     delete ret.password;
   },
 });
 
-export default mongoose.model(
-  "User",
-  userSchema
-);
+export default mongoose.model("User", userSchema);

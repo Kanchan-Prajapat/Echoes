@@ -10,7 +10,7 @@ import ChangePasswordView from "@/components/Settings/ChangePassword/ChangePassw
 import BottomNav from "@/components/Shared/BottomNav";
 import { AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/Shared/PageTransition";
-
+import SetupProfileView from "@/components/Onboarding/SetupProfileView";
 import { useNavigationStore } from "@/store/navigationStore";
 
 export default function AppNavigator() {
@@ -182,6 +182,12 @@ export default function AppNavigator() {
     );
 
   }
+
+  if (current === "setup-profile") {
+
+  return <SetupProfileView />;
+
+}
 
   /* -----------------------------
      Main Screens
