@@ -72,9 +72,6 @@ export const useEchoStore = create<EchoStore>()(
   set({
 
     echoes,
-
-    loading: true,
-
     error: null,
 
   }),

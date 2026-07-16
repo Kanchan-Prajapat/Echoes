@@ -51,7 +51,10 @@ export default function StoryPlayer({
 
     initialMediaIndex,
 
-    onFinished
+    onFinished,
+    
+
+    
 
   );
 
@@ -253,20 +256,9 @@ export default function StoryPlayer({
 
             }}
 
-         onNext={() => {
+  onNext={() => {
 
-    if (
-      player.currentIndex <
-      echo.media.length - 1
-    ) {
-
-      player.next();
-
-    } else {
-
-      onFinished();
-
-    }
+    player.next();
 
     player.showControls();
 
@@ -294,22 +286,7 @@ export default function StoryPlayer({
 
               muted={player.muted}
 
-             onNext={() => {
-
-      if (
-        player.currentIndex <
-        echo.media.length - 1
-      ) {
-
-        player.next();
-
-      } else {
-
-        onFinished();
-
-      }
-
-    }}
+           onNext={player.next}
 
               onVideoProgress={
                 player.setVideoProgress

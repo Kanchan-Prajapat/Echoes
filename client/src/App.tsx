@@ -1,100 +1,83 @@
-
-
-
- import { useEffect } from "react";
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import SharedEchoPage from "../src/components/Share/SharedEchoPage";
 
-import { getEchoes } from "./services/echo.service";
-import { useEchoStore } from "./store/echoStore";
-import { useAuthStore } from "@/auth/stores/authStore";
 import RootNavigator from "./navigation/RootNavigator";
-import useSession from "@/auth/hooks/useSession";
+import SharedEchoPage from "./components/Share/SharedEchoPage";
+
 import Toast from "@/components/Toast/Toast";
-import ConfirmModal from "./components/ConfirmModal/ConfirmModal";
+import ConfirmModal from "@/components/ConfirmModal/ConfirmModal";
+
+import useSession from "@/auth/hooks/useSession";
+import { useAuthStore } from "@/auth/stores/authStore";
+
+import { getEchoes } from "@/services/echo.service";
+
+import { useEchoStore } from "@/store/echoStore";
 
 export default function App() {
 
+  useSession();
+
+  const authenticated = useAuthStore(
+    (state) => state.isAuthenticated
+  );
+
   const setEchoes = useEchoStore(
     (state) => state.setEchoes
-
   );
-const setLoading =
-useEchoStore(
-    state => state.setLoading
-);
 
-const setError =
-useEchoStore(
-    state => state.setError
-);
+  const setLoading = useEchoStore(
+    (state) => state.setLoading
+  );
 
-const authenticated = useAuthStore(
-  (state) => state.isAuthenticated
-);
+  const setError = useEchoStore(
+    (state) => state.setError
+  );
 
-useEffect(() => {
-  console.log("authenticated:", authenticated);
-}, [authenticated]);
+  useEffect(() => {
 
-useEffect(() => {
-  console.log("Echoes:", useEchoStore.getState().echoes);
-});
+    if (!authenticated) return;
 
+    async function loadEchoes() {
 
-useEffect(() => {
+      try {
 
-  if (!authenticated) return;
+        setLoading(true);
 
-  async function loadEchoes() {
-  try {
-    const response = await getEchoes();
+        const echoes = await getEchoes();
 
-    console.log("API Response:", response);
+        setEchoes(echoes);
 
-    setEchoes(response);
+      }
 
-    console.log("Store After:", useEchoStore.getState().echoes);
+      catch (error) {
 
-  } catch (e) {
-    console.error(e);
-  }
-}
+        console.error(error);
 
- async function loadEchoes() {
+        setError(
+          "Failed to load memories."
+        );
 
-  try {
+      }
 
-    setLoading(true);
+      finally {
 
-    const response =
-      await getEchoes();
+        setLoading(false);
 
-    setEchoes(response);
+      }
 
-  }
+    }
 
-  catch (error) {
+    loadEchoes();
 
-    console.error(error);
+  }, [
+    authenticated,
+    setEchoes,
+    setLoading,
+    setError,
+  ]);
 
-    setError(
-      "Failed to load memories."
-    );
-
-  }
-
-  finally {
-
-    setLoading(false);
-
-  }
-
-}
-}, [authenticated, setEchoes]);
-    useSession();
-
- return (
+  return (
 
     <>
 
@@ -118,5 +101,6 @@ useEffect(() => {
 
     </>
 
-);
+  );
+
 }

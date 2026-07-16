@@ -45,24 +45,27 @@ export default function EchoPlayer({
 
   if (!echo) return null;
 
-  const handleNextEcho = () => {
 
-    if (
-      activeEchoIndex <
-      echoes.length - 1
-    ) {
+const handleNextEcho = () => {
 
-      setActiveEchoIndex(
-        (i) => i + 1
-      );
+    console.log("Current Echo:", activeEchoIndex);
+    console.log("Total:", echoes.length);
 
-      return;
+    if (activeEchoIndex >= echoes.length - 1) {
+
+        console.log("Closing Player");
+
+        onClose();
+
+        return;
 
     }
 
-    onClose();
+    console.log("Opening Next Echo");
 
-  };
+    setActiveEchoIndex(i => i + 1);
+
+};
 
   return (
 

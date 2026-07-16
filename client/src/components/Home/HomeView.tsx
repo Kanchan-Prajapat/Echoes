@@ -23,6 +23,7 @@ from "@/components/Shared/PullToRefresh";
 
 import { refreshEchoes }
 from "@/services/echoSync";
+import OnThisDaySection from "../OnThisDay/OnThisDaySection";
 
 interface Props {
   onOpenEcho: (echo: Echo) => void;
@@ -139,6 +140,14 @@ refreshing={refreshing}
 
         </div>
 
+
+
+<OnThisDaySection
+    echoes={echoes}
+    onOpenEcho={onOpenEcho}
+/>
+
+
         {/* Highlights */}
 
         <EchoHighlights
@@ -186,10 +195,8 @@ refreshing={refreshing}
 <EchoPlayer
     echoes={echoes}
     currentEchoIndex={selectedEchoIndex}
-    initialMediaIndex={selectedEchoIndex}
     onClose={() => setShowPlayer(false)}
 />
-
 )}
 
       </AppContainer>
