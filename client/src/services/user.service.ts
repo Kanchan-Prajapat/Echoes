@@ -19,11 +19,10 @@ export async function updateProfile(
   data: UpdateProfileDTO
 ): Promise<Profile> {
 
-  const response = await api.patch(
-    "/auth/profile",
-    data
-  );
-
+const response = await api.patch(
+  "/auth/me",
+  data
+);
   return response.data.data;
 
 }

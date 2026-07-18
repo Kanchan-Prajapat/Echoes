@@ -13,6 +13,10 @@ import { useAuthStore } from "@/auth/stores/authStore";
 import useToast from "@/hooks/useToast";
 import useConfirm from "@/hooks/useConfirm";
 import ErrorState from "../Shared/ErrorState";
+import { format } from "date-fns";
+import CalendarModal from "@/components/Modals/CalendarModal";
+import GenderPickerModal from "@/components/Modals/GenderPickerModal";
+
 export default function ProfileView() {
 
  const {
@@ -52,6 +56,23 @@ const [bio, setBio] =
 const [avatar, setAvatar] =
   useState("");
 
+const [dateOfBirth, setDateOfBirth]=
+useState("");
+
+const [gender, setGender] = useState(
+  profile?.gender ?? ""
+);
+
+const [city, setCity] = useState(
+  profile?.city ?? ""
+);
+
+const [dateOfBirthModalOpen, setDateOfBirthModalOpen] =
+  useState(false);
+
+const [genderModalOpen, setGenderModalOpen] =
+  useState(false);
+
 const {
 
   saveProfile,
@@ -72,15 +93,14 @@ async function handleSave() {
 
   try {
 
-    await saveProfile({
-
-      username,
-
-      bio,
-
-      avatar,
-
-    });
+   await saveProfile({
+  username,
+  bio,
+  avatar,
+  dateOfBirth,
+  gender,
+  city,
+});
 
     await refreshProfile();
 
@@ -188,13 +208,19 @@ async function handleSave() {
 
   if (!profile) return;
 
-  setUsername(profile.username);
+setUsername(profile.username);
 
-  setBio(profile.bio ?? "");
+setBio(profile.bio ?? "");
 
-  setAvatar(profile.avatar ?? "");
+setAvatar(profile.avatar ?? "");
 
-  setOpenEdit(true);
+setDateOfBirth(profile.dateOfBirth ?? "");
+
+setGender(profile.gender ?? "");
+
+setCity(profile.city ?? "");
+
+setOpenEdit(true);
 
 }}
 
@@ -249,6 +275,19 @@ async function handleSave() {
   avatar={avatar}
 
   loading={saving}
+    dateOfBirth={dateOfBirth}
+    gender={gender}
+    city={city}
+
+    onCityChange={setCity}
+
+    onDateOfBirthClick={() =>
+        setDateOfBirthModalOpen(true)
+    }
+
+    onGenderClick={() =>
+        setGenderModalOpen(true)
+    }
 
   onClose={() =>
     setOpenEdit(false)
@@ -262,6 +301,36 @@ async function handleSave() {
 
   onSave={handleSave}
 
+/>
+
+<CalendarModal
+  open={dateOfBirthModalOpen}
+  value={
+    dateOfBirth
+      ? new Date(dateOfBirth)
+      : new Date()
+  }
+  onClose={() =>
+    setDateOfBirthModalOpen(false)
+  }
+  onChange={(date) => {
+    setDateOfBirth(
+      format(date, "yyyy-MM-dd")
+    );
+
+    setDateOfBirthModalOpen(false);
+  }}
+/>
+
+<GenderPickerModal
+  open={genderModalOpen}
+  value={gender}
+  onClose={() =>
+    setGenderModalOpen(false)
+  }
+  onChange={(value) =>
+    setGender(value)
+  }
 />
 
     </main>

@@ -26,6 +26,7 @@ export interface Profile {
 
   updatedAt: string;
 
+
 }
 
 /* -------------------------------- */
@@ -45,5 +46,6 @@ export interface UpdateProfileDTO {
   gender?: "male" | "female" | "other" | "prefer_not_to_say";
 
   city?: string;
+
 
 }

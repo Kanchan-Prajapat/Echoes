@@ -23,7 +23,7 @@ export interface UpdateProfileDTO {
   username: string;
   avatar?: string;
   bio?: string;
-  dateOfBirth: string;
+  dateOfBirth?: string;
   gender?: "male" | "female" | "other" | "prefer_not_to_say";
   city?: string;
 }

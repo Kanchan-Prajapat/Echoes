@@ -85,6 +85,76 @@ const echoSchema = new Schema(
       type: String,
       default: "",
     },
+
+    viewCount: {
+    type: Number,
+    default: 0,
+},
+
+aiCaption: {
+    type: String,
+    default: "",
+},
+
+aiGeneratedAt: {
+  type: Date,
+},
+
+aiModel: {
+  type: String,
+  default: "",
+},
+
+aiInsight: {
+    type: String,
+    default: "",
+},
+
+aiTags: {
+    type: [String],
+    default: [],
+},
+
+music: {
+  id: {
+    type: String,
+    default: "",
+  },
+
+  title: {
+    type: String,
+    default: "",
+  },
+
+  artist: {
+    type: String,
+    default: "",
+  },
+
+  cover: {
+    type: String,
+    default: "",
+  },
+
+  url: {
+    type: String,
+    default: "",
+  },
+
+  duration: {
+    type: Number,
+    default: 0,
+  },
+
+  source: {
+    type: String,
+    enum: [
+      "echoes",
+      "uploaded",
+    ],
+    default: "echoes",
+  },
+},
   },
   {
     timestamps: true,

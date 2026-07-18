@@ -32,6 +32,26 @@ export interface CreateEchoDTO {
 
   coverMediaId?: string;
 
+  music?: {
+
+  id: string;
+
+  title: string;
+
+  artist: string;
+
+  cover: string;
+
+  url: string;
+
+  duration: number;
+
+  source:
+    | "echoes"
+    | "uploaded";
+
+};
+
 }
 
 export interface UpdateEchoDTO {
@@ -56,4 +76,24 @@ export interface UpdateEchoDTO {
 
   coverMediaId?: string;
 
+  
+music?: {
+
+  id: string;
+
+  title: string;
+
+  artist: string;
+
+  cover: string;
+
+  url: string;
+
+  duration: number;
+
+  source:
+    | "echoes"
+    | "uploaded";
+
+};
 }

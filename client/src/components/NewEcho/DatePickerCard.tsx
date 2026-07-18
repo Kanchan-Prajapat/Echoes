@@ -5,13 +5,16 @@ import { format } from "date-fns";
 import Card from "@/styles/Card";
 
 interface Props {
+  label?: string;
+  placeholder?: string;
   date: string;
   onClick: () => void;
 }
-
 export default function DatePickerCard({
   date,
   onClick,
+  label,
+  placeholder,
 }: Props) {
 
   return (
@@ -40,20 +43,15 @@ export default function DatePickerCard({
 
             <div>
 
-              <p
-                className=" text-sm text-gray-500">
-                Date
-              </p>
+             <p className="text-sm text-gray-500">
+  {label ?? "Date"}
+</p>
 
               <h3
                 className=" mt-1 font-bold">
-
-                {date
-                  ? format(
-                      new Date(date),
-                      "dd/MM/yyyy"
-                    )
-                  : "Select Date"}
+{date
+  ? format(new Date(date), "dd MMMM yyyy")
+  : placeholder ?? "Select Date"}
 
               </h3>
 

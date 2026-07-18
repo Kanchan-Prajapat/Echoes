@@ -1,8 +1,12 @@
 import { motion } from "framer-motion";
-import { User, Calendar, MapPin } from "lucide-react";
+import { User, MapPin } from "lucide-react";
 import { useAuthStore } from "@/auth/stores/authStore";
 import useSetupProfile from "@/hooks/useSetupProfile";
+import { useState } from "react";
+import { format } from "date-fns";
 
+import CalendarModal from "@/components/Modals/CalendarModal";
+import { DatePickerCard } from "../NewEcho";
 export default function SetupProfileView() {
 
   const {
@@ -31,6 +35,8 @@ export default function SetupProfileView() {
     (state) => state.owner
   );
 
+const [calendarOpen, setCalendarOpen] =
+  useState(false); 
 
 
   return (
@@ -136,7 +142,6 @@ export default function SetupProfileView() {
               </label>
 
               <input
-
                 value={username}
                 placeholder="Enter Username"
                 onChange={(e) =>
@@ -199,69 +204,27 @@ export default function SetupProfileView() {
 
             {/* DOB */}
 
-            <div>
+           <div>
 
-              <label
-                className="
-                  mb-2
-                  block
-                  text-sm
-                  font-semibold
-                "
-              >
+  <label
+    className="
+      mb-2
+      block
+      text-sm
+      font-semibold
+    "
+  >
+    Birthday
+  </label>
 
-                Birthday
+  <DatePickerCard
+    label="Birthday"
+    placeholder="Select your birthday"
+    date={dateOfBirth}
+    onClick={() => setCalendarOpen(true)}
+  />
 
-              </label>
-
-              <div className="relative">
-
-                <Calendar
-                  size={18}
-                  className="
-                    absolute
-                    left-4
-                    top-4
-                    text-gray-400
-                  "
-                />
-
-                <input
-
-                  type="date"
-
-                  value={dateOfBirth}
-                  max={
-                    new Date()
-                      .toISOString()
-                      .split("T")[0]
-                  }
-
-                  onChange={(e) =>
-
-                    setDateOfBirth(
-                      e.target.value
-                    )
-
-                  }
-
-                  className="
-                    w-full
-                    rounded-2xl
-                    border
-                    bg-white
-                    py-4
-                    pl-12
-                    pr-4
-                    outline-none
-                    focus:border-violet-500
-                  "
-
-                />
-
-              </div>
-
-            </div>
+</div>
 
             {/* Gender */}
 
@@ -487,6 +450,20 @@ export default function SetupProfileView() {
         </motion.div>
 
       </div>
+      <CalendarModal
+  open={calendarOpen}
+  value={
+    dateOfBirth
+      ? new Date(dateOfBirth)
+      : undefined
+  }
+  onClose={() => setCalendarOpen(false)}
+  onSelect={(date) => {
+    setDateOfBirth(
+      format(date, "yyyy-MM-dd")
+    );
+  }}
+/>
 
     </main>
 

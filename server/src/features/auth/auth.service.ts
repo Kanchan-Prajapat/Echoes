@@ -147,7 +147,7 @@ export async function updateMyProfile(
     username: data.username,
     avatar: data.avatar,
     bio: data.bio,
-    dateOfBirth: new Date(data.dateOfBirth),
+  dateOfBirth: data.dateOfBirth,
     gender: data.gender,
     city: data.city,
     profileCompleted: true,

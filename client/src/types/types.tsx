@@ -19,6 +19,10 @@ export interface Echo {
   reflection?: string;
   createdAt: string;
   lastViewedIndex?:number;
+    viewCount: number;
+  aiCaption?: string;
+  aiInsight?: string;
+  aiTags?: string[];
 }
 
 export type TabType = "home" | "timeline" | "add" | "calendar" | "profile" ;

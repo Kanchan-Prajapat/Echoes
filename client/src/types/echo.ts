@@ -1,4 +1,5 @@
 import { Media } from "./media";
+import { EchoMusic } from "./music";
 
 export interface Echo {
   id: string;
@@ -25,4 +26,18 @@ export interface Echo {
 
   viewed: boolean;
   coverMediaId?: string;
+
+  viewCount: number;
+
+aiCaption?: string;
+
+aiInsight?: string;
+
+aiTags?: string[];
+
+aiGeneratedAt?: string;
+
+aiModel?: string;
+
+music?: EchoMusic;
 }

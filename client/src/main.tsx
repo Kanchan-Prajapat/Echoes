@@ -5,10 +5,14 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
 
+import { AudioProvider } from "@/context/AudioContext";
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <AudioProvider>
+        <App />
+      </AudioProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

@@ -13,6 +13,7 @@ import { refreshEchoes } from "@/services/echoSync";
 import useToast from "@/hooks/useToast";
 import useConfirm from "@/hooks/useConfirm";
 import { Media } from "@/types/media";
+import { Music } from "@/types/music";
 interface Props {
     editingEchoId?: string;
     onSaved: () => void;
@@ -57,6 +58,8 @@ export default function useNewEcho({
 
         const [coverMediaId, setCoverMediaId] =
     useState<string>();
+    const [selectedMusic, setSelectedMusic] =
+  useState<Music | undefined>();
 
     /* ---------------- UI ---------------- */
 
@@ -104,6 +107,18 @@ const { confirm } = useConfirm();
         setCoverMediaId(
     editingEcho.coverMediaId
 );
+if (editingEcho.music) {
+  setSelectedMusic({
+    _id: editingEcho.music.id,
+    title: editingEcho.music.title,
+    artist: editingEcho.music.artist,
+    cover: editingEcho.music.cover,
+    url: editingEcho.music.url,
+    duration: editingEcho.music.duration,
+    category: "",
+  });
+}
+
 
     }, [editingEcho]);
 
@@ -272,6 +287,18 @@ uploadedMedia[0]?.id;
                 media: uploadedMedia,
 
                 coverMediaId: finalCoverMediaId,
+         music: selectedMusic
+  ? {
+      id: selectedMusic._id,
+      title: selectedMusic.title,
+      artist: selectedMusic.artist,
+      cover: selectedMusic.cover,
+      url: selectedMusic.url,
+      duration: selectedMusic.duration,
+      source: "echoes",
+    }
+  : undefined,
+                
 
             };
 
@@ -292,6 +319,15 @@ uploadedMedia[0]?.id;
             /* ---------- Create ---------- */
 
             else {
+
+                console.log("Selected Music");
+console.log(selectedMusic);
+
+console.log("Echo Payload");
+console.log(echo);
+
+console.log("Echo Music");
+console.log(echo.music);
 
                 await createEcho(echo);
 
@@ -380,6 +416,9 @@ onSaved();
 
         coverMediaId,
 setCover,
+
+selectedMusic,
+setSelectedMusic,
 
     };
 }

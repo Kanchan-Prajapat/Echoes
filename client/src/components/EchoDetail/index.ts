@@ -4,3 +4,5 @@ export { default as EchoJournal } from "./EchoJournal";
 export { default as EchoActions } from "./EchoActions";
 export { default as EchoStats   } from "./EchoStats";
 export { default as CoverBadge  } from "./CoverBadge";
+export { default as EchoAI } from "./EchoAI";
+export { default as EchoMusic } from "./EchoMusic";

@@ -1,18 +1,71 @@
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { format } from "date-fns";
+
+import CalendarDropdown from "./CalendarDropdown";
 
 interface Props {
   month: Date;
+
   onPrevious: () => void;
   onNext: () => void;
+
+  onMonthChange: (month: number) => void;
+  onYearChange: (year: number) => void;
 }
 
 export default function CalendarHeader({
   month,
   onPrevious,
   onNext,
-}: Props) {
+  onMonthChange,
+  onYearChange,
+}: Props){
+const monthButtonRef =
+  useRef<HTMLButtonElement>(null);
+
+const yearButtonRef =
+  useRef<HTMLButtonElement>(null);
+
+const [anchor, setAnchor] =
+  useState<DOMRect | null>(null);
+
+const [dropdownType, setDropdownType] =
+  useState<"month" | "year" | null>(null);
+
+const months = useMemo(
+  () => [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ],
+  []
+);
+
+const years = useMemo(() => {
+  const currentYear = new Date().getFullYear();
+
+  return Array.from(
+    { length: 100 },
+    (_, i) => currentYear - i
+  );
+}, []);
+
+
   return (
     <div className="mb-8">
 
@@ -68,13 +121,65 @@ export default function CalendarHeader({
           }}
           className="text-center"
         >
-          <h2 className="text-3xl font-black">
-            {format(month, "MMMM")}
-          </h2>
+        <div className="flex items-center justify-center gap-2">
+<button
+  ref={monthButtonRef}
+  type="button"
+  onClick={() => {
+    setAnchor(
+      monthButtonRef.current?.getBoundingClientRect() ??
+        null
+    );
 
-          <p className="mt-1 text-gray-500">
-            {format(month, "yyyy")}
-          </p>
+    setDropdownType("month");
+  }}
+  className="
+    flex
+    items-center
+    gap-1
+    rounded-xl
+    px-3
+    py-1.5
+    transition
+    hover:bg-violet-50
+  "
+>
+  <span className="text-3xl font-black">
+    {format(month, "MMMM")}
+  </span>
+
+  <ChevronDown size={18} />
+</button>
+<button
+  ref={yearButtonRef}
+  type="button"
+  onClick={() => {
+    setAnchor(
+      yearButtonRef.current?.getBoundingClientRect() ??
+        null
+    );
+
+    setDropdownType("year");
+  }}
+  className="
+    flex
+    items-center
+    gap-1
+    rounded-xl
+    px-3
+    py-1.5
+    transition
+    hover:bg-violet-50
+  "
+>
+  <span className="text-lg font-semibold text-gray-500">
+    {format(month, "yyyy")}
+  </span>
+
+  <ChevronDown size={16} />
+</button>
+
+</div>
         </motion.div>
 
         <motion.button
@@ -97,7 +202,34 @@ export default function CalendarHeader({
         </motion.button>
 
       </div>
+<CalendarDropdown
+  open={dropdownType !== null}
+  anchor={anchor}
+  items={
+    dropdownType === "month"
+      ? months
+      : years.map(String)
+  }
+  selected={
+    dropdownType === "month"
+      ? month.getMonth()
+      : years.findIndex(
+          (y) => y === month.getFullYear()
+        )
+  }
+  onSelect={(index) => {
+    if (dropdownType === "month") {
+      onMonthChange(index);
+    } else {
+      onYearChange(years[index]);
+    }
 
+    setDropdownType(null);
+  }}
+  onClose={() =>
+    setDropdownType(null)
+  }
+/>
     </div>
   );
 }

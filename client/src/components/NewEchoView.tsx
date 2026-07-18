@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-
+import { useState } from "react";
 import AppContainer from "@/styles/AppContainer";
 
 import {
@@ -12,7 +12,15 @@ import {
   MoodPickerModal,
   JournalEditor,
   SaveEchoButton,
+  MusicSelector,
+ 
 } from "@/components/NewEcho";
+import useMusic from "@/hooks/useMusic";
+
+
+
+import MusicPickerModal from "./Music/MusicPickerModal";
+
 
 import CalendarModal from "@/components/Modals/CalendarModal";
 
@@ -69,19 +77,28 @@ export default function NewEchoView({
 
     handleFilesSelected,
 
-    coverMediaId,
-    setCover,
-    removeMedia,
-    handleSave,
+ coverMediaId,
+setCover,
+removeMedia,
 
-  } = useNewEcho({
+selectedMusic,
+setSelectedMusic,
 
-    editingEchoId,
+handleSave,
 
-    onSaved,
+} = useNewEcho({
+
+editingEchoId,
+onSaved,
 
   });
 
+const { music } = useMusic();
+
+  const [showMusicPicker, setShowMusicPicker] =
+useState(false);
+
+console.log("NewEchoView selectedMusic:", selectedMusic);
   return (
 
     <AppContainer className="py-8 pb-32">
@@ -111,12 +128,12 @@ export default function NewEchoView({
           onChange={setTitle}
         />
 
-        <DatePickerCard
-          date={date}
-          onClick={() =>
-            setShowCalendar(true)
-          }
-        />
+       <DatePickerCard
+  label="Memory Date"
+  placeholder="Choose memory date"
+  date={date}
+  onClick={() => setShowCalendar(true)}
+/>
 
         <LocationInput
           value={location}
@@ -134,6 +151,13 @@ export default function NewEchoView({
             setShowMoodPicker(true)
           }
         />
+
+<MusicSelector
+  music={selectedMusic}
+  onClick={() =>
+    setShowMusicPicker(true)
+  }
+/>
 
         <JournalEditor
           value={description}
@@ -190,6 +214,18 @@ export default function NewEchoView({
         }
       />
 
+<MusicPickerModal
+    open={showMusicPicker}
+    music={music}
+    selectedMusicId={selectedMusic?._id}
+    onClose={() =>
+        setShowMusicPicker(false)
+    }
+    onSelect={(music) => {
+        setSelectedMusic(music);
+        setShowMusicPicker(false);
+    }}
+/>
     </AppContainer>
 
   );

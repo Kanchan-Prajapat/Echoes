@@ -5,15 +5,14 @@ import api from "@/auth/api/axios";
 /* -------------------------------- */
 
 export interface UpdateProfileRequest {
-
   username?: string;
-
   bio?: string;
-
   avatar?: string;
 
+  dateOfBirth?: string;
+  gender?: string;
+  city?: string;
 }
-
 /* -------------------------------- */
 /* Get Profile */
 /* -------------------------------- */

@@ -12,7 +12,7 @@ import { AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/Shared/PageTransition";
 import SetupProfileView from "@/components/Onboarding/SetupProfileView";
 import { useNavigationStore } from "@/store/navigationStore";
-
+import { MiniPlayer } from "@/components/Audio";
 export default function AppNavigator() {
 
 
@@ -296,6 +296,8 @@ export default function AppNavigator() {
         </PageTransition>
 
       )}
+
+      <MiniPlayer />
 
       <BottomNav
 

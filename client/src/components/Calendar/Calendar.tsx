@@ -59,6 +59,22 @@ const echoes = useEchoStore(
   const nextMonth = () =>
     setCurrentMonth((m) => addMonths(m, 1));
 
+const changeMonth = (month: number) => {
+  setCurrentMonth((current) => {
+    const updated = new Date(current);
+    updated.setMonth(month);
+    return updated;
+  });
+};
+
+const changeYear = (year: number) => {
+  setCurrentMonth((current) => {
+    const updated = new Date(current);
+    updated.setFullYear(year);
+    return updated;
+  });
+};
+
   const selectDate = (date: Date) => {
     setSelectedDate(date);
     onChange?.(date);
@@ -78,11 +94,13 @@ const echoes = useEchoStore(
     "
   >
 
-      <CalendarHeader
-        month={currentMonth}
-        onPrevious={previousMonth}
-        onNext={nextMonth}
-      />
+     <CalendarHeader
+  month={currentMonth}
+  onPrevious={previousMonth}
+  onNext={nextMonth}
+  onMonthChange={changeMonth}
+  onYearChange={changeYear}
+/>
 
     <CalendarGrid
   days={monthDays}

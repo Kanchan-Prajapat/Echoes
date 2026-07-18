@@ -22,6 +22,8 @@ import {
   EchoJournal,
   EchoActions,
   EchoStats,
+  EchoAI,
+    EchoMusic,
 } from "./EchoDetail";
 
 import {
@@ -75,6 +77,10 @@ export default function EchoDetailView({
   );
 
   const echo = propEcho ?? storeEcho;
+
+  console.log("Echo Detail");
+console.log(echo);
+console.log("Music:", echo?.music);
 
   const { saveAsImage, } = useShareMemory();
   /* ---------------- State ---------------- */
@@ -494,9 +500,17 @@ ${share.url}`;
         echo={echo}
       />
 
+      <EchoMusic
+  echo={echo}
+/>
+
       <EchoStats
         echo={echo}
       />
+
+      <EchoAI
+  echo={echo}
+/>
 
       {!publicMode && (
         <AddMediaModal

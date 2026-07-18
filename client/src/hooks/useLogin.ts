@@ -5,7 +5,6 @@ import { login } from "../auth/api/auth.api";
 import { useAuthStore } from "@/auth/stores/authStore";
 import { useNavigationStore } from "@/store/navigationStore";
 
-
 interface LoginData {
   email: string;
   password: string;
@@ -29,7 +28,6 @@ export default function useLogin() {
       (state) => state.login
     );
 
-
   const updateField = (
     field: keyof LoginData,
     value: string
@@ -46,10 +44,7 @@ export default function useLogin() {
 
     setError("");
 
-    if (
-      !form.email ||
-      !form.password
-    ) {
+    if (!form.email || !form.password) {
 
       setError(
         "Please fill all fields."
@@ -63,25 +58,28 @@ export default function useLogin() {
 
       setLoading(true);
 
-   const response = await login(form);
+      const response =
+        await login(form);
 
-loginStore(
-  response.user,
-  response.token
-);
+      loginStore(
+        response.user,
+        response.token
+      );
 
-const navigation =
-  useNavigationStore.getState();
+      const navigation =
+        useNavigationStore.getState();
 
-if (response.user.profileCompleted) {
+      if (response.user.profileCompleted) {
 
-  navigation.reset("home");
+        navigation.reset("home");
 
-} else {
+      } else {
 
-  navigation.reset("setup-profile");
+        navigation.reset("setup-profile");
 
-}
+      }
+
+    }
 
     catch (error: any) {
 

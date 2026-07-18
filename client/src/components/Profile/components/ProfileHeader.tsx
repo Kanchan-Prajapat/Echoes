@@ -1,4 +1,8 @@
-import { Camera } from "lucide-react";
+import {
+  CalendarDays,
+  MapPin,
+  UserRound,
+} from "lucide-react";
 
 import { Profile } from "@/types/profile.types";
 
@@ -17,6 +21,26 @@ export default function ProfileHeader({
   onChangePhoto,
 
 }: Props) {
+
+const formattedDate = profile.dateOfBirth
+  ? new Date(profile.dateOfBirth).toLocaleDateString(
+      "en-GB",
+      {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }
+    )
+  : null;
+
+const genderLabel = profile.gender
+  ? {
+      male: "Male",
+      female: "Female",
+      other: "Other",
+      prefer_not_to_say: "Prefer not to say",
+    }[profile.gender]
+  : null;
 
   return (
 
@@ -122,6 +146,75 @@ export default function ProfileHeader({
           </p>
 
         )}
+
+        {(formattedDate || genderLabel || profile.city) && (
+  <div
+    className="
+      mt-6
+      flex
+      flex-wrap
+      justify-center
+      gap-3
+    "
+  >
+    {formattedDate && (
+      <div
+        className="
+          flex
+          items-center
+          gap-2
+          rounded-full
+          bg-violet-50
+          px-4
+          py-2
+          text-sm
+          text-violet-700
+        "
+      >
+        <CalendarDays size={16} />
+        <span>{formattedDate}</span>
+      </div>
+    )}
+
+    {genderLabel && (
+      <div
+        className="
+          flex
+          items-center
+          gap-2
+          rounded-full
+          bg-violet-50
+          px-4
+          py-2
+          text-sm
+          text-violet-700
+        "
+      >
+        <UserRound size={16} />
+        <span>{genderLabel}</span>
+      </div>
+    )}
+
+    {profile.city && (
+      <div
+        className="
+          flex
+          items-center
+          gap-2
+          rounded-full
+          bg-violet-50
+          px-4
+          py-2
+          text-sm
+          text-violet-700
+        "
+      >
+        <MapPin size={16} />
+        <span>{profile.city}</span>
+      </div>
+    )}
+  </div>
+)}
 
       </div>
 
