@@ -8,26 +8,31 @@ import { Media } from "@/types/media";
 /* Upload Media */
 /* ---------------------------------- */
 
-export async function uploadMedia(
-  file: File
-): Promise<Media> {
+export async function uploadMedia(file: File): Promise<Media> {
 
   const formData = new FormData();
-
   formData.append("media", file);
 
-  const { data } = await api.post(
-  "/media/upload",
-  formData,
-  {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  }
-);
+  try {
+    const response = await api.post(
+      "/media/upload",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
-  return data.data;
+    return response.data.data;
+  } catch (err: any) {
+    console.error("❌ Upload failed:", file.name);
+
+
+    throw err;
+  }
 }
+
 
 /* ---------------------------------- */
 /* Get My Echoes */
@@ -35,7 +40,6 @@ export async function uploadMedia(
 
 export async function getEchoes() {
   const { data } = await api.get("/echo");
-console.log(data);
   return data.data;
 }
 /* ---------------------------------- */

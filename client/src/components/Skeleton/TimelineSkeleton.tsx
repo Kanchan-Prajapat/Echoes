@@ -10,7 +10,7 @@ export default function TimelineSkeleton() {
 
         <div className="space-y-3">
 
-          <div className="h-8 w-48 animate-pulse rounded-xl bg-gray-200" />
+        <div className="h-8 w-48 animate-pulse rounded-xl bg-gray-200" />
 
           <div className="h-4 w-32 animate-pulse rounded-xl bg-gray-200" />
 

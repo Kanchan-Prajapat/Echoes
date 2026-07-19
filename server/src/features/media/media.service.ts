@@ -39,6 +39,7 @@ export async function uploadMedia(
           publicId: result.public_id,
           type: resourceType,
         });
+        
       }
     );
 

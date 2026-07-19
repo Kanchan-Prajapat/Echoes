@@ -29,6 +29,8 @@ interface AudioContextType {
   toggle: () => void;
 
   seek: (time: number) => void;
+
+  resume:()=> void;
 }
 
 const AudioContext =
@@ -102,7 +104,14 @@ const stop = () => {
 
   audio.currentTime = 0;
 
+  audio.removeAttribute("src");
+  audio.load();
+
+  setCurrent(undefined);
+
   setCurrentTime(0);
+
+  setDuration(0);
 
   setPlaying(false);
 };
@@ -127,6 +136,17 @@ const progress =
   setCurrentTime(time);
 };
 
+const resume = async () => {
+  const audio = audioRef.current;
+
+  if (!audio.src) return;
+
+  try {
+    await audio.play();
+    setPlaying(true);
+  } catch {}
+};
+
  useEffect(() => {
   const audio = audioRef.current;
 
@@ -138,10 +158,14 @@ const progress =
     setDuration(audio.duration);
   };
 
-  const handleEnded = () => {
-    setPlaying(false);
-    setCurrentTime(0);
-  };
+const handleEnded = () => {
+  const audio = audioRef.current;
+  audio.currentTime = 0;
+  setCurrent(undefined);
+  setCurrentTime(0);
+  setDuration(0);
+  setPlaying(false);
+};
 
   audio.addEventListener(
     "timeupdate",
@@ -193,6 +217,7 @@ const progress =
   stop,
   toggle,
   seek,
+  resume,
 }}
     >
       {children}

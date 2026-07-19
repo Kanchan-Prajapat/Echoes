@@ -26,7 +26,6 @@ export default function SearchBar({
 
         <button
   onClick={() => {
-    console.log("BACK CLICKED");
     onBack();
   }}
 >

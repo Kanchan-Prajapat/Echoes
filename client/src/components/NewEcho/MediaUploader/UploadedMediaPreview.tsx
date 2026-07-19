@@ -21,7 +21,6 @@ export default function UploadedMediaPreview({
   media,
   coverMediaId,
   onAddMore,
-  onRemove,
   onSetCover,
 }: Props)  {
     const [currentIndex, setCurrentIndex] =

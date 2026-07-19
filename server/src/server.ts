@@ -13,7 +13,6 @@ async function startServer() {
     console.log(
       "🚀 Echoes Server Started"
     );
-
     console.log(
       `🌍 http://localhost:${env.PORT}`
     );

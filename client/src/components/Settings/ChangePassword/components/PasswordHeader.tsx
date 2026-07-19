@@ -9,7 +9,6 @@ export default function PasswordHeader({
 }: Props) {
   return (
     <header className="mb-8">
-
       <button
         onClick={onBack}
         className="

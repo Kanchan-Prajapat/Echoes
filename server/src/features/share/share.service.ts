@@ -17,23 +17,11 @@ export async function createShareService(
   echoId: string
 ) {
 
-  console.log("owner:", owner);
-  console.log("echoId:", echoId);
-
   const echo = await Echo.findById(echoId);
-
-  console.log("Echo:", echo);
 
   if (!echo) {
     throw new Error("Echo not found.");
   }
-
-  console.log("Echo owner:", echo.owner.toString());
-
-  console.log(
-    "Same owner:",
-    echo.owner.toString() === owner
-  );
 
   if (echo.owner.toString() !== owner) {
     throw new Error("You don't own this memory.");

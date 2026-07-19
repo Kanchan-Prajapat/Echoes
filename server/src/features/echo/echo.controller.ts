@@ -45,7 +45,10 @@ export async function createEchoController(
         body
       );
 
+console.dir(req.body, { depth: null });
+
     return res.status(201).json(
+      
 
       successResponse(
         "Echo created successfully.",
@@ -65,6 +68,7 @@ export async function createEchoController(
       )
 
     );
+    console.error(error);
 
   }
 
@@ -80,14 +84,10 @@ export async function getAllEchoesController(
 ) {
   try {
 
-    console.log("User:", req.user);
-
     const echoes =
       await getAllEchoesService(
         req.user!.id
       );
-
-    console.log("Echoes:", echoes);
 
     return res.json(
       successResponse(
@@ -97,10 +97,6 @@ export async function getAllEchoesController(
     );
 
   } catch (error: any) {
-
-    console.log("========== ERROR ==========");
-    console.log(error);
-    console.log(error.stack);
 
     return res.status(500).json(
       errorResponse(error.message)

@@ -82,9 +82,7 @@ export default function EchoDetailView({
 
   const echo = propEcho ?? storeEcho;
 
-  console.log("Echo Detail");
-console.log(echo);
-console.log("Music:", echo?.music);
+
 
   const { saveAsImage, } = useShareMemory();
   /* ---------------- State ---------------- */
@@ -335,17 +333,9 @@ const [loading, setLoading] = useState(false);
   const handleWhatsappShare = async () => {
     try {
       const share = await createShareLink(echo.id);
-
-      console.log("========== SHARE ==========");
-      console.log(share);
-      console.table(share);
-
       const text = `✨ Check out one of my memories on Echoes!
 
 ${share.url}`;
-
-      console.log(text);
-
       window.open(
         `https://wa.me/?text=${encodeURIComponent(text)}`,
         "_blank"
@@ -363,44 +353,24 @@ ${share.url}`;
 
     try {
 
-      const uploadedMedia =
+    const uploadedMedia: Media[] = [];
 
-        await Promise.all(
+for (const item of media) {
+  if (!item.file) {
+    uploadedMedia.push(item);
+    continue;
+  }
 
-          media.map(async (item) => {
 
-            if (!item.file) {
+  const uploaded = await uploadMedia(item.file);
 
-              return item;
+  uploadedMedia.push({
+    ...item,
+    ...uploaded,
+    file: undefined,
+  });
 
-            }
-
-            const uploaded =
-
-              await uploadMedia(
-
-                item.file
-
-              );
-
-            return {
-
-              ...item,
-
-              url: uploaded.url,
-
-              publicId: uploaded.publicId,
-
-              type: uploaded.type,
-
-              file: undefined,
-
-            };
-
-          })
-
-        );
-
+}
       await addMediaApi(
 
         echo.id,
@@ -586,7 +556,6 @@ pointer-events-none
           onWhatsapp={handleWhatsappShare}
 
           onInstagram={() => {
-            console.log("Instagram");
           }}
         />
 

@@ -4,11 +4,11 @@ import { motion } from "framer-motion";
 import { useEchoStore } from "@/store/echoStore";
 import { Echo } from "@/types/echo";
 import SearchSkeleton from "@/components/Skeleton/SearchSkeleton";
-import SearchBar from "./SearchBar";
+
 import SearchResults from "./SearchResults";
-import { AppContainer } from "@/styles";
+
 import EmptyState from "../Shared/EmptyState";
-import ErrorState from "../Shared/ErrorState";
+
 interface Props {
   onClose: () => void;
   onOpenEcho: (echo: Echo) => void;

@@ -56,10 +56,10 @@ export default function useNewEcho({
     const [media, setMedia] =
         useState<Media[]>([]);
 
-        const [coverMediaId, setCoverMediaId] =
-    useState<string>();
+    const [coverMediaId, setCoverMediaId] =
+        useState<string>();
     const [selectedMusic, setSelectedMusic] =
-  useState<Music | undefined>();
+        useState<Music | undefined>();
 
     /* ---------------- UI ---------------- */
 
@@ -71,7 +71,7 @@ export default function useNewEcho({
 
     const toast = useToast();
 
-const { confirm } = useConfirm();
+    const { confirm } = useConfirm();
 
     const [showMoodPicker, setShowMoodPicker] =
         useState(false);
@@ -105,69 +105,69 @@ const { confirm } = useConfirm();
         );
 
         setCoverMediaId(
-    editingEcho.coverMediaId
-);
-if (editingEcho.music) {
-  setSelectedMusic({
-    _id: editingEcho.music.id,
-    title: editingEcho.music.title,
-    artist: editingEcho.music.artist,
-    cover: editingEcho.music.cover,
-    url: editingEcho.music.url,
-    duration: editingEcho.music.duration,
-    category: "",
-  });
-}
+            editingEcho.coverMediaId
+        );
+        if (editingEcho.music) {
+            setSelectedMusic({
+                _id: editingEcho.music.id,
+                title: editingEcho.music.title,
+                artist: editingEcho.music.artist,
+                cover: editingEcho.music.cover,
+                url: editingEcho.music.url,
+                duration: editingEcho.music.duration,
+                category: "",
+            });
+        }
 
 
     }, [editingEcho]);
 
 
- const removeMedia = (mediaId: string) => {
+    const removeMedia = (mediaId: string) => {
 
-  confirm({
+        confirm({
 
-    title: "Remove Media",
+            title: "Remove Media",
 
-    message:
-      "This media will be removed from your memory.",
+            message:
+                "This media will be removed from your memory.",
 
-    confirmText: "Remove",
+            confirmText: "Remove",
 
-    cancelText: "Cancel",
+            cancelText: "Cancel",
 
-    danger: true,
+            danger: true,
 
-    onConfirm: () => {
+            onConfirm: () => {
 
-      setMedia((prev) =>
-        prev.filter(
-          (item) => item.id !== mediaId
-        )
-      );
+                setMedia((prev) =>
+                    prev.filter(
+                        (item) => item.id !== mediaId
+                    )
+                );
 
-      if (coverMediaId === mediaId) {
+                if (coverMediaId === mediaId) {
 
-        setCoverMediaId(undefined);
+                    setCoverMediaId(undefined);
 
-      }
+                }
 
-      toast.success(
-        "Media removed."
-      );
+                toast.success(
+                    "Media removed."
+                );
 
-    },
+            },
 
-  });
+        });
 
-};
+    };
 
-const setCover = (mediaId: string) => {
-    setCoverMediaId(mediaId);
-    toast.success(
-  "Cover photo updated."
-);
-};
+    const setCover = (mediaId: string) => {
+        setCoverMediaId(mediaId);
+        toast.success(
+            "Cover photo updated."
+        );
+    };
 
 
 
@@ -175,11 +175,24 @@ const setCover = (mediaId: string) => {
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
 
+
+
         if (!e.target.files) return;
 
         const files = Array.from(
             e.target.files
         );
+
+        const MAX_SIZE = 50 * 1024 * 1024;
+
+        for (const file of files) {
+            if (file.size > MAX_SIZE) {
+                toast.error(
+                    `${file.name} is larger than 50 MB.`
+                );
+                return;
+            }
+        }
 
         const uploaded: Media[] =
             files.map((file) => ({
@@ -208,11 +221,11 @@ const setCover = (mediaId: string) => {
 
         if (!coverMediaId && uploaded.length > 0) {
 
-  setCoverMediaId(uploaded[0].id);
+            setCoverMediaId(uploaded[0].id);
 
-}
+        }
 
-e.target.value = "";
+        e.target.value = "";
     };
 
 
@@ -230,49 +243,37 @@ e.target.value = "";
 
             /* ---------- Upload only new media ---------- */
 
-            const uploadedMedia = await Promise.all(
+            const uploadedMedia: Media[] = [];
 
-                media.map(async (item) => {
-                    
-                    // Already uploaded (editing)
-                    if (!item.file) {
-                        return item;
-                    }
+            for (const item of media) {
+                if (!item.file) {
+                    uploadedMedia.push(item);
+                    continue;
+                }
 
-                    const uploaded = await uploadMedia(
-                        item.file
-                    );
+                const uploaded = await uploadMedia(item.file);
 
-                    return {
-                        ...item,
-                        ...uploaded,
-                        file: undefined,
-                    };
-
-                })
-
-                
-
-            );
-            console.log("========= Uploaded Media =========");
-console.log(uploadedMedia);
-console.table(uploadedMedia);
-
+                uploadedMedia.push({
+                    ...item,
+                    ...uploaded,
+                    file: undefined,
+                });
+            }
             /* ---------- Cover ---------- */
 
 
-const finalCoverMediaId =
+            const finalCoverMediaId =
 
-coverMediaId ??
+                coverMediaId ??
 
-editingEcho?.coverMediaId ??
+                editingEcho?.coverMediaId ??
 
-uploadedMedia[0]?.id;
+                uploadedMedia[0]?.id;
 
 
             /* ---------- Echo ---------- */
 
-         const echo: Partial<Echo> = {
+            const echo: Partial<Echo> = {
 
                 title,
 
@@ -287,18 +288,18 @@ uploadedMedia[0]?.id;
                 media: uploadedMedia,
 
                 coverMediaId: finalCoverMediaId,
-         music: selectedMusic
-  ? {
-      id: selectedMusic._id,
-      title: selectedMusic.title,
-      artist: selectedMusic.artist,
-      cover: selectedMusic.cover,
-      url: selectedMusic.url,
-      duration: selectedMusic.duration,
-      source: "echoes",
-    }
-  : undefined,
-                
+                music: selectedMusic
+                    ? {
+                        id: selectedMusic._id,
+                        title: selectedMusic.title,
+                        artist: selectedMusic.artist,
+                        cover: selectedMusic.cover,
+                        url: selectedMusic.url,
+                        duration: selectedMusic.duration,
+                        source: "echoes",
+                    }
+                    : undefined,
+
 
             };
 
@@ -319,44 +320,36 @@ uploadedMedia[0]?.id;
             /* ---------- Create ---------- */
 
             else {
-
-                console.log("Selected Music");
-console.log(selectedMusic);
-
-console.log("Echo Payload");
-console.log(echo);
-
-console.log("Echo Music");
-console.log(echo.music);
-
                 await createEcho(echo);
 
             }
 
             /* ---------- Refresh ---------- */
 
-           await refreshEchoes();
+            await refreshEchoes();
 
-toast.success(
+            toast.success(
 
-  editingEchoId
-    ? "Memory updated successfully."
-    : "Memory created successfully."
+                editingEchoId
+                    ? "Memory updated successfully."
+                    : "Memory created successfully."
 
-);
+            );
 
-onSaved();
+            onSaved();
 
         }
 
-        catch (error) {
-
+        catch (error: any) {
+            console.error("========== ERROR ==========");
             console.error(error);
 
-           toast.error(
-  "Failed to save memory."
-);
+            if (error.response) {
+                console.log("STATUS:", error.response.status);
+                console.log("DATA:", error.response.data);
+            }
 
+            toast.error("Failed to save memory.");
         }
 
         finally {
@@ -415,10 +408,10 @@ onSaved();
         editingEcho,
 
         coverMediaId,
-setCover,
+        setCover,
 
-selectedMusic,
-setSelectedMusic,
+        selectedMusic,
+        setSelectedMusic,
 
     };
 }

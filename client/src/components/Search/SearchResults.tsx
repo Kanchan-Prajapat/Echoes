@@ -100,7 +100,6 @@ export default function SearchResults({
               scale: .98,
             }}
            onClick={() => {
-  console.log("OPEN CLICKED", echo.title);
   onOpenEcho(echo);
 }}
             className="

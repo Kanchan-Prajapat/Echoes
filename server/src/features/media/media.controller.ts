@@ -9,8 +9,6 @@ export async function uploadMediaController(
   req: Request,
   res: Response
 ) {
-  console.log("🔥 MEDIA ROUTE HIT");
-console.log(req.file);
   try {
     if (!req.file) {
       return res
@@ -18,11 +16,7 @@ console.log(req.file);
         .json(errorResponse("No media file provided."));
     }
 
-    console.log("Received File:", req.file.originalname);
-
     const media = await uploadMedia(req.file);
-
-    console.log("Cloudinary Result:", media);
 
 return res.status(200).json(
   successResponse(

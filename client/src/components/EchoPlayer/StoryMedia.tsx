@@ -46,10 +46,14 @@ export default function StoryMedia({
 
   /* ---------------- Reset Progress ---------------- */
 
-  useEffect(() => {
-    setLoaded(false);
-    onVideoProgress(0);
-  }, [media.id]);
+ useEffect(() => {
+  setLoaded(false);
+  onVideoProgress(0);
+
+  if (videoRef.current) {
+    videoRef.current.currentTime = 0;
+  }
+}, [media.id]);
 
   const handleDoubleClick = () => {
 
@@ -179,8 +183,13 @@ py-10
           <video
             ref={videoRef}
             src={media.url}
-            onLoadedData={() => setLoaded(true)}
-            autoPlay={false}
+           onLoadedData={() => {
+  setLoaded(true);
+
+  if (!paused) {
+    videoRef.current?.play().catch(() => {});
+  }
+}}
             preload="metadata"
             playsInline
             controls={false}
@@ -269,45 +278,6 @@ py-10
       </AnimatePresence>
 
       
-
-      {/* Pause Overlay */}
-
-      {paused && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-
-          className="absolute inset-0 flex items-center justify-center"
-        >
-          <motion.div
-
-            initial={{
-              scale: .85,
-            }}
-
-            animate={{
-              scale: 1,
-            }}
-
-            className="
-rounded-full
-border
-border-white/20
-bg-white/10
-backdrop-blur-2xl
-p-8
-shadow-[0_0_40px_rgba(255,255,255,.15)]
-"        >
-            <span className="text-5xl text-white">
-
-              ⏸
-
-            </span>
-
-          </motion.div>
-        </motion.div>
-      )}
     </div>
   );
 }

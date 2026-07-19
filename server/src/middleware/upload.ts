@@ -11,7 +11,6 @@ const upload = multer({
 
  fileFilter: (_req, file, cb) => {
 
-  console.log("Incoming MIME:", file.mimetype);
 
   cb(null, true);
 

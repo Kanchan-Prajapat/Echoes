@@ -18,8 +18,6 @@ export default function ProfileHeader({
 
   profile,
 
-  onChangePhoto,
-
 }: Props) {
 
 const formattedDate = profile.dateOfBirth

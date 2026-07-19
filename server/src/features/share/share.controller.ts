@@ -22,10 +22,6 @@ export async function createShareController(
 ) {
 
   try {
-console.log("Params:", req.params);
-console.log("echoId:", req.params.echoId);
-console.log("user:", req.user);
-
 
     const share =
       await createShareService(

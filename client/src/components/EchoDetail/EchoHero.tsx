@@ -3,9 +3,6 @@ import {
   ArrowLeft,
   Heart,
   CalendarDays,
-  MapPin,
-  Images,
-  Video,
 } from "lucide-react";
 
 import { Echo } from "@/types/echo";
@@ -29,8 +26,6 @@ export default function EchoHero({
   echo,
   selectedMediaIndex,
   setSelectedMediaIndex,
-  imageCount,
-  videoCount,
   publicMode,
   onBack,
   onOpenPlayer,

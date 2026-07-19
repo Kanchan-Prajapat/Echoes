@@ -30,14 +30,6 @@ export default function SettingsView({
 
     onBack,
 
-    onChangePassword,
-
-    onPrivacy,
-
-    onTerms,
-
-    onAbout,
-
 }: Props) {
 
     const [toggles, setToggles] =
@@ -135,6 +127,7 @@ export default function SettingsView({
         profile,
 
         loading,
+        error
 
     } = useProfile();
 
@@ -152,15 +145,20 @@ export default function SettingsView({
 
     }
 
+    if (error) {
+  return (
+    <AppContainer className="py-8">
+      <ErrorState
+        message="Unable to load settings."
+      />
+    </AppContainer>
+  );
+}
+
     return (
 
 
         <AppContainer className="py-8 pb-32">
-<ErrorState
-
-    message="Unable to load settings."
-
-/>
 
             <SettingsHeader
 

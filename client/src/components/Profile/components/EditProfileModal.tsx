@@ -8,7 +8,6 @@ interface Props {
   open: boolean;
 
   profile: Profile;
-
   username: string;
   bio: string;
   avatar: string;

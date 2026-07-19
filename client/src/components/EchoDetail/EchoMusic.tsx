@@ -16,7 +16,6 @@ export default function EchoMusic({
   playing,
   currentTime,
   duration,
-  progress,
   seek,
   play,
   pause,

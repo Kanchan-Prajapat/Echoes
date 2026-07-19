@@ -57,12 +57,6 @@ const [internalIndex, setInternalIndex] = useState(
     Math.max(activeIndex, 0),
     media.length - 1);
 
-  console.log("media:", media);
-  console.log("currentIndex:", currentIndex);
-  console.log("safeIndex:", safeIndex);
-  console.log("media length:", media.length);
-
-
   const item = media[safeIndex];
 
   if (!item) {
@@ -101,13 +95,6 @@ const next = () => {
     setInternalIndex(newIndex);
   }
 };
-
-  console.log({
-    media,
-    currentIndex,
-    safeIndex,
-    item,
-  });
 
   return (
     <div className={`relative w-full overflow-hidden ${height}`}>

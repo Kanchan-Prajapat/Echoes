@@ -8,7 +8,6 @@ import EchoDetailView from "@/components/EchoDetailView";
 import NewEchoView from "@/components/NewEchoView";
 import ChangePasswordView from "@/components/Settings/ChangePassword/ChangePasswordView";
 import BottomNav from "@/components/Shared/BottomNav";
-import { AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/Shared/PageTransition";
 import SetupProfileView from "@/components/Onboarding/SetupProfileView";
 import { useNavigationStore } from "@/store/navigationStore";
@@ -189,10 +188,6 @@ export default function AppNavigator() {
 
 }
 
-  /* -----------------------------
-     Main Screens
-  ----------------------------- */
-  console.log("Current Screen:", current);
   return (
 
     <>

@@ -11,7 +11,6 @@ import AppContainer from "@/styles/AppContainer";
 import Calendar from "./Calendar";
 import CalendarBottomSheet from "./CalendarBottomSheet";
 import EmptyState from "@/components/Shared/EmptyState";
-import ErrorState from "@/components/Shared/ErrorState";
 interface Props {
   onOpenEcho: (echo: Echo) => void;
 }

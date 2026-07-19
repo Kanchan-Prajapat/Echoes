@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { useState } from "react";
 import AppContainer from "@/styles/AppContainer";
 import useAudio from "@/hooks/useAudio";
-import { Play, Pause, Music2 } from "lucide-react";
+import { Play, Pause} from "lucide-react";
 import {
   NewEchoHeader,
   MediaUploader,
@@ -112,7 +112,6 @@ const isPreviewPlaying =
   const [showMusicPicker, setShowMusicPicker] =
 useState(false);
 
-console.log("NewEchoView selectedMusic:", selectedMusic);
   return (
 
     <AppContainer className="py-8 pb-32">

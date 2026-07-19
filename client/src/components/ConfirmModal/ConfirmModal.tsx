@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import {
   AlertTriangle,
   Trash2,
-  LogOut,
   X,
 } from "lucide-react";
 

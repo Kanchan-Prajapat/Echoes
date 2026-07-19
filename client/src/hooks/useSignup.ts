@@ -98,17 +98,9 @@ if (response.user.profileCompleted) {
 
 }
 
-// Next we'll navigate to Login screen
-
-      console.log(form);
-
     }
 
    catch (error: any) {
-
-  console.log("Signup Error:", error.response);
-
-  console.log("Backend:", error.response?.data);
 
   setError(
 

@@ -35,7 +35,7 @@ export async function updateProfile(
   data: UpdateProfileRequest
 ) {
 
-  console.log("Calling PATCH...");
+
 
   const response = await api.patch(
 

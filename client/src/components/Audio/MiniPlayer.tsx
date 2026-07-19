@@ -43,16 +43,17 @@ export default function MiniPlayer() {
         }}
         className="
           fixed
-          bottom-24
+          bottom-26
           left-4
           right-4
           z-[100]
+
         "
       >
 
         <Card
           className="
-            p-4
+            p-2
             shadow-2xl
             shadow-violet-200/40
           "
@@ -60,7 +61,7 @@ export default function MiniPlayer() {
 
           <div className="flex items-center justify-between">
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
 
               {current.cover ? (
 
@@ -68,8 +69,8 @@ export default function MiniPlayer() {
                   src={current.cover}
                   alt={current.title}
                   className="
-                    h-14
-                    w-14
+                    h-10
+                    w-10
                     rounded-2xl
                     object-cover
                   "
@@ -80,8 +81,8 @@ export default function MiniPlayer() {
                 <div
                   className="
                     flex
-                    h-14
-                    w-14
+                    h-10
+                    w-10
                     items-center
                     justify-center
                     rounded-2xl
@@ -126,8 +127,8 @@ export default function MiniPlayer() {
                 }
                 className="
                   flex
-                  h-11
-                  w-11
+                  h-8
+                  w-8
                   items-center
                   justify-center
                   rounded-full
@@ -139,14 +140,14 @@ export default function MiniPlayer() {
                 {playing ? (
 
                   <Pause
-                    size={18}
+                    size={16}
                     fill="currentColor"
                   />
 
                 ) : (
 
                   <Play
-                    size={18}
+                    size={16}
                     fill="currentColor"
                   />
 

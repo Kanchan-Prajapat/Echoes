@@ -17,7 +17,6 @@ export default function useAvatarUpload() {
 
       const response =
         await uploadAvatar(file);
-console.log(response);
       return response.data.url;
 
     }

@@ -58,10 +58,12 @@
 
     const {
     current,
-    playing,
+  
     play,
     pause,
     stop,
+    resume,
+
   } = useAudio();
 
     const updateLastViewed =
@@ -98,28 +100,43 @@
 
     ]);
 
- useEffect(() => {
+useEffect(() => {
   if (!echo.music) return;
 
-  // Already same music is playing
-  if (current?.id === echo.music.id && playing) {
+  if (current?.id !== echo.music.id) {
+    play(echo.music);
+  }
+}, [echo.id]);
+
+useEffect(() => {
+  if (!echo.music) return;
+
+  // Story manually paused
+  if (player.paused) {
+    pause();
     return;
   }
 
-  play(echo.music);
-}, [echo.id]);
+  // Current media is video
+  if (player.currentMedia?.type === "video") {
+    pause();
+    return;
+  }
 
-  useEffect(() => {
-    if (!echo.music) return;
+  // Image hai aur same song already loaded hai
+  if (current?.id === echo.music.id) {
+    resume();
+  }
+}, [
+  player.paused,
+  player.currentMedia,
+  current?.id,
+  echo.music,
+  pause,
+  resume,
+]);
 
-    if (player.paused) {
-      pause();
-    } else if (current?.id === echo.music.id) {
-      play(echo.music);
-    }
-  }, [player.paused]);
 
-    if (!player.currentMedia) return null;
 
     const formattedDate = new Date(
       echo.date
@@ -285,7 +302,7 @@
               <div
     className="
       absolute
-      bottom-6
+      bottom-25
       left-1/2
       -translate-x-1/2
       z-50
