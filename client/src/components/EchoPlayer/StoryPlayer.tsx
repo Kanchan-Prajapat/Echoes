@@ -1,307 +1,365 @@
-import {
-  useEffect,
-} from "react";
+  import {
+    useEffect,
+  } from "react";
+  import useAudio from "@/hooks/useAudio";
+  import {
+    ArrowLeft,
+    CalendarDays,
+    MapPin,
+    Music2
+  } from "lucide-react";
 
-import {
-  ArrowLeft,
-  CalendarDays,
-  MapPin,
-} from "lucide-react";
+  import { Echo } from "@/types/echo";
 
-import { Echo } from "@/types/echo";
+  import { EchoPlayerContext } from "@/context/EchoPlayerContext";
 
-import { EchoPlayerContext } from "@/context/EchoPlayerContext";
+  import useEchoPlayer from "@/hooks/useEchoPlayer";
 
-import useEchoPlayer from "@/hooks/useEchoPlayer";
+  import { useEchoStore } from "@/store/echoStore";
 
-import { useEchoStore } from "@/store/echoStore";
+  import StoryMedia from "./StoryMedia";
+  import StoryProgress from "./StoryProgress";
+  import StoryControls from "./StoryControls";
+  import StoryGestures from "./StoryGestures";
 
-import StoryMedia from "./StoryMedia";
-import StoryProgress from "./StoryProgress";
-import StoryControls from "./StoryControls";
-import StoryGestures from "./StoryGestures";
+  interface Props {
 
-interface Props {
+    echo: Echo;
 
-  echo: Echo;
+    onClose: () => void;
 
-  onClose: () => void;
+    onFinished: () => void;
 
-  onFinished: () => void;
+    initialMediaIndex?: number;
 
-  initialMediaIndex?: number;
+  }
 
-}
+  export default function StoryPlayer({
 
-export default function StoryPlayer({
+    echo,
 
-  echo,
-
-  onClose,
-
-  onFinished,
-
-  initialMediaIndex = 0,
-
-}: Props) {
-
-  const player = useEchoPlayer(
-
-    echo.media,
-
-    initialMediaIndex,
+    onClose,
 
     onFinished,
-    
 
-    
+    initialMediaIndex = 0,
 
-  );
+  }: Props) {
 
-  const updateLastViewed =
-    useEchoStore(
-      state => state.updateLastViewed
+    const player = useEchoPlayer(
+
+      echo.media,
+
+      initialMediaIndex,
+
+      onFinished,
+
     );
 
-  const markViewed =
-    useEchoStore(
-      state => state.markViewed
-    );
+    const {
+    current,
+    playing,
+    play,
+    pause,
+    stop,
+  } = useAudio();
 
-  useEffect(() => {
+    const updateLastViewed =
+      useEchoStore(
+        state => state.updateLastViewed
+      );
 
-    updateLastViewed(
+    const markViewed =
+      useEchoStore(
+        state => state.markViewed
+      );
+
+    useEffect(() => {
+
+      updateLastViewed(
+
+        echo.id,
+
+        player.currentIndex
+
+      );
+
+      markViewed(echo.id);
+
+    }, [
 
       echo.id,
 
-      player.currentIndex
+      player.currentIndex,
 
-    );
+      updateLastViewed,
 
-    markViewed(echo.id);
+      markViewed,
 
-  }, [
+    ]);
 
-    echo.id,
+ useEffect(() => {
+  if (!echo.music) return;
 
-    player.currentIndex,
+  // Already same music is playing
+  if (current?.id === echo.music.id && playing) {
+    return;
+  }
 
-    updateLastViewed,
+  play(echo.music);
+}, [echo.id]);
 
-    markViewed,
+  useEffect(() => {
+    if (!echo.music) return;
 
-  ]);
+    if (player.paused) {
+      pause();
+    } else if (current?.id === echo.music.id) {
+      play(echo.music);
+    }
+  }, [player.paused]);
 
-  if (!player.currentMedia) return null;
+    if (!player.currentMedia) return null;
 
-  const formattedDate = new Date(
-    echo.date
-  ).toLocaleDateString("en-IN", {
+    const formattedDate = new Date(
+      echo.date
+    ).toLocaleDateString("en-IN", {
 
-    day: "numeric",
+      day: "numeric",
 
-    month: "short",
+      month: "short",
 
-    year: "numeric",
+      year: "numeric",
 
-  });
+    });
 
-  return (
+  const handleClose = () => {
+    stop();
+    onClose();
+  };
 
-    <EchoPlayerContext.Provider
-      value={{
+    return (
 
-        currentIndex: player.currentIndex,
+      <EchoPlayerContext.Provider
+        value={{
 
-        currentMedia: player.currentMedia,
+          currentIndex: player.currentIndex,
 
-        paused: player.paused,
+          currentMedia: player.currentMedia,
 
-        muted: player.muted,
+          paused: player.paused,
 
-      }}
-    >
+          muted: player.muted,
 
-      <main className="fixed inset-0 z-[999] bg-black">
+        }}
+      >
 
-        <div
-          className="
-            mx-auto
-            flex
-            h-full
-            w-full
-            max-w-[520px]
-            flex-col
-            overflow-hidden
-            bg-black
-            shadow-2xl
-          "
-        >
-
-          <StoryProgress
-            total={echo.media.length}
-            current={player.currentIndex}
-            duration={4}
-            paused={player.paused}
-            isVideo={
-              player.currentMedia.type === "video"
-            }
-            videoProgress={player.videoProgress}
-          />
+        <main className="fixed inset-0 z-[999] bg-black">
 
           <div
             className="
-              absolute
-              left-0
-              right-0
-              top-8
-              z-40
+              mx-auto
               flex
-              items-start
-              justify-between
-              px-5
-              text-white
-              pointer-events-none
+              h-full
+              w-full
+              max-w-[520px]
+              flex-col
+              overflow-hidden
+              bg-black
+              shadow-2xl
             "
           >
 
-            <div className="max-w-[75%]">
+            <StoryProgress
+              total={echo.media.length}
+              current={player.currentIndex}
+              duration={4}
+              paused={player.paused}
+              isVideo={
+                player.currentMedia.type === "video"
+              }
+              videoProgress={player.videoProgress}
+            />
 
-              <div className="flex items-center gap-2">
+            <div
+              className="
+                absolute
+                left-0
+                right-0
+                top-8
+                z-40
+                flex
+                items-start
+                justify-between
+                px-5
+                text-white
+                pointer-events-none
+              "
+            >
 
-                <ArrowLeft
-                  size={18}
-                  className="opacity-70"
-                />
+              <div className="max-w-[75%]">
 
-                <span
-                  className="
-                    text-xs
-                    uppercase
-                    tracking-[0.28em]
-                    text-violet-300
-                  "
-                >
-                  Echo
-                </span>
+                <div className="flex items-center gap-2">
 
-              </div>
+                  <ArrowLeft
+                    size={18}
+                    className="opacity-70"
+                  />
 
-              <h2
-                className="
-                  mt-2
-                  truncate
-                  text-2xl
-                  font-bold
-                "
-              >
-                {echo.title}
-              </h2>
-
-              <div
-                className="
-                  mt-2
-                  flex
-                  flex-wrap
-                  gap-4
-                  text-sm
-                  text-white/75
-                "
-              >
-
-                <div className="flex items-center gap-1">
-
-                  <CalendarDays size={14} />
-
-                  {formattedDate}
+                  <span
+                    className="
+                      text-xs
+                      uppercase
+                      tracking-[0.28em]
+                      text-violet-300
+                    "
+                  >
+                    Echo
+                  </span>
 
                 </div>
 
-                {echo.location && (
+                <h2
+                  className="
+                    mt-2
+                    truncate
+                    text-2xl
+                    font-bold
+                  "
+                >
+                  {echo.title}
+                </h2>
+
+                <div
+                  className="
+                    mt-2
+                    flex
+                    flex-wrap
+                    gap-4
+                    text-sm
+                    text-white/75
+                  "
+                >
 
                   <div className="flex items-center gap-1">
 
-                    <MapPin size={14} />
+                    <CalendarDays size={14} />
 
-                    {echo.location}
+                    {formattedDate}
 
                   </div>
 
-                )}
+                  {echo.location && (
+
+                    <div className="flex items-center gap-1">
+
+                      <MapPin size={14} />
+
+                      {echo.location}
+
+                    </div>
+
+                  )}
+
+                </div>
 
               </div>
 
             </div>
+            
+
+            <StoryControls
+              visible={player.controlsVisible}
+              paused={player.paused}
+              muted={player.muted}
+              isVideo={
+                player.currentMedia.type === "video"
+              }
+            onClose={handleClose}
+
+              onPauseToggle={player.togglePause}
+              onMuteToggle={player.toggleMute}
+            />
+
+      
+              <div
+    className="
+      absolute
+      bottom-6
+      left-1/2
+      -translate-x-1/2
+      z-50
+      flex
+      items-center
+      gap-2
+      rounded-full
+      bg-black/40
+      backdrop-blur-md
+      px-2
+      py-2
+      text-sm
+      text-white
+    "
+  >
+    <Music2 size={16} className="text-violet-300" />
+    <span className="truncate max-w-[220px]">
+      {echo.music?.title}
+    </span>
+  </div>
+            <StoryGestures
+              onPrevious={() => {
+
+                player.previous();
+
+                player.showControls();
+
+              }}
+
+    onNext={() => {
+
+      player.next();
+
+      player.showControls();
+
+  }}
+
+              onPause={player.pause}
+
+              onResume={player.resume}
+
+            onClose={handleClose}
+
+              onDoubleTap={() => {
+
+                console.log("❤️ Double Tap");
+
+              }}
+
+            >
+
+              <StoryMedia
+
+                media={player.currentMedia}
+
+                paused={player.paused}
+
+                muted={player.muted}
+
+            onNext={player.next}
+
+                onVideoProgress={
+                  player.setVideoProgress
+                }
+
+              />
+            </StoryGestures>
 
           </div>
 
-          <StoryControls
-            visible={player.controlsVisible}
-            paused={player.paused}
-            muted={player.muted}
-            isVideo={
-              player.currentMedia.type === "video"
-            }
-            onClose={onClose}
-            onPauseToggle={player.togglePause}
-            onMuteToggle={player.toggleMute}
-          />
+        </main>
 
-          <StoryGestures
-            onPrevious={() => {
+      </EchoPlayerContext.Provider>
 
-              player.previous();
+    );
 
-              player.showControls();
-
-            }}
-
-  onNext={() => {
-
-    player.next();
-
-    player.showControls();
-
-}}
-
-            onPause={player.pause}
-
-            onResume={player.resume}
-
-            onClose={onClose}
-
-            onDoubleTap={() => {
-
-              console.log("❤️ Double Tap");
-
-            }}
-
-          >
-
-            <StoryMedia
-
-              media={player.currentMedia}
-
-              paused={player.paused}
-
-              muted={player.muted}
-
-           onNext={player.next}
-
-              onVideoProgress={
-                player.setVideoProgress
-              }
-
-            />
-
-          </StoryGestures>
-
-        </div>
-
-      </main>
-
-    </EchoPlayerContext.Provider>
-
-  );
-
-}
+  }

@@ -24,6 +24,9 @@ export default function AppNavigator() {
     (state) => state.navigate
   );
 
+ const reset = useNavigationStore(
+  state => state.reset
+);
   const goBack = useNavigationStore(
     (state) => state.goBack
   );
@@ -54,6 +57,8 @@ export default function AppNavigator() {
 
         onBack={goBack}
 
+        onDeleteSuccess={() => reset("home")}
+
         onEdit={(echoId) =>
 
           navigate(
@@ -80,21 +85,16 @@ export default function AppNavigator() {
      New Echo
   ----------------------------- */
 
-  if (current === "new-echo") {
+ if (current === "new-echo") {
+  return (
+   <NewEchoView
+  editingEchoId={editingEchoId}
+  onSaved={() => reset("home")}
+  onBack={goBack}
+/>
+  );
+}
 
-    return (
-
-      <NewEchoView
-
-        editingEchoId={editingEchoId}
-
-        onSaved={goBack}
-
-      />
-
-    );
-
-  }
 
   /* -----------------------------
      Search

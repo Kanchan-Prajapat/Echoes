@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const musicSchema = new Schema(
+const MusicSchema = new Schema(
   {
     title: {
       type: String,
@@ -14,24 +14,10 @@ const musicSchema = new Schema(
       trim: true,
     },
 
-    album: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-    cover: {
-      type: String,
-      default: "",
-    },
-
-    url: {
+    category: {
       type: String,
       required: true,
-    },
-
-    previewUrl: {
-      type: String,
-      default: "",
+      index: true,
     },
 
     duration: {
@@ -39,24 +25,14 @@ const musicSchema = new Schema(
       required: true,
     },
 
-    category: {
+    url: {
       type: String,
-      default: "General",
+      required: true,
     },
 
-    tags: {
-      type: [String],
-      default: [],
-    },
-
-    premium: {
-      type: Boolean,
-      default: false,
-    },
-
-    active: {
-      type: Boolean,
-      default: true,
+    cover: {
+      type: String,
+      default: "",
     },
   },
   {
@@ -64,9 +40,7 @@ const musicSchema = new Schema(
   }
 );
 
-const MusicModel = model(
+export default mongoose.model(
   "Music",
-  musicSchema
+  MusicSchema
 );
-
-export default MusicModel;

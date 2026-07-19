@@ -1,44 +1,40 @@
 import { create } from "zustand";
 
 import {
-
   NavigationState,
-
   Screen,
-
 } from "@/types/navigation";
 
-interface NavigationStore
-  extends NavigationState {
+interface NavigationHistoryItem {
+  screen: Screen;
+  selectedEchoId?: string;
+  editingEchoId?: string;
+}
+
+interface NavigationStore extends NavigationState {
+  history: NavigationHistoryItem[];
 
   navigate: (
-
     screen: Screen,
-
     options?: {
-
       selectedEchoId?: string;
-
       editingEchoId?: string;
-
     }
-
   ) => void;
 
   replace: (
-
-    screen: Screen
-
+    screen: Screen,
+    options?: {
+      selectedEchoId?: string;
+      editingEchoId?: string;
+    }
   ) => void;
 
   goBack: () => void;
 
   reset: (
-
     screen: Screen
-
   ) => void;
-
 }
 
 export const useNavigationStore =
@@ -53,21 +49,20 @@ create<NavigationStore>((set, get) => ({
   editingEchoId: undefined,
 
   navigate: (
-
     screen,
-
     options
-
   ) =>
-
     set((state) => ({
 
       history: [
-
         ...state.history,
-
-        state.current,
-
+        {
+          screen: state.current,
+          selectedEchoId:
+            state.selectedEchoId,
+          editingEchoId:
+            state.editingEchoId,
+        },
       ],
 
       current: screen,
@@ -81,78 +76,69 @@ create<NavigationStore>((set, get) => ({
     })),
 
   replace: (
-
-    screen
-
+    screen,
+    options
   ) =>
-
     set({
 
       current: screen,
+
+      selectedEchoId:
+        options?.selectedEchoId,
+
+      editingEchoId:
+        options?.editingEchoId,
 
     }),
 
   goBack: () => {
 
-    const history =
+    const history = get().history;
 
-      get().history;
+    if (!history.length) {
 
-    if (!history.length)
+      set({
+        current: "home",
+        selectedEchoId: undefined,
+        editingEchoId: undefined,
+      });
 
       return;
 
-    const previous =
+    }
 
-      history[
-        history.length - 1
-      ];
+    const previous =
+      history[history.length - 1];
 
     set({
 
-      current: previous,
-
-      history:
-
-        history.slice(
-
-          0,
-
-          history.length - 1
-
-        ),
+      current: previous.screen,
 
       selectedEchoId:
-
-        undefined,
+        previous.selectedEchoId,
 
       editingEchoId:
+        previous.editingEchoId,
 
-        undefined,
+      history:
+        history.slice(0, -1),
 
     });
 
   },
 
   reset: (
-
     screen
-
   ) =>
-
     set({
 
       current: screen,
 
       history: [],
 
-      selectedEchoId:
+      selectedEchoId: undefined,
 
-        undefined,
-
-      editingEchoId:
-
-        undefined,
+      editingEchoId: undefined,
 
     }),
 

@@ -228,3 +228,36 @@ export async function setCoverMedia(
     }
   );
 }
+
+
+/* ------------------------------------------------ */
+/* Save AI Insight */
+/* ------------------------------------------------ */
+
+export async function saveAIInsight(
+  id: string,
+  owner: string,
+  ai: {
+    caption: string;
+    insight: string;
+    tags: string[];
+  }
+) {
+  return Echo.findOneAndUpdate(
+    {
+      _id: id,
+      owner,
+    },
+    {
+      aiCaption: ai.caption,
+      aiInsight: ai.insight,
+      aiTags: ai.tags,
+      aiGeneratedAt: new Date(),
+      aiModel: "llama-3.1-8b-instant",
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+}

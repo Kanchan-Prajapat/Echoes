@@ -2,6 +2,7 @@ import { Play, Pause, Music2 } from "lucide-react";
 import useAudio from "@/hooks/useAudio";
 import Card from "@/styles/Card";
 import { Echo } from "@/types/echo";
+import { motion } from "framer-motion";
 
 interface Props {
   echo: Echo;
@@ -10,19 +11,33 @@ interface Props {
 export default function EchoMusic({
   echo,
 }: Props) {
-    const {
+  const {
   current,
   playing,
+  currentTime,
+  duration,
+  progress,
+  seek,
   play,
   pause,
 } = useAudio();
+
 const isPlaying =
   playing &&
   current?.id === echo.music?.id;
 
   if (!echo.music?.id) return null;
 
+function formatTime(time: number) {
+  if (!Number.isFinite(time)) return "0:00";
 
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60);
+
+  return `${minutes}:${seconds
+    .toString()
+    .padStart(2, "0")}`;
+}
 
 
   return (
@@ -38,11 +53,19 @@ const isPlaying =
 
           {echo.music.cover ? (
 
-            <img
-              src={echo.music.cover}
-              alt={echo.music.title}
-              className="h-16 w-16 rounded-2xl object-cover"
-            />
+       <motion.img
+  src={echo.music.cover}
+  alt={echo.music.title}
+  className="h-16 w-16 rounded-2xl object-cover"
+  animate={{
+    rotate: isPlaying ? 360 : 0,
+  }}
+  transition={{
+    duration: 10,
+    repeat: Infinity,
+    ease: "linear",
+  }}
+/>
 
           ) : (
 
@@ -63,7 +86,7 @@ const isPlaying =
 
           )}
 
-          <div>
+         <div className="flex-1">
 
             <h3 className="font-semibold">
               {echo.music.title}
@@ -73,13 +96,45 @@ const isPlaying =
               {echo.music.artist}
             </p>
 
-            <p className="mt-1 text-xs text-gray-400">
-              {Math.floor(echo.music.duration / 60)}:
-              {(echo.music.duration % 60)
-                .toString()
-                .padStart(2, "0")}
-            </p>
+        <div className="mt-3">
 
+  <input
+    type="range"
+    min={0}
+    max={duration || echo.music.duration}
+    value={
+      current?.id === echo.music.id
+        ? currentTime
+        : 0
+    }
+    onChange={(e) =>
+      seek(Number(e.target.value))
+    }
+    className="
+      h-1
+      w-full
+      cursor-pointer
+      accent-violet-600
+    "
+  />
+
+  <div className="mt-1 flex justify-between text-xs text-gray-400">
+
+    <span>
+      {current?.id === echo.music.id
+        ? formatTime(currentTime)
+        : "0:00"}
+    </span>
+
+    <span>
+      {formatTime(
+        duration || echo.music.duration
+      )}
+    </span>
+
+  </div>
+
+</div>
           </div>
 
         </div>
@@ -96,18 +151,23 @@ const isPlaying =
       play(echo.music);
     }
   }}
-  className="
-    flex
-    h-12
-    w-12
-    items-center
-    justify-center
-    rounded-full
-    bg-violet-600
-    text-white
-    transition
-    hover:bg-violet-700
-  "
+className={`
+  flex
+  h-12
+  w-12
+  items-center
+  justify-center
+  rounded-full
+  text-white
+  transition
+  hover:bg-violet-700
+
+  ${
+    isPlaying
+      ? "bg-violet-700 scale-105"
+      : "bg-violet-600"
+  }
+`}
 >
   {isPlaying ? (
     <Pause

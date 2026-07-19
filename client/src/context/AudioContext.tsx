@@ -56,27 +56,44 @@ export function AudioProvider({
 const [duration, setDuration] =
   useState(0);
 
+const play = async (music: EchoMusic) => {
+  const audio = audioRef.current;
 
-  const play = async (
-    music: EchoMusic
-  ) => {
-    const audio = audioRef.current;
+  const nextUrl = new URL(
+    music.url,
+    window.location.origin
+  ).href;
 
-    if (current?.id !== music.id) {
-      audio.src = music.url;
-      setCurrent(music);
-    }
+  // Change source only if different
+  if (audio.src !== nextUrl) {
+    audio.pause();
+    audio.src = nextUrl;
+    audio.currentTime = 0;
 
+    setCurrent(music);
+  }
+
+  // Already playing same song
+  if (
+    !audio.paused &&
+    current?.id === music.id
+  ) {
+    return;
+  }
+
+  try {
     await audio.play();
-
     setPlaying(true);
-  };
-
-  const pause = () => {
-    audioRef.current.pause();
-
+  } catch (error) {
+    console.error(error);
     setPlaying(false);
-  };
+  }
+};
+
+const pause = () => {
+  audioRef.current.pause();
+  setPlaying(false);
+};
 
 const stop = () => {
   const audio = audioRef.current;

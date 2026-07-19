@@ -233,7 +233,7 @@ e.target.value = "";
             const uploadedMedia = await Promise.all(
 
                 media.map(async (item) => {
-
+                    
                     // Already uploaded (editing)
                     if (!item.file) {
                         return item;

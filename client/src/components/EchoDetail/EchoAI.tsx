@@ -4,14 +4,20 @@ import { Echo } from "@/types/echo";
 
 interface Props {
   echo: Echo;
+  loading: boolean;
+  onGenerate: () => Promise<void>;
 }
 
 export default function EchoAI({
   echo,
-}: Props) {
+  loading,
+  onGenerate,
+}: Props)  {
 
   const generated =
     !!echo.aiCaption;
+
+    
 
   return (
 
@@ -53,89 +59,78 @@ export default function EchoAI({
 
           </p>
 
-          <button
-            className="
-              mt-5
-              rounded-2xl
-              bg-violet-600
-              px-6
-              py-3
-              font-semibold
-              text-white
-            "
-          >
-
-            ✨ Generate AI Insight
-
-          </button>
+      <button
+  onClick={onGenerate}
+  disabled={loading}
+  className="
+    mt-5
+    rounded-2xl
+    bg-violet-600
+    px-6
+    py-3
+    font-semibold
+    text-white
+    disabled:opacity-60
+    disabled:cursor-not-allowed
+  "
+>
+  {loading
+    ? "Generating AI Insight..."
+    : "✨ Generate AI Insight"}
+</button>
 
         </div>
 
       ) : (
 
-        <>
+      <>
+  <div className="mt-6">
+    <p className="text-xs text-violet-600">
+      AI Caption
+    </p>
 
-          <div className="mt-6">
+    <p className="mt-2 text-gray-800 leading-7">
+      {echo.aiCaption}
+    </p>
+  </div>
 
-            <p className="text-xs text-violet-600">
+  <div className="mt-6">
+    <p className="text-xs text-violet-600">
+      Memory Insight
+    </p>
 
-              AI Caption
+    <p className="mt-2 text-gray-700 leading-7 whitespace-pre-line">
+      {echo.aiInsight}
+    </p>
+  </div>
 
-            </p>
+  {!!echo.aiTags?.length && (
+    <div className="mt-6">
+      <p className="text-xs text-violet-600 mb-3">
+        Smart Tags
+      </p>
 
-            <p className="mt-2">
-
-              {echo.aiCaption}
-
-            </p>
-
-          </div>
-
-          <div className="mt-6">
-
-            <p className="text-xs text-violet-600">
-
-              Memory Insight
-
-            </p>
-
-            <p className="mt-2">
-
-              {echo.aiInsight}
-
-            </p>
-
-          </div>
-
-          {!!echo.aiTags?.length && (
-
-            <div className="mt-6 flex flex-wrap gap-2">
-
-              {echo.aiTags.map(tag => (
-
-                <span
-                  key={tag}
-                  className="
-                    rounded-full
-                    bg-violet-100
-                    px-3
-                    py-1
-                    text-sm
-                  "
-                >
-
-                  {tag}
-
-                </span>
-
-              ))}
-
-            </div>
-
-          )}
-
-        </>
-
+      <div className="flex flex-wrap gap-2">
+        {echo.aiTags.map((tag) => (
+          <span
+            key={tag}
+            className="
+              rounded-full
+              bg-violet-100
+              text-violet-700
+              px-3
+              py-1
+              text-sm
+              font-medium
+            "
+          >
+            #{tag}
+          </span>
+        ))}
+      </div>
+    </div>
+  )}
+</>
       )}
 
     </section>

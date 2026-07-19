@@ -40,4 +40,10 @@ aiGeneratedAt?: string;
 aiModel?: string;
 
 music?: EchoMusic;
+
+aiEmotion?: string;
+
+aiConfidence?: number;
+
+aiThemes?: string[];
 }

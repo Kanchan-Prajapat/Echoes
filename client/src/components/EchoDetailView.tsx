@@ -25,6 +25,8 @@ import {
   EchoAI,
     EchoMusic,
 } from "./EchoDetail";
+import { generateAIInsight } from "@/services/ai.service";
+
 
 import {
   uploadMedia,
@@ -51,6 +53,7 @@ interface Props {
   onBack: () => void;
 
   onEdit: (id: string) => void;
+  onDeleteSuccess: () => void;
 
 }
 
@@ -65,6 +68,7 @@ export default function EchoDetailView({
   onBack,
 
   onEdit,
+  onDeleteSuccess,
 
 }: Props) {
 
@@ -96,9 +100,13 @@ console.log("Music:", echo?.music);
 
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
   const toast = useToast();
-
+const [loading, setLoading] = useState(false);
 
   const { exportPdf } = useExportPdf();
+
+  const updateEcho = useEchoStore(
+  state => state.updateEcho
+);
 
   const { confirm } = useConfirm();
   useEffect(() => {
@@ -111,11 +119,6 @@ console.log("Music:", echo?.music);
 
   }, [echo, onBack, publicMode]);
 
-  if (!echo) {
-
-    return null;
-
-  }
 
   const imageCount = useMemo(() => {
     if (!echo) return 0;
@@ -132,6 +135,10 @@ console.log("Music:", echo?.music);
       (m) => m.type === "video"
     ).length;
   }, [echo]);
+
+  if (!echo) {
+    return null;
+  }
 
 
   const handleFavorite = async () => {
@@ -196,7 +203,7 @@ console.log("Music:", echo?.music);
             "Memory deleted successfully."
           );
 
-          onBack();
+          onDeleteSuccess();
 
         }
 
@@ -457,6 +464,24 @@ ${share.url}`;
 
   }
 
+ const handleGenerateAI = async () => {
+  setLoading(true);
+
+  try {
+
+const updatedEcho = await generateAIInsight(echo.id);
+updateEcho(updatedEcho.id, updatedEcho);
+
+toast.success("AI Insight generated successfully!");
+
+  } catch (error) {
+    console.error(error);
+
+    toast.error("Failed to generate AI Insight.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <AppContainer className="space-y-8 py-6">
@@ -508,8 +533,10 @@ ${share.url}`;
         echo={echo}
       />
 
-      <EchoAI
+    <EchoAI
   echo={echo}
+  loading={loading}
+  onGenerate={handleGenerateAI}
 />
 
       {!publicMode && (

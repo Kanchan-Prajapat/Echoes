@@ -23,11 +23,19 @@ export type Screen =
   | "setup-profile"
   | "new-echo";
 
+export interface NavigationHistoryItem {
+  screen: Screen;
+
+  selectedEchoId?: string;
+
+  editingEchoId?: string;
+}
+
 export interface NavigationState {
 
   current: Screen;
 
-  history: Screen[];
+  history: NavigationHistoryItem[];
 
   selectedEchoId?: string;
 

@@ -268,6 +268,8 @@ py-10
 
       </AnimatePresence>
 
+      
+
       {/* Pause Overlay */}
 
       {paused && (

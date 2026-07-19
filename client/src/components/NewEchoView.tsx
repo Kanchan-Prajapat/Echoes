@@ -1,7 +1,8 @@
 import { format } from "date-fns";
 import { useState } from "react";
 import AppContainer from "@/styles/AppContainer";
-
+import useAudio from "@/hooks/useAudio";
+import { Play, Pause, Music2 } from "lucide-react";
 import {
   NewEchoHeader,
   MediaUploader,
@@ -31,11 +32,13 @@ import useNewEcho from "@/hooks/useNewEchoForm";
 interface Props {
   onSaved: () => void;
   editingEchoId?: string;
+   onBack: () => void;
 }
 
 export default function NewEchoView({
   onSaved,
   editingEchoId,
+  onBack,
 }: Props) {
 
   const {
@@ -95,6 +98,17 @@ onSaved,
 
 const { music } = useMusic();
 
+const {
+  current,
+  playing,
+  play,
+  pause,
+} = useAudio();
+
+const isPreviewPlaying =
+  playing &&
+  current?.id === selectedMusic?._id;
+
   const [showMusicPicker, setShowMusicPicker] =
 useState(false);
 
@@ -105,9 +119,10 @@ console.log("NewEchoView selectedMusic:", selectedMusic);
 
       {/* Header */}
 
-      <NewEchoHeader
-        editing={!!editingEcho}
-      />
+   <NewEchoHeader
+  editing={!!editingEcho}
+  onBack={onBack}
+/>
 
       {/* Upload */}
 
@@ -158,6 +173,86 @@ console.log("NewEchoView selectedMusic:", selectedMusic);
     setShowMusicPicker(true)
   }
 />
+
+{selectedMusic && (
+  <div
+    className="
+      mt-3
+      rounded-2xl
+      border
+      border-violet-200
+      bg-violet-50
+      p-4
+      flex
+      items-center
+      justify-between
+    "
+  >
+    <div className="flex items-center gap-3">
+      <img
+        src={selectedMusic.cover}
+        alt={selectedMusic.title}
+        className={`
+          h-14
+          w-14
+          rounded-xl
+          object-cover
+          transition
+          ${
+            isPreviewPlaying
+              ? "animate-pulse"
+              : ""
+          }
+        `}
+      />
+
+      <div>
+        <h3 className="font-semibold">
+          {selectedMusic.title}
+        </h3>
+
+        <p className="text-sm text-gray-500">
+          {selectedMusic.artist}
+        </p>
+      </div>
+    </div>
+
+    <button
+      onClick={() => {
+        if (isPreviewPlaying) {
+          pause();
+        } else {
+          play({
+            id: selectedMusic._id,
+            title: selectedMusic.title,
+            artist: selectedMusic.artist,
+            cover: selectedMusic.cover,
+            url: selectedMusic.url,
+            duration: selectedMusic.duration,
+            source: "echoes",
+          });
+        }
+      }}
+      className="
+        flex
+        h-11
+        w-11
+        items-center
+        justify-center
+        rounded-full
+        bg-violet-600
+        text-white
+        hover:bg-violet-700
+      "
+    >
+      {isPreviewPlaying ? (
+        <Pause size={18} fill="white" />
+      ) : (
+        <Play size={18} fill="white" />
+      )}
+    </button>
+  </div>
+)}
 
         <JournalEditor
           value={description}

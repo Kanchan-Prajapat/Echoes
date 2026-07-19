@@ -1,11 +1,14 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   X,
   Search,
   Music2,
   CheckCircle2,
+  Play,
+  Pause,
 } from "lucide-react";
 
+import useAudio from "@/hooks/useAudio";
 import { Music } from "@/types/music";
 
 interface Props {
@@ -25,16 +28,32 @@ export default function MusicPickerModal({
 }: Props) {
   const [search, setSearch] = useState("");
 
+const { current, playing, play, pause, stop } =
+  useAudio();
+
+  useEffect(() => {
+  if (!open) {
+    stop();
+  }
+}, [open]);
+
   const filteredMusic = useMemo(() => {
     if (!search.trim()) return music;
 
     const query = search.toLowerCase();
 
+
     return music.filter(
       (item) =>
-        item.title.toLowerCase().includes(query) ||
-        item.artist.toLowerCase().includes(query) ||
-        item.category.toLowerCase().includes(query)
+        item.title
+          .toLowerCase()
+          .includes(query) ||
+        item.artist
+          .toLowerCase()
+          .includes(query) ||
+        item.category
+          .toLowerCase()
+          .includes(query)
     );
   }, [music, search]);
 
@@ -109,128 +128,222 @@ shadow-2xl
 
         </div>
 
-        {/* Music List */}
+       {/* Music List */}
 
-        <div className="flex-1 overflow-y-auto px-5 pb-6">
+<div className="flex-1 overflow-y-auto px-5 pb-6">
 
-          {filteredMusic.length === 0 ? (
+  {filteredMusic.length === 0 ? (
 
-            <div className="mt-20 text-center">
+    <div className="mt-20 text-center">
 
-              <Music2
-                size={48}
-                className="mx-auto text-gray-300"
-              />
+      <Music2
+        size={48}
+        className="mx-auto text-gray-300"
+      />
 
-              <h3 className="mt-4 font-semibold text-gray-700">
-                No soundtrack found
-              </h3>
+      <h3 className="mt-4 font-semibold text-gray-700">
+        No soundtrack found
+      </h3>
 
-              <p className="mt-1 text-sm text-gray-500">
-                Try another keyword.
-              </p>
+      <p className="mt-1 text-sm text-gray-500">
+        Try another keyword.
+      </p>
+
+    </div>
+
+  ) : (
+
+    <div className="space-y-3">
+
+      {filteredMusic.map((item) => {
+
+        const selected =
+          selectedMusicId === item._id;
+
+        const isPlaying =
+          playing &&
+          current?.id === item._id;
+
+        return (
+
+          <div
+            key={item._id}
+            onClick={() => {
+  stop();
+  onSelect(item);
+}}
+            className={`
+              flex
+              cursor-pointer
+              items-center
+              justify-between
+              rounded-2xl
+              border
+              p-4
+              transition
+
+              ${
+                selected
+                  ? "border-violet-500 bg-violet-50"
+                  : "border-gray-200 hover:border-violet-400 hover:shadow-md"
+              }
+            `}
+          >
+
+            {/* Left */}
+
+            <div className="flex items-center gap-4">
+
+              {/* Cover */}
+
+              <button
+                type="button"
+                onClick={(e) => {
+
+                  e.stopPropagation();
+
+                  const previewMusic = {
+                    id: item._id,
+                    title: item.title,
+                    artist: item.artist,
+                    cover: item.cover,
+                    url: item.url,
+                    duration: item.duration,
+                    source: "echoes" as const,
+                  };
+
+                  if (isPlaying) {
+                    pause();
+                  } else {
+                    play(previewMusic);
+                  }
+
+                }}
+                className="group relative h-14 w-14 overflow-hidden rounded-xl"
+              >
+
+                {item.cover ? (
+
+                  <img
+                    src={item.cover}
+                    alt={item.title}
+                    className="h-full w-full object-cover"
+                  />
+
+                ) : (
+
+                  <div className="flex h-full w-full items-center justify-center bg-violet-100">
+
+                    <Music2
+                      size={22}
+                      className="text-violet-600"
+                    />
+
+                  </div>
+
+                )}
+
+              <div
+  className={`
+absolute
+inset-0
+flex
+flex-col
+items-center
+justify-center
+gap-1
+transition
+
+${
+  isPlaying
+    ? "bg-black/45 opacity-100"
+    : "bg-black/30 opacity-0 group-hover:opacity-100"
+}
+`}
+>
+  {isPlaying ? (
+    <>
+      <Pause
+        size={18}
+        fill="white"
+        className="text-white"
+      />
+      <span className="text-[10px] text-white">
+        Playing
+      </span>
+    </>
+  ) : (
+    <>
+      <Play
+        size={18}
+        fill="white"
+        className="text-white"
+      />
+      <span className="text-[10px] text-white">
+        Preview
+      </span>
+    </>
+  )}
+</div>
+
+              </button>
+
+              {/* Info */}
+
+              <div>
+
+                <p className="font-medium">
+                  {item.title}
+                </p>
+
+                <p className="text-sm text-gray-500">
+                  {item.artist}
+                </p>
+
+                <span className="mt-2 inline-flex rounded-full bg-violet-100 px-2 py-1 text-[10px] font-medium text-violet-700">
+
+                  {item.category}
+
+                </span>
+
+              </div>
 
             </div>
 
-          ) : (
+            {/* Right */}
 
-            <div className="space-y-3">
+            {selected && (
 
-              {filteredMusic.map((item) => {
+              <div className="flex items-center gap-2 text-violet-600">
 
-                const selected =
-                  selectedMusicId === item._id;
+                <CheckCircle2 size={20} />
 
-                return (
+                <span className="text-sm font-medium">
+                  Selected
+                </span>
 
-                  <button
-                    key={item._id}
-                    onClick={() => onSelect(item)}
-                    className={`
-                      flex w-full items-center justify-between rounded-2xl border p-4 transition
-                      ${
-                        selected
-                          ? "border-violet-500 bg-violet-50"
-                          : "border-gray-200 hover:border-violet-400 hover:shadow-md"
-                      }
-                    `}
-                  >
+              </div>
 
-                    <div className="flex items-center gap-4">
+            )}
 
-                      {/* Cover */}
+          </div>
 
-                      <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-violet-100">
+        );
 
-                        {item.cover ? (
+      })}
 
-                          <img
-                            src={item.cover}
-                            alt={item.title}
-                            className="h-full w-full rounded-xl object-cover"
-                          />
+    </div>
 
-                        ) : (
+  )}
 
-                          <Music2
-                            size={24}
-                            className="text-violet-600"
-                          />
-
-                        )}
-
-                      </div>
-
-                      {/* Info */}
-
-                      <div className="text-left">
-
-                        <p className="font-medium">
-                          {item.title}
-                        </p>
-
-                        <p className="text-sm text-gray-500">
-                          {item.artist}
-                        </p>
-
-                        <span className="mt-2 inline-flex rounded-full bg-violet-100 px-2 py-1 text-[10px] font-medium text-violet-700">
-                          {item.category}
-                        </span>
-
-                      </div>
-
-                    </div>
+</div>
 
                     {/* Selected */}
 
-                    {selected && (
-
-                      <div className="flex items-center gap-1 text-violet-600">
-
-                        <CheckCircle2 size={20} />
-
-                        <span className="text-sm font-medium">
-                          Selected
-                        </span>
-
-                      </div>
-
-                    )}
-
-                  </button>
-
-                );
-
-              })}
-
-            </div>
-
-          )}
 
         </div>
 
       </div>
 
-    </div>
   );
 }

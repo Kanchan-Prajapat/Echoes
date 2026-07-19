@@ -26,6 +26,9 @@ export const env = {
 
   CLOUDINARY_API_SECRET:
     process.env.CLOUDINARY_API_SECRET!,
+
+  GROQ_API_KEY:
+  process.env.GROQ_API_KEY!,
 };
 
 

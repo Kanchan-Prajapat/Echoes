@@ -1,27 +1,27 @@
-import { Router } from "express";
+  import { Router } from "express";
 
-import {
-  createMusic,
-  getAllMusic,
-  getMusicById,
-  updateMusic,
-  deleteMusic,
-} from "./music.controller.js";
+  import {
+    createMusic,
+    getAllMusic,
+    getMusicById,
+    updateMusic,
+    deleteMusic,
+  } from "./music.controller.js";
 
-const router = Router();
+  const router = Router();
 
-/* -------------------------------- */
-/* Music */
-/* -------------------------------- */
+  /* -------------------------------- */
+  /* Music */
+  /* -------------------------------- */
 
-router.post("/", createMusic);
+  router.post("/", createMusic);
 
-router.get("/", getAllMusic);
+  router.get("/", getAllMusic);
 
-router.get("/:id", getMusicById);
+  router.get("/:id", getMusicById);
 
-router.patch("/:id", updateMusic);
+  router.patch("/:id", updateMusic);
 
-router.delete("/:id", deleteMusic);
+  router.delete("/:id", deleteMusic);
 
-export default router;
+  export default router;

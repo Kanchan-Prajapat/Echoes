@@ -1,11 +1,14 @@
 import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
 
 interface Props {
   editing: boolean;
+  onBack:()=>  void;
 }
 
 export default function NewEchoHeader({
   editing,
+  onBack,
 }: Props) {
 
   return (
@@ -19,6 +22,10 @@ export default function NewEchoHeader({
       transition={{ duration: .35,}}
 
       className="mb-8"  >
+      <ArrowLeft
+  onClick={onBack}
+  className="cursor-pointer"
+/>
 
       <p
         className="  text-xs  font-bold  uppercase  tracking-[0.25em]  text-violet-600">
