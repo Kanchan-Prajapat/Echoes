@@ -6,7 +6,7 @@ export interface User {
 
   email: string;
 
-  avatar: string;
+ avatar?: string;
 
   bio?: string;
 

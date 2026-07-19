@@ -1,5 +1,3 @@
-import { RefObject } from "react";
-
 import { Media } from "@/types/media";
 
 import UploadPlaceholder from "./UploadPlaceholder";
@@ -10,7 +8,7 @@ interface Props {
 
     coverMediaId?: string;
 
-    fileInputRef: RefObject<HTMLInputElement>;
+   fileInputRef: React.RefObject<HTMLInputElement | null>; 
 
     onBrowse: (
         e: React.ChangeEvent<HTMLInputElement>

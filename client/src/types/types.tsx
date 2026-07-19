@@ -25,7 +25,7 @@ export interface Echo {
   aiTags?: string[];
 }
 
-export type TabType = "home" | "timeline" | "add" | "calendar" | "profile" ;
+export type TabType = "home" | "timeline" | "new-echo" | "calendar" | "profile" ;
 
 export interface MoodConfig {
   name: string;

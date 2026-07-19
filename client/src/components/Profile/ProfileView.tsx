@@ -3,7 +3,7 @@ import useProfileStats from "@/hooks/useProfileStats";
 import { useState } from "react";
 
 import EditProfileModal from "./components/EditProfileModal";
-
+import type { Gender } from "@/types/profile.types";
 import useEditProfile from "@/hooks/useEditProfile";
 import ProfileHeader from "./components/ProfileHeader";
 import ProfileStats from "./components/ProfileStats";
@@ -59,9 +59,10 @@ const [avatar, setAvatar] =
 const [dateOfBirth, setDateOfBirth]=
 useState("");
 
-const [gender, setGender] = useState(
-  profile?.gender ?? ""
-);
+const [gender, setGender] =
+  useState<Gender | undefined>(
+    profile?.gender
+  );
 
 const [city, setCity] = useState(
   profile?.city ?? ""
@@ -216,7 +217,7 @@ setAvatar(profile.avatar ?? "");
 
 setDateOfBirth(profile.dateOfBirth ?? "");
 
-setGender(profile.gender ?? "");
+setGender(profile.gender);
 
 setCity(profile.city ?? "");
 
@@ -313,11 +314,12 @@ setOpenEdit(true);
   onClose={() =>
     setDateOfBirthModalOpen(false)
   }
-  onChange={(date) => {
+   onSelect={(date: Date) => {
     setDateOfBirth(
       format(date, "yyyy-MM-dd")
     );
 
+    setDateOfBirthModalOpen(false);
     setDateOfBirthModalOpen(false);
   }}
 />

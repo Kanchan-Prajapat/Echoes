@@ -6,15 +6,15 @@ import {
   Plus,
 } from "lucide-react";
 
-import { Tab } from "../../App";
+import { TabType } from "@/types/types";
 
 type BottomNavProps = {
-  active: Tab;
-  onChange: (tab: Tab) => void;
+  active: TabType;
+  onChange: (tab: TabType) => void;
 };
 
 const items: {
-  id: Tab;
+  id: TabType;
   icon: React.ElementType;
   label: string;
 }[] = [

@@ -3,11 +3,9 @@
   MapPin,
   Heart,
 } from "lucide-react";
-import PDFGallery from "./PDFGallery";
 import { Echo } from "@/types/echo";
 import { format } from "date-fns";
 import ShareMediaGrid from "../ShareMediaGrid";
-import PDFDetails from "./PDFDetails";
 
 interface Props {
   echo: Echo;

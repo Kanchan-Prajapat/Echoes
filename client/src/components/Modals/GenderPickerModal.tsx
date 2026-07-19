@@ -1,10 +1,5 @@
 import BaseModal from "./BaseModal";
-
-type Gender =
-  | "male"
-  | "female"
-  | "other"
-  | "prefer_not_to_say";
+import { Gender } from "@/types/profile.types";
 
 interface GenderPickerModalProps {
   open: boolean;

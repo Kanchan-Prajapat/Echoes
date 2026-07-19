@@ -15,7 +15,7 @@ export default function SharedEchoPage() {
   const navigate = useNavigate();
 
   const [echo, setEcho] =
-    useState<Echo | null>(null);
+    useState<Echo>() ;
 
   const [loading, setLoading] =
     useState(true);
@@ -53,32 +53,25 @@ export default function SharedEchoPage() {
 
   }, [token]);
 
-  if (loading) {
+if (loading) {
+  return <AppSplash />;
+}
 
-    return <AppSplash />;
-
-  }
-
-<ErrorState
-
-    message="This shared memory doesn't exist or has been removed."
-
-/>
-
+if (!echo) {
   return (
-
-    <EchoDetailView
-
-      echo={echo}
-
-      publicMode
-
-      onBack={() => navigate("/")}
-
-      onEdit={() => {}}
-
+    <ErrorState
+      message="This shared memory doesn't exist or has been removed."
     />
-
   );
+}
 
+return (
+  <EchoDetailView
+    echo={echo}
+    publicMode
+    onBack={() => navigate("/")}
+    onEdit={() => {}}
+    onDeleteSuccess={() => {}}
+  />
+);
 }

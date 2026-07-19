@@ -3,7 +3,7 @@ import api from "@/services/api";
 import {
   Profile,
   UpdateProfileDTO,
-} from "@/types/user";
+} from "@/types/profile.types";
 
 export async function getMyProfile(): Promise<Profile> {
 

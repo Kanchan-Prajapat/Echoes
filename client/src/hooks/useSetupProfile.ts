@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { updateProfile } from "@/services/user.service";
-
+import type { Gender } from "@/types/profile.types";
 import { useAuthStore } from "@/auth/stores/authStore";
 import { useNavigationStore } from "@/store/navigationStore";
 
@@ -17,8 +17,8 @@ export default function useSetupProfile() {
   const [dateOfBirth, setDateOfBirth] =
     useState("");
 
-  const [gender, setGender] =
-    useState("");
+ const [gender, setGender] =
+  useState<Gender | undefined>(undefined);
 
   const [city, setCity] =
     useState("");

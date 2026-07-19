@@ -1,6 +1,12 @@
 /* -------------------------------- */
 /* Profile */
 /* -------------------------------- */
+export type Gender =
+  | "male"
+  | "female"
+  | "other"
+  | "prefer_not_to_say";
+
 
 export interface Profile {
 
@@ -16,7 +22,7 @@ export interface Profile {
 
   dateOfBirth?: string;
 
-  gender?: "male" | "female" | "other" | "prefer_not_to_say";
+  gender?: Gender;
 
   city?: string;
 
@@ -43,9 +49,10 @@ export interface UpdateProfileDTO {
 
   dateOfBirth: string;
 
-  gender?: "male" | "female" | "other" | "prefer_not_to_say";
+  gender?: Gender;
 
   city?: string;
 
 
 }
+

@@ -9,5 +9,3 @@ export { default as JourneyCard } from "./JourneyCard";
 export { default as Achievements } from "./Achievements";
 
 export { default as QuickActions } from "./components/ProfileActions";
-
-export { default as ProfileMenu } from "./ProfileMenu";

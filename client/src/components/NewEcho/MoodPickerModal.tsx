@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Smile, X } from "lucide-react";
+import { X } from "lucide-react";
 
 import { Mood } from "@/types/moods";
 import MoodCard from "./MoodCard";

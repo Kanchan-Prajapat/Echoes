@@ -1,6 +1,6 @@
 import { IMusic } from "./music.types.js";
 
-export const musicLibrary: Music[] = [
+export const musicLibrary: IMusic[] = [
   {
     id: "1",
     title: "Happy",

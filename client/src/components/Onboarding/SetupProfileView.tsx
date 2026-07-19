@@ -4,7 +4,7 @@ import { useAuthStore } from "@/auth/stores/authStore";
 import useSetupProfile from "@/hooks/useSetupProfile";
 import { useState } from "react";
 import { format } from "date-fns";
-
+import type { Gender } from "@/types/profile.types";
 import CalendarModal from "@/components/Modals/CalendarModal";
 import { DatePickerCard } from "../NewEcho";
 export default function SetupProfileView() {
@@ -38,6 +38,23 @@ export default function SetupProfileView() {
 const [calendarOpen, setCalendarOpen] =
   useState(false); 
 
+const GENDERS: {
+  value: Gender;
+  label: string;
+}[] = [
+  {
+    value: "male",
+    label: "👨 Male",
+  },
+  {
+    value: "female",
+    label: "👩 Female",
+  },
+  {
+    value: "other",
+    label: "🌈 Other",
+  },
+];
 
   return (
 
@@ -244,34 +261,14 @@ const [calendarOpen, setCalendarOpen] =
               </label>
 
               <div className="flex flex-wrap gap-3">
-
-                {[
-                  {
-                    value: "male",
-                    label: "👨 Male",
-                  },
-                  {
-                    value: "female",
-                    label: "👩 Female",
-                  },
-                  {
-                    value: "other",
-                    label: "🌈 Other",
-                  },
-                ].map((item) => (
+          {GENDERS.map((item) => (
 
                   <button
-
                     key={item.value}
-
                     type="button"
-
                     onClick={() =>
-
                       setGender(item.value)
-
                     }
-
                     className={`
       rounded-full
       px-5

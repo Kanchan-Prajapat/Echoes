@@ -97,17 +97,20 @@ export default function AddMediaModal({
                     onChange={(e) => {
 
                         if (!e.target.files) return;
+const uploaded: Media[] = Array.from(e.target.files).map((file) => {
+  const type: Media["type"] = file.type.startsWith("video")
+    ? "video"
+    : "image";
 
-                        const uploaded = Array.from(e.target.files).map((file) => ({
-                            id: crypto.randomUUID(),
-                            file,
-                            url: URL.createObjectURL(file),
-                            type: file.type.startsWith("video")
-                                ? "video"
-                                : "image",
-                        }));
+  return {
+    id: crypto.randomUUID(),
+    file,
+    url: URL.createObjectURL(file),
+    type,
+  };
+});
 
-                        setMedia(uploaded);
+setMedia(uploaded);
 
                     }}
 

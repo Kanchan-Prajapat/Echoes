@@ -12,7 +12,7 @@ export async function imageUrlToBase64(url: string) {
     reader.onloadend = () => {
       const result = reader.result as string;
 
-      const [header, base64] = result.split(",");
+      const [ base64] = result.split(",");
 
       resolve({
         mimeType:

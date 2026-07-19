@@ -24,10 +24,8 @@ const [safeIndex, setSafeIndex] = useState(initialIndex);
   const [controlsVisible, setControlsVisible] = useState(true);
 
   const [videoProgress, setVideoProgress] = useState(0);
-
-  const imageTimer = useRef<number>();
-
-  const controlsTimer = useRef<number>();
+const imageTimer = useRef<number | null>(null);
+const controlsTimer = useRef<number | null>(null);
 
   const currentMedia = useMemo(
     () => media[safeIndex],
@@ -86,7 +84,9 @@ useEffect(() => {
 
   useEffect(() => {
 
-    window.clearTimeout(imageTimer.current);
+if (imageTimer.current !== null) {
+  window.clearTimeout(imageTimer.current);
+}
 
     if (!currentMedia) return;
 
@@ -102,7 +102,9 @@ useEffect(() => {
 
     return () => {
 
-      window.clearTimeout(imageTimer.current);
+   if (imageTimer.current !== null) {
+  window.clearTimeout(imageTimer.current);
+}
 
     };
 
@@ -112,7 +114,9 @@ useEffect(() => {
 
   useEffect(() => {
 
-    window.clearTimeout(controlsTimer.current);
+   if (controlsTimer.current !== null) {
+  window.clearTimeout(controlsTimer.current);
+}
 
     if (paused) {
 
@@ -132,7 +136,9 @@ useEffect(() => {
 
     return () => {
 
-      window.clearTimeout(controlsTimer.current);
+if (controlsTimer.current !== null) {
+  window.clearTimeout(controlsTimer.current);
+}
 
     };
 
@@ -183,7 +189,9 @@ useEffect(() => {
 
     setControlsVisible(true);
 
-    window.clearTimeout(controlsTimer.current);
+   if (controlsTimer.current !== null) {
+  window.clearTimeout(controlsTimer.current);
+}
 
     controlsTimer.current = window.setTimeout(() => {
 

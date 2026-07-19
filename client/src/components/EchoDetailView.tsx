@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { Echo } from "@/types/echo";
 import { Media } from "@/types/media";
-
 import { useEchoStore } from "@/store/echoStore";
 import EchoPlayer from "./EchoPlayer/EchoPlayer";
 import AddMediaModal from "./Modals/AddMediaModal";

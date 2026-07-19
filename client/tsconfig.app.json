@@ -25,12 +25,11 @@
 
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-
-    "baseUrl": ".",
+"baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     }
   },
 
-  "include": ["src", "../server/src/features/share/share.model.ts"]
+  "include": ["src"]
 }

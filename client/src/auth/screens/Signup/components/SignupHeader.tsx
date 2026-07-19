@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-import Logo from "@/assets/logos/logo-dark.svg"; // Change this to your logo path
+import Logo from "@/assets/logos/logo-dark.png"; 
 
 export default function SignupHeader() {
 

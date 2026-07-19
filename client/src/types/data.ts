@@ -5,7 +5,6 @@ import {
   Bell,
   FileText,
   Info,
-  ChevronRight,
 } from "lucide-react";
 
 export const settingsSections = [

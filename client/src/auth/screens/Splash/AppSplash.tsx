@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 
 import AppContainer from "@/styles/AppContainer";
-import Header from "../welcome/components/Header";
 
 export default function AppSplash() {
 

@@ -12,6 +12,7 @@ import PageTransition from "@/components/Shared/PageTransition";
 import SetupProfileView from "@/components/Onboarding/SetupProfileView";
 import { useNavigationStore } from "@/store/navigationStore";
 import { MiniPlayer } from "@/components/Audio";
+import type { TabType } from "@/types/types";
 export default function AppNavigator() {
 
 
@@ -296,9 +297,9 @@ export default function AppNavigator() {
 
       <BottomNav
 
-        active={current}
+        active={current as TabType}
 
-        onChange={navigate}
+  onChange={(tab) => navigate(tab)}
 
       />
 

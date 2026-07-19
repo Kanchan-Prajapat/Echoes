@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import useAvatarUpload from "@/hooks/useAvatarUpload";
 import { Profile } from "@/types/profile.types";
 import { validateProfile,} from "@/utils/profileValidation";
+import type { Gender } from "@/types/profile.types";
 interface Props {
   open: boolean;
 
@@ -22,7 +23,7 @@ interface Props {
   onAvatarChange: (value: string) => void;
 
   dateOfBirth: string;
-gender: string;
+gender?: Gender;
 city: string;
 
 onDateOfBirthClick: () => void;
@@ -59,7 +60,7 @@ onCityChange,
   bio !== (profile.bio ?? "") ||
   avatar !== (profile.avatar ?? "") ||
   dateOfBirth !== (profile.dateOfBirth ?? "") ||
-  gender !== (profile.gender ?? "") ||
+ gender !== profile.gender
   city !== (profile.city ?? "");
 
 const {
