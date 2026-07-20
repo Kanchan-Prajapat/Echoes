@@ -34,7 +34,7 @@ export const updateProfileSchema = z.object({
     .max(250)
     .optional(),
 
-  dateOfBirth: z.string(),
+  dateOfBirth: z.date(),
 
   gender: z
     .enum([

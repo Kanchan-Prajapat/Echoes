@@ -20,7 +20,7 @@ export interface Profile {
 
   bio?: string;
 
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
 
   gender?: Gender;
 
@@ -47,7 +47,7 @@ export interface UpdateProfileDTO {
 
   avatar?: string;
 
-  dateOfBirth: string;
+  dateOfBirth: Date;
 
   gender?: Gender;
 

@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import upload from "../../middleware/upload";
-import { uploadMediaController } from "./media.controller";
+import upload from "../../middleware/upload.js";
+import { uploadMediaController } from "./media.controller.js";
 
 const router = Router();
 

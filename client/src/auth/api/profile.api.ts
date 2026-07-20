@@ -9,7 +9,7 @@ export interface UpdateProfileRequest {
   bio?: string;
   avatar?: string;
 
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
   gender?: string;
   city?: string;
 }

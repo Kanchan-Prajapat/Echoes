@@ -22,7 +22,7 @@ interface Props {
   onBioChange: (value: string) => void;
   onAvatarChange: (value: string) => void;
 
-  dateOfBirth: string;
+  dateOfBirth: Date;
 gender?: Gender;
 city: string;
 

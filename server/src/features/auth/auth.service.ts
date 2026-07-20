@@ -15,6 +15,7 @@ import {
   SignupDTO,
   LoginDTO,
   AuthResponse,
+  AuthUser,
 } from "./auth.types.js";
 
 import { UpdateProfileDTO } from "../user/user.types.js";
@@ -65,12 +66,12 @@ export async function signup(
     });
 
   const token =
-    generateToken(user.id);
+    generateToken(user._id.toString());
 
-  return {
-    user,
+ return {
+    user: user.toJSON() as unknown as AuthUser,
     token,
-  };
+};
 }
 
 /* -------------------------------- */
@@ -105,11 +106,11 @@ export async function login(
     );
   }
 
-  const token =
-    generateToken(user.id);
+const token =
+generateToken(user._id.toString());
 
   return {
-    user: user.toJSON(),
+    user: user.toJSON() as unknown as AuthUser,
     token,
   };
 }

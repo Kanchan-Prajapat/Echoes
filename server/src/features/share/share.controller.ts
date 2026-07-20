@@ -69,7 +69,7 @@ export async function createShareController(
 /* -------------------------------- */
 
 export async function getSharedEchoController(
-  req: Request<{ token: string }>,
+  req: AuthRequest,
   res: Response
 ) {
 

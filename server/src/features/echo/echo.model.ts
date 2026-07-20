@@ -164,11 +164,10 @@ music: {
 echoSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
-  transform: (_doc, ret) => {
-    ret.id = ret._id.toString();
-
-    delete ret._id;
-  },
+transform: (_doc: any, ret: any) => {
+  ret.id = ret._id.toString();
+  delete ret._id;
+}
 });
 
 export default mongoose.model(

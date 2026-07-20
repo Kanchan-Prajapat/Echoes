@@ -1,14 +1,14 @@
 export interface ProfileValidationData {
   username: string;
   bio: string;
-  dateOfBirth: string;
+  dateOfBirth: Date;
   city: string;
 }
 
 export interface ProfileErrors {
   username?: string;
   bio?: string;
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
   city?: string;
 }
 

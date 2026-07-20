@@ -17,7 +17,7 @@ export interface AuthUser {
 
   id: string;
 
-  username: string;
+  username?: string;
 
   email: string;
 
@@ -25,7 +25,7 @@ export interface AuthUser {
 
   bio: string;
 
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
 
   gender?: string;
 

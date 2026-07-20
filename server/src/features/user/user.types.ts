@@ -1,6 +1,6 @@
 export interface UserDocument {
   id: string;
-  username: string;
+  username?: string;
   email: string;
   password: string;
   avatar?: string;
@@ -20,10 +20,17 @@ export interface CreateUserDTO {
 }
 
 export interface UpdateProfileDTO {
-  username: string;
+
+  username?: string;
+
   avatar?: string;
+
   bio?: string;
-  dateOfBirth?: string;
+
+  dateOfBirth?: Date;
+
   gender?: "male" | "female" | "other" | "prefer_not_to_say";
+
   city?: string;
+
 }

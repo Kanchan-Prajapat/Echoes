@@ -9,9 +9,8 @@ export async function createUser(data: {
   email: string;
   password: string;
 }) {
-  const user = await User.create(data);
 
-  return user.toJSON();
+  return  await User.create(data);
 }
 
 /* -------------------------------- */

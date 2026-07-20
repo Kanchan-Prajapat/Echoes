@@ -1,6 +1,12 @@
 import Groq from "groq-sdk";
 import { env } from "../../config/env.js";
-import type { Echo } from "../echo/echo.types.js"
+interface EchoInput {
+  title: string;
+  description?: string;
+  mood?: string;
+  location?: string;
+  date: Date;
+}
 
 const groq = new Groq({
   apiKey: env.GROQ_API_KEY,
@@ -13,7 +19,7 @@ export interface AIInsight {
 }
 
 export async function generateAIInsight(
-  echo: Echo
+  echo: EchoInput
 ): Promise<AIInsight> {
   const prompt = `
 You are an AI assistant for a personal memory journaling app called Echoes.

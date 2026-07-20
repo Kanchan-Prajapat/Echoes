@@ -10,7 +10,7 @@ export interface User {
 
   bio?: string;
 
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
 
   gender?:
     | "male"

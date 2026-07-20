@@ -62,16 +62,18 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
-
 userSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
 
-  transform(_, ret) {
+  transform: (_doc: any, ret: any) => {
+
     ret.id = ret._id.toString();
 
     delete ret._id;
+
     delete ret.password;
+
   },
 });
 
