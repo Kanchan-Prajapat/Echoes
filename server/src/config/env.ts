@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+
 export const env = {
   PORT: process.env.PORT || "5000",
 
@@ -29,6 +30,12 @@ export const env = {
 
   GROQ_API_KEY:
   process.env.GROQ_API_KEY!,
+
+  PIXABAY_API_KEY:
+process.env.PIXABAY_API_KEY!,
+
+JAMENDO_CLIENT_ID: process.env.JAMENDO_CLIENT_ID!,
+JAMENDO_CLIENT_SECRET: process.env.JAMENDO_CLIENT_SECRET!,
 };
 
 

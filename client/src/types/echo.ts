@@ -1,5 +1,14 @@
 import { Media } from "./media";
-import { EchoMusic } from "./music";
+
+export interface EchoMusic {
+  id: string;
+  title: string;
+  artist: string;
+  cover: string;
+  url: string;
+  duration: number;
+  source: "echoes" | "uploaded";
+}
 
 export interface Echo {
   id: string;

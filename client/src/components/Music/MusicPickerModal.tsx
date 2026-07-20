@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   X,
   Search,
@@ -7,13 +7,12 @@ import {
   Play,
   Pause,
 } from "lucide-react";
-
+import { searchMusic } from "@/services/music.service";
 import useAudio from "@/hooks/useAudio";
 import { Music } from "@/types/music";
 
 interface Props {
   open: boolean;
-  music: Music[];
   selectedMusicId?: string;
   onClose: () => void;
   onSelect: (music: Music) => void;
@@ -21,7 +20,6 @@ interface Props {
 
 export default function MusicPickerModal({
   open,
-  music,
   selectedMusicId,
   onClose,
   onSelect,
@@ -36,26 +34,54 @@ const { current, playing, play, pause, stop } =
     stop();
   }
 }, [open]);
+const [music, setMusic] =
+useState<Music[]>([]);
 
-  const filteredMusic = useMemo(() => {
-    if (!search.trim()) return music;
+const [loading, setLoading] =
+useState(false);
 
-    const query = search.toLowerCase();
+ useEffect(() => {
+
+    if (!open) return;
+
+    const timer = setTimeout(() => {
+
+        loadMusic();
+
+    }, 400);
+
+    async function loadMusic() {
+
+        try {
+
+            setLoading(true);
+
+            const result = await searchMusic(search.trim() || "lofi");
 
 
-    return music.filter(
-      (item) =>
-        item.title
-          .toLowerCase()
-          .includes(query) ||
-        item.artist
-          .toLowerCase()
-          .includes(query) ||
-        item.category
-          .toLowerCase()
-          .includes(query)
-    );
-  }, [music, search]);
+            setMusic(result);
+
+        }
+
+        catch (err) {
+
+            console.error(err);
+
+            setMusic([]);
+
+        }
+
+        finally {
+
+            setLoading(false);
+
+        }
+
+    }
+
+    return () => clearTimeout(timer);
+
+}, [search, open]);
 
   if (!open) return null;
 
@@ -132,7 +158,15 @@ shadow-2xl
 
 <div className="flex-1 overflow-y-auto px-5 pb-6">
 
-  {filteredMusic.length === 0 ? (
+{loading ? (
+
+<div className="py-20 text-center">
+
+Loading music...
+
+</div>
+
+) : music.length === 0 ? (
 
     <div className="mt-20 text-center">
 
@@ -155,19 +189,19 @@ shadow-2xl
 
     <div className="space-y-3">
 
-      {filteredMusic.map((item) => {
+      {music.map((item) => {
 
         const selected =
-          selectedMusicId === item._id;
+          selectedMusicId === item.id;
 
         const isPlaying =
           playing &&
-          current?.id === item._id;
+          current?.id === item.id;
 
         return (
 
           <div
-            key={item._id}
+            key={item.id}
             onClick={() => {
   stop();
   onSelect(item);
@@ -202,16 +236,15 @@ shadow-2xl
 
                   e.stopPropagation();
 
-                  const previewMusic = {
-                    id: item._id,
-                    title: item.title,
-                    artist: item.artist,
-                    cover: item.cover,
-                    url: item.url,
-                    duration: item.duration,
-                    source: "echoes" as const,
-                  };
-
+           const previewMusic = {
+  id: item.id,
+  title: item.title,
+  artist: item.artist,
+  cover: item.image ?? "",
+  url: item.audio,
+  duration: item.duration,
+  source: "echoes" as const,
+};
                   if (isPlaying) {
                     pause();
                   } else {
@@ -222,10 +255,10 @@ shadow-2xl
                 className="group relative h-14 w-14 overflow-hidden rounded-xl"
               >
 
-                {item.cover ? (
+                {item.image ? (
 
                   <img
-                    src={item.cover}
+                    src={item.image}
                     alt={item.title}
                     className="h-full w-full object-cover"
                   />
@@ -300,12 +333,7 @@ ${
                   {item.artist}
                 </p>
 
-                <span className="mt-2 inline-flex rounded-full bg-violet-100 px-2 py-1 text-[10px] font-medium text-violet-700">
-
-                  {item.category}
-
-                </span>
-
+             
               </div>
 
             </div>

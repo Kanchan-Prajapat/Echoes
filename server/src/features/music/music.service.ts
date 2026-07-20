@@ -1,69 +1,30 @@
-import * as repository from "./music.repository.js";
-import { IMusic } from "./music.types.js";
+import axios from "axios";
+import { env } from "../../config/env.js";
 
-/* -------------------------------- */
-/* Create */
-/* -------------------------------- */
+export async function searchMusic(query: string) {
 
-export async function createMusic(
-  data: Partial<IMusic>
-) {
-
-  // Future:
-  // Duplicate title check
-  // Audio validation
-  // Cloudinary upload
-
-  return repository.createMusic(data);
-
-}
-
-/* -------------------------------- */
-/* Get All */
-/* -------------------------------- */
-
-export async function getAllMusic() {
-
-  return repository.getAllMusic();
-
-}
-
-/* -------------------------------- */
-/* Get By Id */
-/* -------------------------------- */
-
-export async function getMusicById(
-  id: string
-) {
-
-  return repository.getMusicById(id);
-
-}
-
-/* -------------------------------- */
-/* Update */
-/* -------------------------------- */
-
-export async function updateMusic(
-  id: string,
-  data: Partial<IMusic>
-) {
-
-  return repository.updateMusic(
-    id,
-    data
+  const { data } = await axios.get(
+    "https://api.jamendo.com/v3.0/tracks/",
+    {
+      params: {
+        client_id: env.JAMENDO_CLIENT_ID,
+        format: "json",
+        limit: 20,
+        search: query,
+        audioformat: "mp32",
+        include: "musicinfo",
+      },
+    }
   );
 
-}
 
-/* -------------------------------- */
-/* Delete */
-/* -------------------------------- */
-
-export async function deleteMusic(
-  id: string
-) {
-
-  return repository.deleteMusic(id);
-
+  return data.results.map((track: any) => ({
+    id: track.id,
+    title: track.name,
+    artist: track.artist_name,
+    album: track.album_name,
+    duration: track.duration,
+    audio: track.audio,
+    image: track.image,
+  }));
 }

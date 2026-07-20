@@ -7,7 +7,7 @@ import {
   ReactNode,
 } from "react";
 
-import { EchoMusic } from "@/types/music";
+import { EchoMusic } from "@/types/echo";
 
 interface AudioContextType {
   current?: EchoMusic;

@@ -15,7 +15,6 @@ import {
   MusicSelector,
  
 } from "@/components/NewEcho";
-import useMusic from "@/hooks/useMusic";
 
 
 
@@ -95,7 +94,6 @@ onSaved,
 
   });
 
-const { music } = useMusic();
 
 const {
   current,
@@ -106,7 +104,7 @@ const {
 
 const isPreviewPlaying =
   playing &&
-  current?.id === selectedMusic?._id;
+  current?.id === selectedMusic?.id;
 
   const [showMusicPicker, setShowMusicPicker] =
 useState(false);
@@ -188,7 +186,7 @@ useState(false);
   >
     <div className="flex items-center gap-3">
       <img
-        src={selectedMusic.cover}
+        src={selectedMusic.image}
         alt={selectedMusic.title}
         className={`
           h-14
@@ -221,11 +219,11 @@ useState(false);
           pause();
         } else {
           play({
-            id: selectedMusic._id,
+            id: selectedMusic.id,
             title: selectedMusic.title,
             artist: selectedMusic.artist,
-            cover: selectedMusic.cover,
-            url: selectedMusic.url,
+            cover: selectedMusic.image?? "",
+            url: selectedMusic.audio,
             duration: selectedMusic.duration,
             source: "echoes",
           });
@@ -304,16 +302,13 @@ useState(false);
       />
 
 <MusicPickerModal
-    open={showMusicPicker}
-    music={music}
-    selectedMusicId={selectedMusic?._id}
-    onClose={() =>
-        setShowMusicPicker(false)
-    }
-    onSelect={(music) => {
-        setSelectedMusic(music);
-        setShowMusicPicker(false);
-    }}
+open={showMusicPicker}
+selectedMusicId={selectedMusic?.id}
+onClose={() => setShowMusicPicker(false)}
+onSelect={(music) => {
+    setSelectedMusic(music);
+    setShowMusicPicker(false);
+}}
 />
     </AppContainer>
 

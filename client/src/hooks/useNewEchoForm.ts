@@ -107,17 +107,16 @@ const [date, setDate] = useState<Date | undefined>(undefined);
         setCoverMediaId(
             editingEcho.coverMediaId
         );
-        if (editingEcho.music) {
-            setSelectedMusic({
-                _id: editingEcho.music.id,
-                title: editingEcho.music.title,
-                artist: editingEcho.music.artist,
-                cover: editingEcho.music.cover,
-                url: editingEcho.music.url,
-                duration: editingEcho.music.duration,
-                category: "",
-            });
-        }
+      if (editingEcho.music) {
+    setSelectedMusic({
+        id: editingEcho.music.id,
+        title: editingEcho.music.title,
+        artist: editingEcho.music.artist,
+        image: editingEcho.music.cover,
+        audio: editingEcho.music.url,
+        duration: editingEcho.music.duration,
+    });
+}
 
 
     }, [editingEcho]);
@@ -290,11 +289,11 @@ const [date, setDate] = useState<Date | undefined>(undefined);
                 coverMediaId: finalCoverMediaId,
                 music: selectedMusic
                     ? {
-                        id: selectedMusic._id,
+                        id: selectedMusic.id,
                         title: selectedMusic.title,
                         artist: selectedMusic.artist,
-                        cover: selectedMusic.cover,
-                        url: selectedMusic.url,
+                        cover: selectedMusic.image??"",
+                        url: selectedMusic.audio,
                         duration: selectedMusic.duration,
                         source: "echoes",
                     }

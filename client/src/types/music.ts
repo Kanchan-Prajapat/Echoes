@@ -1,39 +1,17 @@
 export interface Music {
-  _id: string;
 
-  title: string;
+    id: string;
 
-  artist: string;
+    title: string;
 
-  album?: string;
+    artist: string;
 
-  cover: string;
+    album?: string;
 
-  url: string;
+    image?: string;
 
-  previewUrl?: string;
+    audio: string;
 
-  duration: number;
+    duration: number;
 
-  category: string;
-
-  tags?: string[];
-
-  premium?: boolean;
-}
-
-export interface EchoMusic {
-  id: string;
-
-  title: string;
-
-  artist: string;
-
-  cover: string;
-
-  url: string;
-
-  duration: number;
-
-  source: "echoes" | "uploaded";
 }
