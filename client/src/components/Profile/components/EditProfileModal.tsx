@@ -59,7 +59,9 @@ const hasChanges =
   username !== profile.username ||
   bio !== (profile.bio ?? "") ||
   avatar !== (profile.avatar ?? "") ||
-  dateOfBirth?.getTime() !==
+  (dateOfBirth
+    ? new Date(dateOfBirth).getTime()
+    : undefined) !==
     (profile.dateOfBirth
       ? new Date(profile.dateOfBirth).getTime()
       : undefined) ||

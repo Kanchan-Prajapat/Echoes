@@ -219,7 +219,11 @@ setBio(profile.bio ?? "");
 
 setAvatar(profile.avatar ?? "");
 
-setDateOfBirth(profile.dateOfBirth ?? undefined);
+setDateOfBirth(
+  profile.dateOfBirth
+    ? new Date(profile.dateOfBirth)
+    : undefined
+);
 
 setGender(profile.gender);
 
