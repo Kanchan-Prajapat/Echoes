@@ -15,8 +15,8 @@ export default function ReliveIllustration() {
       className="
         relative
         flex
-        h-330px]
-         max-w-[520px]
+        h-200px]
+         max-w-[450px]
 
         items-center
 
@@ -50,7 +50,7 @@ export default function ReliveIllustration() {
       <Orbit />
 
       <Orbit
-        size={360}
+        size={320}
         duration={24}
         opacity={0.22}
       />
@@ -68,8 +68,8 @@ export default function ReliveIllustration() {
       >
 
         <PhotoCard
-          width={110}
-          height={140}
+          width={100}
+          height={120}
         />
 
       </Floating>
@@ -97,8 +97,8 @@ export default function ReliveIllustration() {
       >
 
         <PhotoCard
-          width={90}
-          height={120}
+          width={80}
+          height={110}
         />
 
       </Floating>

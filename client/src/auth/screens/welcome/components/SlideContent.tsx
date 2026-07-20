@@ -68,13 +68,14 @@ export default function SlideContent({
         }}
 
         className="
-          text-4xl
+          text-3xl
 
           font-black
 
           tracking-tight
 
           text-gray-900
+          
 
           dark:text-white
         "
@@ -104,7 +105,7 @@ export default function SlideContent({
         }}
 
         className="
-          mt-5
+          mt-4
 
           text-lg
 

@@ -133,7 +133,7 @@ export default function AppSplash() {
             className="
             mt-3
             max-w-xs
-            text-sm
+            text-lg
             leading-7
             text-violet-200
           "
@@ -202,6 +202,7 @@ export default function AppSplash() {
         <p
           className="
           pb-8
+          pt-30
           text-center
           text-xs
           tracking-widest

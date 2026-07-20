@@ -78,6 +78,7 @@ export default function WelcomeSlide({
 flex
 justify-center
 w-full
+h-70
 scale-[0.82]
 origin-center
 "

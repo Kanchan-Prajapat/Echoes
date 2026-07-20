@@ -71,9 +71,11 @@ export default function SkipButton({
 
             bg-white/60
 
-            px-4
+            px-3
 
-            py-2
+            py-1
+
+            -mt-4
 
             text-sm
 

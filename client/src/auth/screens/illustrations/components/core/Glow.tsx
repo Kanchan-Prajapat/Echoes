@@ -8,6 +8,7 @@ interface GlowProps {
   className?: string;
 }
 
+
 export default function Glow({
 size = 520,
 opacity = 0.07,

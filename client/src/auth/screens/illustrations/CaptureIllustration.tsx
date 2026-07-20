@@ -20,9 +20,9 @@ export default function CaptureIllustration() {
 
         flex
 
-        h-[330px]
+        h-[280px]
 
-         max-w-[520px]
+         max-w-[500px]
 
         items-center
 
@@ -87,9 +87,9 @@ export default function CaptureIllustration() {
 
         <PhotoCard
 
-          width={120}
+          width={100}
 
-          height={150}
+          height={120}
 
         />
 

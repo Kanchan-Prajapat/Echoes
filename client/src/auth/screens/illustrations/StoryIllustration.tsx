@@ -15,8 +15,8 @@ export default function StoryIllustration() {
       className="
         relative
         flex
-        h-[350px]
-             max-w-[520px]
+        h-200px]
+             max-w-[450px]
 
         items-center
 
