@@ -122,6 +122,7 @@ if (loading) {
           bg-white
           p-6
           shadow-lg
+          mb-20
         "
       >
 
