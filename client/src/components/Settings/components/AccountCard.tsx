@@ -1,4 +1,3 @@
-import { ChevronRight } from "lucide-react";
 import { Profile } from "@/types/profile.types";
 
 interface Props {
