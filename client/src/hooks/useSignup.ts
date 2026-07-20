@@ -8,6 +8,7 @@ interface SignupData {
 }
 import { useAuthStore } from "@/auth/stores/authStore";
 import { useNavigationStore } from "@/store/navigationStore";
+ import { getApiError } from "@/utils/getApiErrors";
 export default function useSignup() {
 const login = useAuthStore(
   (state) => state.login
@@ -100,15 +101,10 @@ if (response.user.profileCompleted) {
 
     }
 
-   catch (error: any) {
 
-  setError(
+catch (error: any) {
 
-    error.response?.data?.message ??
-
-    "Signup failed"
-
-  );
+  setError(getApiError(error));
 
 }
 

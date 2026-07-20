@@ -54,21 +54,6 @@ export default function AccountCard({
           {profile.email}
         </p>
 
-        <div
-          className="
-          mt-5
-          flex
-          items-center
-          gap-2
-          text-sm
-          font-medium
-          text-violet-600
-          "
-        >
-          Manage your profile
-
-          <ChevronRight size={16} />
-        </div>
 
       </div>
     </button>

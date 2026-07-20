@@ -94,18 +94,22 @@ export async function getSharedEchoController(
 
   }
 
-  catch (error: any) {
+ catch (error: any) {
 
-    return res.status(404).json(
-
+  if (error.issues) {
+    return res.status(400).json(
       errorResponse(
-
-        error.message
-
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-
   }
+
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 
 }

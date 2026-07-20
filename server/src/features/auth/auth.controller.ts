@@ -48,15 +48,21 @@ export async function signupController(
 
   } catch (error: any) {
 
+  if (error.issues) {
     return res.status(400).json(
-
       errorResponse(
-        error.message
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-
   }
+
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 }
 
 /* -------------------------------- */
@@ -87,18 +93,23 @@ export async function loginController(
 
   }
 
-  catch (error: any) {
+catch (error: any) {
 
+  if (error.issues) {
     return res.status(400).json(
-
       errorResponse(
-        error.message
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-
   }
 
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 }
 
 /* -------------------------------- */
@@ -130,15 +141,21 @@ export async function meController(
 
   catch (error: any) {
 
-    return res.status(404).json(
-
+  if (error.issues) {
+    return res.status(400).json(
       errorResponse(
-        error.message
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-
   }
+
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 
 }
 
@@ -175,17 +192,23 @@ export async function updateProfileController(
 
   }
 
-  catch (error: any) {
+ catch (error: any) {
 
+  if (error.issues) {
     return res.status(400).json(
-
       errorResponse(
-        error.message
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-
   }
+
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 
 }
 

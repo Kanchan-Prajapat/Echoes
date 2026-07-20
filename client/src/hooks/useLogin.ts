@@ -4,7 +4,7 @@ import { login } from "../auth/api/auth.api";
 
 import { useAuthStore } from "@/auth/stores/authStore";
 import { useNavigationStore } from "@/store/navigationStore";
-
+ import { getApiError } from "@/utils/getApiErrors";
 interface LoginData {
   email: string;
   password: string;
@@ -81,17 +81,11 @@ export default function useLogin() {
 
     }
 
-    catch (error: any) {
+ catch (error: any) {
 
-      setError(
+  setError(getApiError(error));
 
-        error.response?.data?.message ??
-
-        "Login failed."
-
-      );
-
-    }
+}
 
     finally {
 

@@ -13,6 +13,7 @@ import SetupProfileView from "@/components/Onboarding/SetupProfileView";
 import { useNavigationStore } from "@/store/navigationStore";
 import { MiniPlayer } from "@/components/Audio";
 import type { TabType } from "@/types/types";
+import FavoritesView from "@/components/Favorites/FavoritesView";
 export default function AppNavigator() {
 
 
@@ -183,6 +184,33 @@ export default function AppNavigator() {
 
   }
 
+  
+ if (current === "favorites") {
+
+  return (
+
+    <FavoritesView
+
+      onBack={() => navigate("profile")}
+
+      onOpenEcho={(echo) =>
+
+        navigate(
+          "echo-detail",
+          {
+            selectedEchoId: echo.id,
+          }
+        )
+
+      }
+
+    />
+
+  );
+
+}
+
+
   if (current === "setup-profile") {
 
   return <SetupProfileView />;
@@ -258,6 +286,7 @@ export default function AppNavigator() {
         </PageTransition>
 
       )}
+
 
       {current === "calendar" && (
 

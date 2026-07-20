@@ -98,28 +98,21 @@ export default function LoginForm() {
 
       />
 
-      {error && (
 
-        <p
+       {error && (
+  <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-3">
+    {error.split("\n").map((msg, index) => (
+      <p
+        key={index}
+        className="text-sm text-red-400"
+      >
+        • {msg}
+      </p>
+    ))}
+  </div>
+)}
 
-          className="
-
-            text-center
-
-            text-sm
-
-            text-red-400
-
-          "
-
-        >
-
-          {error}
-
-        </p>
-
-      )}
-
+     
       <PrimaryButton
 
         type="submit"

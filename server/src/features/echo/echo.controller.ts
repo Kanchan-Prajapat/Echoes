@@ -59,19 +59,23 @@ console.dir(req.body, { depth: null });
 
   }
 
-  catch (error: any) {
+ catch (error: any) {
 
+  if (error.issues) {
     return res.status(400).json(
-
       errorResponse(
-        error.message
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-    console.error(error);
-
   }
 
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 }
 
 /* -------------------------------- */
@@ -98,10 +102,21 @@ export async function getAllEchoesController(
 
   } catch (error: any) {
 
-    return res.status(500).json(
-      errorResponse(error.message)
+  if (error.issues) {
+    return res.status(400).json(
+      errorResponse(
+        error.issues.map((issue: any) => issue.message)
+      )
     );
   }
+
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 }
 
 /* -------------------------------- */
@@ -132,17 +147,23 @@ export async function getEchoByIdController(
 
   }
 
-  catch (error: any) {
+ catch (error: any) {
 
-    return res.status(404).json(
-
+  if (error.issues) {
+    return res.status(400).json(
       errorResponse(
-        error.message
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-
   }
+
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 
 }
 
@@ -182,17 +203,23 @@ export async function updateEchoController(
 
   }
 
-  catch (error: any) {
+catch (error: any) {
 
+  if (error.issues) {
     return res.status(400).json(
-
       errorResponse(
-        error.message
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-
   }
+
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 
 }
 
@@ -225,17 +252,23 @@ export async function deleteEchoController(
 
   }
 
-  catch (error: any) {
+catch (error: any) {
 
-    return res.status(404).json(
-
+  if (error.issues) {
+    return res.status(400).json(
       errorResponse(
-        error.message
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-
   }
+
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 
 }
 
@@ -270,17 +303,23 @@ export async function searchEchoesController(
 
   }
 
-  catch (error: any) {
+catch (error: any) {
 
-    return res.status(500).json(
-
+  if (error.issues) {
+    return res.status(400).json(
       errorResponse(
-        error.message
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-
   }
+
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 
 }
 
@@ -315,17 +354,23 @@ export async function toggleFavoriteController(
 
   }
 
-  catch (error: any) {
+catch (error: any) {
 
-    return res.status(404).json(
-
+  if (error.issues) {
+    return res.status(400).json(
       errorResponse(
-        error.message
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-
   }
+
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 
 }
 
@@ -362,17 +407,23 @@ export async function addMediaToEchoController(
 
   }
 
-  catch (error: any) {
+catch (error: any) {
 
+  if (error.issues) {
     return res.status(400).json(
-
       errorResponse(
-        error.message
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-
   }
+
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 
 }
 
@@ -409,17 +460,23 @@ export async function deleteMediaController(
 
   }
 
-  catch (error: any) {
+catch (error: any) {
 
-    return res.status(404).json(
-
+  if (error.issues) {
+    return res.status(400).json(
       errorResponse(
-        error.message
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-
   }
+
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 
 }
 
@@ -456,16 +513,22 @@ export async function setCoverMediaController(
 
   }
 
-  catch (error: any) {
+catch (error: any) {
 
+  if (error.issues) {
     return res.status(400).json(
-
       errorResponse(
-        error.message
+        error.issues.map((issue: any) => issue.message)
       )
-
     );
-
   }
+
+  return res.status(400).json(
+    errorResponse(
+      error.message || "Something went wrong."
+    )
+  );
+
+}
 
 }

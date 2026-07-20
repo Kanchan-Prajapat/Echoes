@@ -233,7 +233,9 @@ setOpenEdit(true);
 
 }}
 
-        onFavorites={() => {}}
+        onFavorites={() => {
+          navigate("favorites")
+        }}
 
         onSettings={() =>
         navigate("settings")

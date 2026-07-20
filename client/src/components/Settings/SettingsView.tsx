@@ -71,16 +71,14 @@ export default function SettingsView({
 
             // );
 
-            toast.info(
-                "Dark Mode will be available soon."
-            );
-
             return updated;
 
         });
+           toast.info(
+                "This Feature will be available soon."
+            );
 
     }
-
 
     function handleItemClick(
         id: string

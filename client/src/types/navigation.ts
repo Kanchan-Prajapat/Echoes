@@ -21,7 +21,9 @@ export type Screen =
 
   | "echo-detail"
   | "setup-profile"
+   | "favorites"
   | "new-echo";
+
 
 export interface NavigationHistoryItem {
   screen: Screen;
