@@ -14,8 +14,8 @@ export default function useSetupProfile() {
   const navigation =
     useNavigationStore.getState();
 
-  const [dateOfBirth, setDateOfBirth] =
-    useState("");
+const [dateOfBirth, setDateOfBirth] =
+    useState<Date | undefined>(undefined);
 
  const [gender, setGender] =
   useState<Gender | undefined>(undefined);
@@ -44,15 +44,22 @@ export default function useSetupProfile() {
       return;
     }
 
-    if (!dateOfBirth) {
-      setError("Please select your birthday.");
-      return;
-    }
+   if (!dateOfBirth) {
+  setError("Please select your birthday.");
+  return;
+}
 
+await updateProfile({
+  username,
+  dateOfBirth,
+  gender,
+  city: city.trim() || undefined,
+});
     try {
 
       setLoading(true);
 
+    
       const updatedUser =
         await updateProfile({
           username,

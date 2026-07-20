@@ -13,7 +13,6 @@ import { useAuthStore } from "@/auth/stores/authStore";
 import useToast from "@/hooks/useToast";
 import useConfirm from "@/hooks/useConfirm";
 import ErrorState from "../Shared/ErrorState";
-import { format } from "date-fns";
 import CalendarModal from "@/components/Modals/CalendarModal";
 import GenderPickerModal from "@/components/Modals/GenderPickerModal";
 
@@ -56,8 +55,8 @@ const [bio, setBio] =
 const [avatar, setAvatar] =
   useState("");
 
-const [dateOfBirth, setDateOfBirth]=
-useState("");
+const [dateOfBirth, setDateOfBirth] =
+    useState<Date | undefined>(undefined);
 
 const [gender, setGender] =
   useState<Gender | undefined>(
@@ -93,6 +92,11 @@ const navigate = useNavigationStore(
 async function handleSave() {
 
   try {
+
+    if (!dateOfBirth) {
+  toast.error("Please select your date of birth.");
+  return;
+}
 
    await saveProfile({
   username,
@@ -215,7 +219,7 @@ setBio(profile.bio ?? "");
 
 setAvatar(profile.avatar ?? "");
 
-setDateOfBirth(profile.dateOfBirth ?? "");
+setDateOfBirth(profile.dateOfBirth ?? undefined);
 
 setGender(profile.gender);
 
@@ -314,14 +318,11 @@ setOpenEdit(true);
   onClose={() =>
     setDateOfBirthModalOpen(false)
   }
-   onSelect={(date: Date) => {
-    setDateOfBirth(
-      format(date, "yyyy-MM-dd")
-    );
-
-    setDateOfBirthModalOpen(false);
-    setDateOfBirthModalOpen(false);
-  }}
+  onSelect={(date: Date) => {
+  setDateOfBirth(date);
+  setDateOfBirthModalOpen(false);
+}}
+  
 />
 
 <GenderPickerModal

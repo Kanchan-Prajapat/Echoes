@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-
 import { useEchoStore } from "@/store/echoStore";
 import { Echo } from "@/types/echo";
 import {
@@ -47,8 +46,7 @@ export default function useNewEcho({
     const [location, setLocation] =
         useState("");
 
-    const [date, setDate] =
-        useState("");
+const [date, setDate] = useState<Date | undefined>(undefined);
 
     const [selectedMood, setSelectedMood] =
         useState("😊");
@@ -92,9 +90,11 @@ export default function useNewEcho({
             editingEcho.location
         );
 
-        setDate(
-            editingEcho.date
-        );
+    setDate(
+  editingEcho?.date
+    ? new Date(editingEcho.date)
+    : undefined
+);
 
         setSelectedMood(
             editingEcho.mood

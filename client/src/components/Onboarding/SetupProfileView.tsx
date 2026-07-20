@@ -3,7 +3,6 @@ import { User, MapPin } from "lucide-react";
 import { useAuthStore } from "@/auth/stores/authStore";
 import useSetupProfile from "@/hooks/useSetupProfile";
 import { useState } from "react";
-import { format } from "date-fns";
 import type { Gender } from "@/types/profile.types";
 import CalendarModal from "@/components/Modals/CalendarModal";
 import { DatePickerCard } from "../NewEcho";
@@ -14,14 +13,14 @@ export default function SetupProfileView() {
     username,
     setUsername,
 
-    dateOfBirth,
-    setDateOfBirth,
-
     gender,
     setGender,
 
     city,
     setCity,
+
+    dateOfBirth,
+    setDateOfBirth,
 
     loading,
 
@@ -30,6 +29,8 @@ export default function SetupProfileView() {
     submit,
 
   } = useSetupProfile();
+
+
 
   const owner = useAuthStore(
     (state) => state.owner
@@ -455,11 +456,10 @@ const GENDERS: {
       : undefined
   }
   onClose={() => setCalendarOpen(false)}
-  onSelect={(date) => {
-    setDateOfBirth(
-      format(date, "yyyy-MM-dd")
-    );
-  }}
+onSelect={(date: Date) => {
+  setDateOfBirth(date);
+  setCalendarOpen(false);
+}}
 />
 
     </main>

@@ -6,6 +6,7 @@ import {
   Video,
   Heart,
 } from "lucide-react";
+import { format } from "date-fns";
 
 import Card from "@/styles/Card";
 
@@ -156,7 +157,7 @@ export default function CalendarDayPreview({
 
                 <CalendarDays size={13} />
 
-                {echo.date}
+                {format(new Date(echo.date), "dd MMM yyyy")}
 
               </div>
 

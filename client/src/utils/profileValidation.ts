@@ -1,14 +1,14 @@
 export interface ProfileValidationData {
   username: string;
   bio: string;
-  dateOfBirth: Date;
+dateOfBirth: Date | undefined;
   city: string;
 }
 
 export interface ProfileErrors {
   username?: string;
   bio?: string;
-  dateOfBirth?: Date;
+  dateOfBirth?: string;
   city?: string;
 }
 
@@ -41,7 +41,7 @@ export function validateProfile(
   /* ---------------- Date of Birth ---------------- */
 
   if (data.dateOfBirth) {
-    const dob = new Date(data.dateOfBirth);
+    const dob = data.dateOfBirth;
     const today = new Date();
 
     if (dob > today) {

@@ -7,7 +7,7 @@ import Card from "@/styles/Card";
 interface Props {
   label?: string;
   placeholder?: string;
-  date: string;
+  date: Date | undefined;
   onClick: () => void;
 }
 export default function DatePickerCard({

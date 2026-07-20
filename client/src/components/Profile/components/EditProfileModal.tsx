@@ -22,7 +22,7 @@ interface Props {
   onBioChange: (value: string) => void;
   onAvatarChange: (value: string) => void;
 
-  dateOfBirth: Date;
+dateOfBirth: Date | undefined;
 gender?: Gender;
 city: string;
 
@@ -55,12 +55,15 @@ onCityChange,
 
   const { upload, uploading } = useAvatarUpload();
 
- const hasChanges =
+const hasChanges =
   username !== profile.username ||
   bio !== (profile.bio ?? "") ||
   avatar !== (profile.avatar ?? "") ||
-  dateOfBirth !== (profile.dateOfBirth ?? "") ||
- gender !== profile.gender
+  dateOfBirth?.getTime() !==
+    (profile.dateOfBirth
+      ? new Date(profile.dateOfBirth).getTime()
+      : undefined) ||
+  gender !== profile.gender ||
   city !== (profile.city ?? "");
 
 const {

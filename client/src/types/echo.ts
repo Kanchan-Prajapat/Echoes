@@ -10,7 +10,7 @@ export interface Echo {
 
   media: Media[];
 
-  date: string;
+  date: Date;
 
   location: string;
 

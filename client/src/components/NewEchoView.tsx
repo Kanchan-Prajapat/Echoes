@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import { useState } from "react";
 import AppContainer from "@/styles/AppContainer";
 import useAudio from "@/hooks/useAudio";
@@ -282,14 +281,10 @@ useState(false);
         onClose={() =>
           setShowCalendar(false)
         }
-        onSelect={(selectedDate) =>
-          setDate(
-            format(
-              selectedDate,
-              "yyyy-MM-dd"
-            )
-          )
-        }
+       onSelect={(selectedDate) => {
+  setDate(selectedDate);
+  setShowCalendar(false);
+}}
       />
 
       {/* Mood */}
